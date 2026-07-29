@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>GymSense · 器械感知健身教练</title>
+<style>
+:root{
+  --bg:#0e1013; --bg2:#16191f; --card:#1c2027; --card2:#232833;
+  --line:#2b313c; --txt:#eef1f5; --sub:#9aa3b2; --dim:#6b7482;
+  --acc:#4ade80; --acc2:#22c55e; --accD:#123c22;
+  --blue:#60a5fa; --orange:#fbbf24; --red:#f87171; --purple:#c084fc;
+  --r:14px; --tabH:62px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",Roboto,"Helvetica Neue",sans-serif;font-size:15px;line-height:1.5;overscroll-behavior-y:none}
+#app{max-width:520px;margin:0 auto;min-height:100%;position:relative}
+.view{display:none;padding:16px 16px calc(var(--tabH) + 28px + env(safe-area-inset-bottom));min-height:100vh}
+.view.active{display:block}
+h1{font-size:22px;font-weight:800;letter-spacing:.3px}
+h2{font-size:17px;font-weight:700;margin:18px 0 10px}
+.sub{color:var(--sub);font-size:13px}
+.dim{color:var(--dim);font-size:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.card2{background:var(--card2)}
+.row{display:flex;align-items:center;gap:10px}
+.grow{flex:1}
+.center{text-align:center}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mb8{margin-bottom:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:12px;padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer;background:var(--acc);color:#08240f;width:100%;transition:opacity .15s}
+.btn:active{opacity:.75}
+.btn.sec{background:var(--card2);color:var(--txt);border:1px solid var(--line)}
+.btn.ghost{background:transparent;color:var(--acc);border:1px solid var(--acc2);}
+.btn.warn{background:#3a1d1d;color:var(--red);border:1px solid #5b2b2b}
+.btn.sm{padding:8px 12px;font-size:13px;width:auto;border-radius:10px}
+.btn:disabled{opacity:.4}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;color:var(--sub);cursor:pointer;user-select:none}
+.chip.on{background:var(--accD);border-color:var(--acc2);color:var(--acc);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+input,select,textarea{background:var(--bg2);border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:10px 12px;font-size:15px;width:100%;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--acc2)}
+label.fl{display:block;font-size:13px;color:var(--sub);margin:12px 0 6px;font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+/* tab bar */
+#tabbar{position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(14,16,19,.92);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;max-width:520px;margin:0 auto;height:calc(var(--tabH) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--dim);font-size:11px;cursor:pointer;font-weight:600}
+.tab svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tab.active{color:var(--acc)}
+/* header */
+.hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.logo{font-size:20px;font-weight:800}.logo em{color:var(--acc);font-style:normal}
+/* plan day card */
+.daycard{border-left:3px solid var(--acc2)}
+.exrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.exrow:last-child{border-bottom:none}
+.exnum{width:26px;height:26px;border-radius:8px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--sub);font-weight:700;flex-shrink:0}
+.exname{font-weight:600;font-size:14px}
+.exmeta{font-size:12px;color:var(--sub)}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;background:var(--card2);color:var(--sub);margin-right:5px}
+.tag.acc{background:var(--accD);color:var(--acc)}
+.tag.blue{background:#14263f;color:var(--blue)}
+.tag.orange{background:#3a2c0e;color:var(--orange)}
+/* workout set rows */
+.setrow{display:grid;grid-template-columns:34px 1fr 1fr 44px;gap:8px;align-items:center;margin-bottom:8px}
+.setrow input{text-align:center;padding:9px 6px;font-size:16px;font-weight:600}
+.setrow .done{width:44px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--dim);font-size:18px;cursor:pointer;font-weight:800}
+.setrow .done.on{background:var(--accD);border-color:var(--acc2);color:var(--acc)}
+.sethead{display:grid;grid-template-columns:34px 1fr 1fr 44px;gap:8px;font-size:11px;color:var(--dim);margin-bottom:6px;text-align:center;font-weight:700}
+/* timer bar */
+#restbar{position:fixed;bottom:calc(var(--tabH) + env(safe-area-inset-bottom));left:0;right:0;max-width:520px;margin:0 auto;background:var(--accD);border-top:1px solid var(--acc2);padding:10px 16px;display:none;align-items:center;gap:12px;z-index:49}
+#restbar.on{display:flex}
+#restTime{font-size:24px;font-weight:800;color:var(--acc);font-variant-numeric:tabular-nums;min-width:70px}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.modal.on{display:flex}
+.sheet{background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;padding:18px 16px calc(20px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.sheet h3{font-size:17px;font-weight:800;margin-bottom:12px}
+.handle{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 14px}
+/* muscle svg */
+.bodywrap{display:flex;justify-content:center;gap:18px;padding:8px 0}
+.bodywrap svg{height:190px}
+.mus{fill:#2b313c;stroke:#20242c;stroke-width:.8;transition:fill .2s}
+.mus.hi{fill:var(--acc)}
+.mus.hi2{fill:#2e7d4f}
+.bodyoutline{fill:none;stroke:#3a4250;stroke-width:1.4}
+/* progress bars */
+.bar{height:10px;border-radius:5px;background:var(--card2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc2);border-radius:5px}
+/* chat */
+.msg{max-width:86%;padding:10px 13px;border-radius:14px;margin-bottom:8px;font-size:14px;white-space:pre-wrap;word-break:break-word}
+.msg.u{background:var(--accD);color:var(--txt);margin-left:auto;border-bottom-right-radius:4px}
+.msg.a{background:var(--card2);border-bottom-left-radius:4px}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--acc2);color:var(--txt);padding:10px 18px;border-radius:12px;z-index:200;font-size:14px;box-shadow:0 6px 24px rgba(0,0,0,.4);display:none;max-width:90%}
+.seg{display:flex;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:3px;gap:3px}
+.seg div{flex:1;text-align:center;padding:8px 4px;border-radius:8px;font-size:13px;color:var(--sub);cursor:pointer;font-weight:600}
+.seg div.on{background:var(--card2);color:var(--acc)}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 8px;text-align:center}
+.stat b{display:block;font-size:20px;font-weight:800;color:var(--acc)}
+.stat span{font-size:11px;color:var(--sub)}
+.listitem{display:flex;align-items:center;justify-content:space-between;padding:12px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+.listitem:last-child{border-bottom:none}
+.arrow{color:var(--dim)}
+.gauge{display:flex;gap:4px;margin-top:6px}
+.gauge i{flex:1;height:6px;border-radius:3px;background:var(--card2)}
+.gauge i.on{background:var(--acc2)}
+canvas#shareCanvas{display:none}
+.notice{background:#14263f;border:1px solid #1e3a5f;border-radius:12px;padding:10px 12px;font-size:12.5px;color:#9ec5f2;margin-bottom:12px}
+.warnbox{background:#3a2c0e;border:1px solid #5b4516;border-radius:12px;padding:10px 12px;font-size:12.5px;color:var(--orange)}
+.svgchart{width:100%;height:170px;background:var(--bg2);border-radius:12px;border:1px solid var(--line)}
+/* animation stage */
+.animwrap{background:linear-gradient(180deg,#171b22,#12151b);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:10px}
+.animwrap svg{width:100%;height:215px;display:block}
+.animcap{text-align:center;font-size:11.5px;color:var(--dim);padding:0 0 8px}
+/* stepper inputs */
+.setrow2{display:grid;grid-template-columns:26px 1fr 1fr 42px;gap:7px;align-items:center;margin-bottom:8px}
+.sethead2{display:grid;grid-template-columns:26px 1fr 1fr 42px;gap:7px;font-size:11px;color:var(--dim);margin-bottom:6px;text-align:center;font-weight:700}
+.stepcell{display:flex;align-items:stretch;background:var(--bg2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.stepcell input{border:none;border-radius:0;background:transparent;text-align:center;padding:9px 2px;font-size:16px;font-weight:700;min-width:0;flex:1}
+.stepbtn{width:36px;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;color:var(--acc);background:var(--card2);border:none;cursor:pointer;user-select:none;touch-action:manipulation}
+.stepbtn:active{background:var(--accD)}
+.setrow2 .done{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--dim);font-size:18px;cursor:pointer;font-weight:800}
+.setrow2 .done.on{background:var(--accD);border-color:var(--acc2);color:var(--acc)}
+.swapmini{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card2);color:var(--sub);font-size:14px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ===== 计划 Plan ===== -->
+  <div class="view" id="view-plan">
+    <div class="hd"><div class="logo">Gym<em>Sense</em></div><button class="btn sm sec" id="btnLang">EN</button></div>
+    <div id="planBody"></div>
+  </div>
+
+  <!-- ===== 训练 Workout ===== -->
+  <div class="view" id="view-workout"><div id="workoutBody"></div></div>
+
+  <!-- ===== 器械 Gym ===== -->
+  <div class="view" id="view-gym"><div id="gymBody"></div></div>
+
+  <!-- ===== 进度 Progress ===== -->
+  <div class="view" id="view-progress"><div id="progressBody"></div></div>
+
+  <!-- ===== 我的 Me ===== -->
+  <div class="view" id="view-me"><div id="meBody"></div></div>
+
+  <!-- ===== Onboarding ===== -->
+  <div class="view" id="view-onboard"><div id="onboardBody"></div></div>
+
+  <!-- rest timer bar -->
+  <div id="restbar">
+    <div id="restTime">90</div>
+    <div class="grow sub" id="restLabel"></div>
+    <button class="btn sm sec" id="restMinus">-15s</button>
+    <button class="btn sm sec" id="restPlus">+15s</button>
+    <button class="btn sm" id="restSkip">✕</button>
+  </div>
+
+  <!-- tab bar -->
+  <div id="tabbar">
+    <div class="tab" data-v="plan"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg><span data-t="tabPlan"></span></div>
+    <div class="tab" data-v="workout"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></svg><span data-t="tabWork"></span></div>
+    <div class="tab" data-v="gym"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg><span data-t="tabGym"></span></div>
+    <div class="tab" data-v="progress"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg><span data-t="tabProg"></span></div>
+    <div class="tab" data-v="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/></svg><span data-t="tabMe"></span></div>
+  </div>
+
+  <!-- generic modal -->
+  <div class="modal" id="modal"><div class="sheet" id="sheet"><div class="handle"></div><div id="sheetBody"></div></div></div>
+  <div class="toast" id="toast"></div>
+  <canvas id="shareCanvas" width="750" height="1000"></canvas>
+</div>
+<script>
+/* ================= I18N ================= */
+const I18N = {
+zh:{
+tabPlan:"计划",tabWork:"训练",tabGym:"器械",tabProg:"进度",tabMe:"我的",
+onbTitle:"欢迎使用 GymSense",onbSub:"你所在健身房的 AI 力量教练。先花 1 分钟建立你的档案。",
+sex:"性别",male:"男",female:"女",age:"年龄",height:"身高 (cm)",weight:"体重 (kg)",
+exp:"训练经验",exp0:"新手（<6个月）",exp1:"进阶（6个月–2年）",exp2:"老手（2年以上）",
+goal:"训练目标",goal_muscle:"增肌",goal_strength:"力量",goal_lean:"减脂塑形",
+freq:"每周训练频率",freqSug:"按你的经验，建议每周 {n} 练",useSug:"采用建议",
+injury:"伤病 / 敏感部位（可多选，生成计划时规避）",inj_none:"无",inj_lb:"腰 / 下背",inj_sh:"肩",inj_kn:"膝",inj_el:"肘",inj_wr:"手腕",
+cautionTag:"⚠ 谨慎",
+swimQ:"游泳（与器械训练结合安排）",swim0:"不安排",swim1:"每周 1 次",swim2:"每周 2 次",
+swimNote:"游泳日建议与大重量腿部日错开安排；力量/增肌目标下请保持轻松配速，避免影响力量训练的恢复。",
+swimNoPool:"提示：当前健身房未勾选「游泳池」——游泳请安排在有泳池的场馆。",
+swimShWarn:"你标记了肩伤：减少自由泳/蝶泳的大幅划水，优先蛙泳或打腿板训练，肩部不适立即停止。",
+segWarm:"热身",segMain:"主项",segCool:"放松",
+swimDistL:"总距离 (m)",swimTimeL:"用时 (分钟)",swimSession:"游泳训练",
+injPlanNote:"已按你标记的伤病排除高风险动作；带 ⚠ 的动作对相关部位仍有一定负荷，请减轻重量、放慢速度进行。急性疼痛期请先就医，本App不能替代康复指导。",
+injDetailWarn:"你标记了「{a}」——此动作会给该部位带来负荷。建议小重量谨慎进行或更换动作，出现疼痛立即停止。",
+next:"下一步",back:"上一步",createGym:"设置我的健身房",
+gymName:"健身房名称",gymNamePh:"例如：家附近的乐刻",
+pickEq:"勾选这家健身房有的器械",aiScan:"📷 AI 扫描器械（拍照识别）",aiScanNeedKey:"需先在「我的→AI 设置」填入 API Key",
+genPlan:"生成训练计划",
+planTitle:"我的训练计划",noPlan:"还没有计划",noPlanSub:"完成档案和器械设置后，即可生成专属计划。",
+weekOf:"每周 {n} 练 · {split}",
+split2:"全身分化",split3:"推 / 拉 / 腿",split4:"上肢 / 下肢",split5:"推拉腿 + 上下肢",
+day:"第 {n} 练",sets:"组",reps:"次",rest:"休息",
+regen:"重新生成计划",regenConfirm:"重新生成会替换当前计划（历史记录保留）。继续？",
+aiExplain:"🤖 AI 解释这份计划",
+startThis:"开始这次训练",
+todayTitle:"今日训练",pickDay:"选择今天的训练",
+lastTime:"上次",kg:"kg",addSet:"+ 加一组",swap:"换动作",detail:"动作要点",
+finish:"完成训练",finishConfirm:"确定完成并保存本次训练？",
+emptyWork:"今天还没开始训练",emptyWorkSub:"从计划中选择一天开始，或快速开始空白训练。",
+quickStart:"自由训练（不按计划）",
+restLabel:"组间休息",
+gymTitle:"我的健身房",addGym:"+ 新增健身房",eqCount:"{n} 类器械",active:"使用中",setActive:"设为当前",editEq:"编辑器械",delGym:"删除",
+delGymConfirm:"删除这家健身房？",
+scanTip:"拍摄或选择器械照片（可多张），AI 将识别出器械类目并自动勾选。照片只发送到你自己的 API，不经过任何第三方服务器。",
+scanning:"AI 识别中…",scanDone:"识别完成：新勾选 {n} 类器械",scanFail:"识别失败，请重试或手动勾选",
+progTitle:"训练进度",statWorkouts:"总训练次数",statVolume:"总容量 (t)",statStreak:"本周训练",
+exChart:"动作进步曲线",pickEx:"选择动作",est1rm:"估算1RM",maxw:"最大重量",
+weekVol:"每周容量 (kg)",history:"训练历史",noHistory:"完成第一次训练后，这里会出现你的进步数据。",
+aiWeekly:"🤖 AI 周复盘",share:"分享成绩卡",
+meTitle:"我的",profile:"个人档案",aiSet:"AI 设置",
+apiKey:"API Key",apiKeyPh:"sk-…（只保存在本机，不上传任何服务器）",
+model:"模型",aiOn:"AI 已启用",aiOff:"未启用 AI（选择服务商并填入 Key 后可用：扫描器械 / 计划解释 / 周复盘 / 问答）",
+provider:"AI 服务商",prov_anthropic:"Anthropic (Claude)",prov_deepseek:"DeepSeek",prov_custom:"自定义（OpenAI 兼容接口）",
+baseUrlL:"API 地址 (Base URL)",
+visionUnsup:"注意：DeepSeek 接口暂不支持图片输入，「AI 扫描器械」不可用（AI 解释 / 周复盘 / 问答不受影响）。需要扫器械请改用支持视觉的服务商，或在自定义里填支持视觉的模型（如通义 qwen-vl 系列）。",
+netErr:"请求未能到达服务器：可能是网络问题，或该服务商不允许网页直连（CORS 拦截）。请检查网络后重试；若反复出现，需要部署一个轻量转发代理（可以找 Claude 帮你生成）。",
+aiChat:"问 AI 教练",aiChatPh:"例：肩膀有点不舒服，今天怎么调整？",send:"发送",
+dataTitle:"数据管理",exportData:"导出数据 (JSON)",importData:"导入数据",resetAll:"清空全部数据",
+resetConfirm:"⚠️ 将删除档案、计划与全部历史记录。确定？",
+saveOk:"已保存",lang:"语言",
+disclaimerT:"免责声明",
+disclaimer:"本应用提供的训练内容仅供健身参考，不构成医疗建议。如有伤病、慢性疾病或身体不适，请先咨询医生或专业教练。训练中请量力而行。",
+warmup:"训练前请充分热身：5–10 分钟有氧 + 目标肌群轻重量激活。",
+firstWeight:"首次训练：选择你能标准完成目标次数的重量，最后一组应接近但不到力竭。",
+progression:"上次所有组都达到次数上限 → 本次建议 +2.5kg",
+prefillNote:"已按上次记录预填重量",
+noEq:"当前器械不足，此动作暂无可替代项",
+subFor:"可替代动作（按你的器械）",
+done:"完成",cancel:"取消",confirm:"确认",save:"保存",
+totalVol:"总容量",exercises:"动作",setsDone:"完成组数",newPR:"新纪录",
+shareMade:"成绩卡已生成，长按图片保存",
+mus_chest:"胸",mus_back:"背",mus_shoulders:"肩",mus_biceps:"二头",mus_triceps:"三头",mus_quads:"股四头",mus_hams:"腘绳肌",mus_glutes:"臀",mus_calves:"小腿",mus_abs:"核心",
+target:"目标肌群",cues:"动作要点",cautions:"注意事项",
+askAiExample:"向 AI 教练提问",
+aiThinking:"AI 思考中…",aiErr:"AI 请求失败：",
+editProfile:"编辑档案",
+dayNames:{push:"推力日",pull:"拉力日",legs:"腿部日",upper:"上肢日",lower:"下肢日",fullA:"全身 A",fullB:"全身 B",free:"自由训练",swim:"游泳日"},
+durMin:"分钟",
+planFooter:"计划由规则引擎按你的档案与器械生成；AI 仅负责解释与答疑，不改动训练数字。",
+},
+en:{
+tabPlan:"Plan",tabWork:"Train",tabGym:"Gym",tabProg:"Progress",tabMe:"Me",
+onbTitle:"Welcome to GymSense",onbSub:"The AI strength coach that knows your gym. Set up your profile in 1 minute.",
+sex:"Sex",male:"Male",female:"Female",age:"Age",height:"Height (cm)",weight:"Weight (kg)",
+exp:"Experience",exp0:"Beginner (<6 mo)",exp1:"Intermediate (6 mo–2 yr)",exp2:"Advanced (2+ yr)",
+goal:"Goal",goal_muscle:"Muscle",goal_strength:"Strength",goal_lean:"Lean & tone",
+freq:"Sessions per week",freqSug:"Suggested for your level: {n}/week",useSug:"Use suggestion",
+injury:"Injuries / sensitive areas (multi-select — plan avoids risky moves)",inj_none:"None",inj_lb:"Lower back",inj_sh:"Shoulder",inj_kn:"Knee",inj_el:"Elbow",inj_wr:"Wrist",
+cautionTag:"⚠ Caution",
+swimQ:"Swimming (combined with gym training)",swim0:"None",swim1:"1× / week",swim2:"2× / week",
+swimNote:"Schedule swim days away from heavy leg days; on strength/muscle goals keep an easy pace so swimming doesn't hurt lifting recovery.",
+swimNoPool:"Note: this gym has no \"Swimming pool\" selected — plan your swim at a pool facility.",
+swimShWarn:"You flagged a shoulder issue: limit freestyle/butterfly stroke volume, prefer breaststroke or kickboard work; stop on shoulder pain.",
+segWarm:"Warm-up",segMain:"Main set",segCool:"Cool-down",
+swimDistL:"Distance (m)",swimTimeL:"Time (min)",swimSession:"Swim session",
+injPlanNote:"High-risk exercises for your flagged areas are excluded; ⚠ items still load those areas — reduce weight and slow down. For acute pain see a doctor first; this app is not rehab guidance.",
+injDetailWarn:"You flagged \"{a}\" — this exercise loads that area. Go light and controlled, or swap it; stop immediately on pain.",
+next:"Next",back:"Back",createGym:"Set up my gym",
+gymName:"Gym name",gymNamePh:"e.g. Anytime Fitness downtown",
+pickEq:"Select the equipment this gym has",aiScan:"📷 AI scan equipment (photo)",aiScanNeedKey:"Add an API key first (Me → AI settings)",
+genPlan:"Generate my plan",
+planTitle:"My Training Plan",noPlan:"No plan yet",noPlanSub:"Finish your profile & gym setup to generate a plan.",
+weekOf:"{n}×/week · {split}",
+split2:"Full-body split",split3:"Push / Pull / Legs",split4:"Upper / Lower",split5:"PPL + Upper/Lower",
+day:"Day {n}",sets:"sets",reps:"reps",rest:"Rest",
+regen:"Regenerate plan",regenConfirm:"This replaces your current plan (history is kept). Continue?",
+aiExplain:"🤖 Ask AI to explain this plan",
+startThis:"Start this workout",
+todayTitle:"Today's Workout",pickDay:"Pick today's session",
+lastTime:"Last",kg:"kg",addSet:"+ Add set",swap:"Swap",detail:"Form guide",
+finish:"Finish workout",finishConfirm:"Finish and save this workout?",
+emptyWork:"No workout started",emptyWorkSub:"Pick a day from your plan, or start a blank session.",
+quickStart:"Free session (no plan)",
+restLabel:"Rest between sets",
+gymTitle:"My Gyms",addGym:"+ Add gym",eqCount:"{n} equipment types",active:"Active",setActive:"Set active",editEq:"Edit equipment",delGym:"Delete",
+delGymConfirm:"Delete this gym?",
+scanTip:"Take or choose photos of equipment (multiple allowed). AI identifies the categories and ticks them for you. Photos go only to your own API.",
+scanning:"Scanning…",scanDone:"Done: {n} new equipment types selected",scanFail:"Scan failed — retry or select manually",
+progTitle:"Progress",statWorkouts:"Workouts",statVolume:"Volume (t)",statStreak:"This week",
+exChart:"Exercise progression",pickEx:"Choose exercise",est1rm:"Est. 1RM",maxw:"Top weight",
+weekVol:"Weekly volume (kg)",history:"History",noHistory:"Finish your first workout and your progress will appear here.",
+aiWeekly:"🤖 AI weekly review",share:"Share card",
+meTitle:"Me",profile:"Profile",aiSet:"AI settings",
+apiKey:"API Key",apiKeyPh:"sk-… (stored on this device only)",
+model:"Model",aiOn:"AI enabled",aiOff:"AI off (pick a provider and add a key to enable: equipment scan / plan explainer / weekly review / Q&A)",
+provider:"AI provider",prov_anthropic:"Anthropic (Claude)",prov_deepseek:"DeepSeek",prov_custom:"Custom (OpenAI-compatible)",
+baseUrlL:"API base URL",
+visionUnsup:"Note: the DeepSeek API doesn't accept image input yet — equipment scan won't work (explain / review / Q&A are fine). For scanning, use a vision-capable provider or a vision model via Custom.",
+netErr:"The request never reached the server — network issue, or this provider blocks direct browser calls (CORS). Retry on a good connection; if it persists, a tiny relay proxy is needed (ask Claude to generate one).",
+aiChat:"Ask the AI coach",aiChatPh:"e.g. My shoulder feels off — how should I adjust today?",send:"Send",
+dataTitle:"Data",exportData:"Export data (JSON)",importData:"Import data",resetAll:"Erase all data",
+resetConfirm:"⚠️ This deletes profile, plan and all history. Sure?",
+saveOk:"Saved",lang:"Language",
+disclaimerT:"Disclaimer",
+disclaimer:"Training content is for general fitness reference only and is not medical advice. If you have injuries or medical conditions, consult a doctor or qualified coach first. Train within your limits.",
+warmup:"Warm up first: 5–10 min cardio + light activation sets for target muscles.",
+firstWeight:"First session: pick a weight you can lift with good form for the target reps — last set near (not at) failure.",
+progression:"All sets hit the top of the rep range last time → try +2.5 kg",
+prefillNote:"Weights prefilled from last session",
+noEq:"No substitute available with current equipment",
+subFor:"Substitutes (based on your equipment)",
+done:"Done",cancel:"Cancel",confirm:"Confirm",save:"Save",
+totalVol:"Volume",exercises:"Exercises",setsDone:"Sets done",newPR:"New PR",
+shareMade:"Card ready — long-press to save",
+mus_chest:"Chest",mus_back:"Back",mus_shoulders:"Shoulders",mus_biceps:"Biceps",mus_triceps:"Triceps",mus_quads:"Quads",mus_hams:"Hamstrings",mus_glutes:"Glutes",mus_calves:"Calves",mus_abs:"Core",
+target:"Target muscles",cues:"Cues",cautions:"Cautions",
+askAiExample:"Ask the AI coach",
+aiThinking:"Thinking…",aiErr:"AI request failed: ",
+editProfile:"Edit profile",
+dayNames:{push:"Push",pull:"Pull",legs:"Legs",upper:"Upper",lower:"Lower",fullA:"Full body A",fullB:"Full body B",free:"Free session",swim:"Swim"},
+durMin:"min",
+planFooter:"Your plan is produced by a rules engine from your profile & equipment; AI only explains and answers — it never changes the numbers.",
+}};
+let LANG="zh";
+function T(k){const v=I18N[LANG][k];return v===undefined?k:v}
+function TD(k){return I18N[LANG].dayNames[k]||k}
+function fmt(s,o){return s.replace(/\{(\w+)\}/g,(_,k)=>o[k])}
+/* ================= EQUIPMENT & EXERCISE DB ================= */
+const EQUIP=[
+ {id:"barbell",zh:"杠铃+卧推架/深蹲架",en:"Barbell + racks"},
+ {id:"dumbbell",zh:"哑铃",en:"Dumbbells"},
+ {id:"bench",zh:"可调训练凳",en:"Adjustable bench"},
+ {id:"cable",zh:"绳索/龙门架",en:"Cable station"},
+ {id:"smith",zh:"史密斯机",en:"Smith machine"},
+ {id:"m_chest",zh:"坐姿推胸机",en:"Chest press machine"},
+ {id:"m_pec",zh:"蝴蝶机（夹胸/反向飞鸟）",en:"Pec deck / rear delt fly"},
+ {id:"m_lat",zh:"高位下拉机",en:"Lat pulldown"},
+ {id:"m_row",zh:"坐姿划船机",en:"Seated row machine"},
+ {id:"m_shoulder",zh:"坐姿推肩机",en:"Shoulder press machine"},
+ {id:"leg_press",zh:"腿举机（倒蹬）",en:"Leg press"},
+ {id:"hack",zh:"哈克深蹲机",en:"Hack squat"},
+ {id:"leg_ext",zh:"腿屈伸机",en:"Leg extension"},
+ {id:"leg_curl",zh:"腿弯举机",en:"Leg curl"},
+ {id:"abductor",zh:"髋外展/内收机",en:"Hip ab/adductor"},
+ {id:"calf",zh:"提踵机",en:"Calf raise machine"},
+ {id:"pullup",zh:"引体向上杆",en:"Pull-up bar"},
+ {id:"dip",zh:"双杠",en:"Dip station"},
+ {id:"ez",zh:"EZ 曲杆",en:"EZ curl bar"},
+ {id:"kb",zh:"壶铃",en:"Kettlebells"},
+ {id:"hyper",zh:"罗马椅（山羊挺身）",en:"Back extension bench"},
+ {id:"bw",zh:"仅自重/瑜伽垫区",en:"Bodyweight / mat area"},
+ {id:"pool",zh:"游泳池",en:"Swimming pool"},
+];
+const EQMAP=Object.fromEntries(EQUIP.map(e=>[e.id,e]));
+function eqName(id){const e=EQMAP[id];return e?(LANG==="zh"?e.zh:e.en):id}
+
+/* ex fields: id, zh, en, eq:[all required], m:[primary muscles], m2:[secondary], c:compound?, cz/ce cues, wz/we cautions */
+const EXDB=[
+// ---- CHEST ----
+{id:"bb_bench",zh:"杠铃卧推",en:"Barbell Bench Press",eq:["barbell","bench"],m:["chest"],m2:["triceps","shoulders"],c:1,
+ cz:"肩胛后缩下沉贴凳，杠铃下放至胸中部轻触，前臂垂直地面，发力推起时呼气。",ce:"Retract shoulder blades, bar to mid-chest, forearms vertical, exhale on press.",
+ wz:"大重量务必有人保护或用保护杠；不要弹胸借力；手腕保持中立。",we:"Use a spotter or safety bars on heavy sets; no bouncing off the chest; keep wrists neutral."},
+{id:"bb_incline",zh:"上斜杠铃卧推",en:"Incline Barbell Press",eq:["barbell","bench"],m:["chest"],m2:["shoulders","triceps"],c:1,
+ cz:"凳角30–45°，杠铃触锁骨下方，肘部约与躯干成60–75°。",ce:"Bench 30–45°, bar to upper chest, elbows ~60–75° from torso.",
+ wz:"角度过大会变成练肩；肩部不适时降低角度或换哑铃。",we:"Too steep shifts load to shoulders; reduce angle or use dumbbells if shoulders complain."},
+{id:"db_bench",zh:"哑铃卧推",en:"Dumbbell Bench Press",eq:["dumbbell","bench"],m:["chest"],m2:["triceps","shoulders"],c:1,
+ cz:"哑铃在胸两侧下放至有拉伸感，推起时略向中间靠拢。",ce:"Lower to a stretch beside the chest, press up and slightly together.",
+ wz:"起始就位用大腿助推上凳；力竭时先放腿上再坐起，不要向两侧丢哑铃。",we:"Kick weights up with thighs; at failure bring them to thighs — don't drop sideways."},
+{id:"db_incline",zh:"上斜哑铃卧推",en:"Incline Dumbbell Press",eq:["dumbbell","bench"],m:["chest"],m2:["shoulders","triceps"],c:1,
+ cz:"凳角30°左右，肘微内收，顶端不完全锁死保持张力。",ce:"~30° bench, elbows slightly tucked, stop just short of lockout.",
+ wz:"重量循序渐进，肩前侧疼痛立即停止。",we:"Progress gradually; stop if front-shoulder pain appears."},
+{id:"db_fly",zh:"哑铃飞鸟",en:"Dumbbell Fly",eq:["dumbbell","bench"],m:["chest"],m2:[],c:0,
+ cz:"肘保持固定微屈，弧线下放至胸部拉伸，像抱树一样合拢。",ce:"Fixed soft elbows, arc down to a chest stretch, hug-a-tree up.",
+ wz:"用小重量；下放过深易伤肩。",we:"Go light; too deep a stretch risks the shoulder."},
+{id:"cable_fly",zh:"绳索夹胸",en:"Cable Crossover",eq:["cable"],m:["chest"],m2:[],c:0,
+ cz:"身体前倾一步弓步站稳，双臂弧线向中线夹拢，顶峰收缩1秒。",ce:"Split stance, arc handles to midline, squeeze 1s at peak.",
+ wz:"肩胛保持稳定，不要耸肩。",we:"Keep shoulder blades set; don't shrug."},
+{id:"m_pec_fly",zh:"蝴蝶机夹胸",en:"Pec Deck Fly",eq:["m_pec"],m:["chest"],m2:[],c:0,
+ cz:"调座椅使把手与胸口同高，肘微屈向中间夹，慢放。",ce:"Handles at chest height, soft elbows, squeeze in, slow return.",
+ wz:"开始前调好活动范围限位，避免过度拉伸。",we:"Set the range limiter first; avoid overstretching."},
+{id:"m_chest_press",zh:"坐姿推胸",en:"Machine Chest Press",eq:["m_chest"],m:["chest"],m2:["triceps"],c:1,
+ cz:"把手与胸中部同高，背贴椅背推出，慢放回不落底。",ce:"Handles mid-chest, back on pad, press out, slow return without stacking.",
+ wz:"新手友好；注意肩胛下沉不耸肩。",we:"Beginner friendly; keep shoulders down."},
+{id:"smith_bench",zh:"史密斯卧推",en:"Smith Bench Press",eq:["smith","bench"],m:["chest"],m2:["triceps","shoulders"],c:1,
+ cz:"调整凳位使杆落在胸中部正上方，全程沿轨道推。",ce:"Position bench so the bar meets mid-chest; press along the rails.",
+ wz:"记住挂钩旋转方向，力竭时及时旋转挂杆。",we:"Know the hook rotation; rack immediately when near failure."},
+{id:"pushup",zh:"俯卧撑",en:"Push-up",eq:["bw"],m:["chest"],m2:["triceps","abs"],c:1,
+ cz:"身体一条直线，手位比肩略宽，胸部接近地面。",ce:"Straight body line, hands slightly wider than shoulders, chest near floor.",
+ wz:"塌腰或抬臀都会失去核心张力。",we:"No sagging hips or piking."},
+{id:"dip_chest",zh:"双杠臂屈伸",en:"Dips",eq:["dip"],m:["chest"],m2:["triceps","shoulders"],c:1,
+ cz:"身体前倾练胸，下放至上臂与地面平行。",ce:"Lean forward for chest, lower until upper arms are parallel.",
+ wz:"肩部有伤者慎做；不要下放过深。",we:"Caution with shoulder issues; don't go too deep."},
+// ---- BACK ----
+{id:"pullup_ex",zh:"引体向上",en:"Pull-up",eq:["pullup"],m:["back"],m2:["biceps"],c:1,
+ cz:"肩胛先下沉再拉，胸口找杆，顶端下巴过杆。",ce:"Depress scapula first, pull chest to bar, chin over at top.",
+ wz:"避免全程摆荡借力；做不了可用弹力带辅助或换高位下拉。",we:"No kipping; use bands or lat pulldown if you can't complete reps."},
+{id:"lat_pd",zh:"高位下拉",en:"Lat Pulldown",eq:["m_lat"],m:["back"],m2:["biceps"],c:1,
+ cz:"握距比肩略宽，胸挺起把杆拉向锁骨，肘向下向后。",ce:"Slightly wide grip, chest up, bar to collarbone, elbows down-and-back.",
+ wz:"不要向后仰过多借力；不做颈后下拉。",we:"Minimal lean-back; avoid behind-the-neck pulls."},
+{id:"bb_row",zh:"杠铃划船",en:"Barbell Row",eq:["barbell"],m:["back"],m2:["biceps"],c:1,
+ cz:"髋屈体前倾约45°，背平，拉向下腹，肘贴身。",ce:"Hinge ~45°, flat back, pull to lower abs, elbows close.",
+ wz:"腰背保持中立位，重量过大易圆背——宁轻勿假。",we:"Neutral spine always; drop the ego weight before your back rounds."},
+{id:"db_row",zh:"哑铃单臂划船",en:"One-arm Dumbbell Row",eq:["dumbbell","bench"],m:["back"],m2:["biceps"],c:1,
+ cz:"单手撑凳背平，哑铃拉向髋部，顶峰停1秒。",ce:"Hand on bench, flat back, row to the hip, pause 1s.",
+ wz:"不要旋转躯干借力。",we:"Don't twist the torso for momentum."},
+{id:"seated_row",zh:"坐姿划船",en:"Seated Cable Row",eq:["m_row"],m:["back"],m2:["biceps"],c:1,
+ cz:"胸挺起，把手拉向腹部，肩胛后缩，慢放感受背部拉伸。",ce:"Chest tall, pull to belly, squeeze blades, slow eccentric.",
+ wz:"下背保持中立，不要前后摇摆。",we:"Neutral low back; no rocking."},
+{id:"straight_pd",zh:"直臂下压",en:"Straight-arm Pulldown",eq:["cable"],m:["back"],m2:[],c:0,
+ cz:"手臂微屈固定，用背阔肌把绳/杆压向大腿。",ce:"Soft fixed elbows, sweep the bar to thighs with your lats.",
+ wz:"孤立动作用轻重量，感受背阔肌发力。",we:"Isolation move — keep it light, feel the lats."},
+{id:"deadlift",zh:"硬拉",en:"Deadlift",eq:["barbell"],m:["back","hams","glutes"],m2:["quads","abs"],c:1,
+ cz:"杆贴小腿起，背平胸挺，腿臀发力站直，杆全程贴身。",ce:"Bar over midfoot, flat back, drive with legs & hips, bar stays close.",
+ wz:"最重要的是背部中立——圆背硬拉是最常见的受伤来源；新手先跟教练学动作。",we:"Neutral spine is everything — rounded-back deadlifts are the #1 injury source. Learn form first."},
+{id:"rdl",zh:"罗马尼亚硬拉",en:"Romanian Deadlift",eq:["barbell"],m:["hams","glutes"],m2:["back"],c:1,
+ cz:"膝微屈固定，髋向后推，杆沿大腿下滑至腘绳肌强拉伸即返回。",ce:"Soft knees, push hips back, bar slides down thighs to a hamstring stretch.",
+ wz:"下放深度以背不圆为准，不必触地。",we:"Depth is limited by your flat back — no need to touch the floor."},
+{id:"hyperext",zh:"山羊挺身",en:"Back Extension",eq:["hyper"],m:["glutes","hams"],m2:["back"],c:0,
+ cz:"髋部支点对齐垫沿，下放后用臀腘发力抬起至身体一条线。",ce:"Hips on pad edge, raise to a straight line using glutes/hams.",
+ wz:"顶端不要过度反弓腰。",we:"Don't hyperextend at the top."},
+// ---- SHOULDERS ----
+{id:"ohp",zh:"杠铃站姿推举",en:"Overhead Press",eq:["barbell"],m:["shoulders"],m2:["triceps","abs"],c:1,
+ cz:"杆放锁骨，收紧核心臀部，垂直推起头微后让杆。",ce:"Bar at clavicle, brace core & glutes, press vertical, head through.",
+ wz:"不要过度弓腰借力；腰不适改坐姿或哑铃。",we:"Don't lean back excessively; switch to seated/dumbbells if low back complains."},
+{id:"db_shoulder",zh:"哑铃坐姿推举",en:"Seated Dumbbell Press",eq:["dumbbell","bench"],m:["shoulders"],m2:["triceps"],c:1,
+ cz:"靠背略后倾，哑铃从耳侧推起至头顶靠拢。",ce:"Slight back support, press from ear level to overhead.",
+ wz:"下放到大臂平行即可，过深增加肩压力。",we:"Stop at upper arms parallel — deeper stresses the shoulder."},
+{id:"m_shoulder_press",zh:"坐姿推肩机",en:"Machine Shoulder Press",eq:["m_shoulder"],m:["shoulders"],m2:["triceps"],c:1,
+ cz:"调座椅使把手与肩同高，背贴椅背垂直推起。",ce:"Handles at shoulder height, back on pad, press up.",
+ wz:"新手友好，轨迹固定；注意不要耸肩。",we:"Fixed path, beginner friendly; don't shrug."},
+{id:"db_lateral",zh:"哑铃侧平举",en:"Dumbbell Lateral Raise",eq:["dumbbell"],m:["shoulders"],m2:[],c:0,
+ cz:"肘微屈，向两侧举至与肩平，像倒水一样小指略高。",ce:"Soft elbows, raise to shoulder height, pinky slightly up.",
+ wz:"重量宁轻勿重，耸肩=重量太大。",we:"Light weight; shrugging means it's too heavy."},
+{id:"cable_lateral",zh:"绳索侧平举",en:"Cable Lateral Raise",eq:["cable"],m:["shoulders"],m2:[],c:0,
+ cz:"滑轮调至最低，身体微倾，全程匀速有张力。",ce:"Pulley low, slight lean, constant tension throughout.",
+ wz:"避免用躯干摆动借力。",we:"No body swing."},
+{id:"rear_fly",zh:"反向飞鸟（后束）",en:"Reverse Fly",eq:["m_pec"],m:["shoulders"],m2:["back"],c:0,
+ cz:"蝴蝶机反坐，双臂水平向后打开，挤压后束与上背。",ce:"Face the pec deck, sweep arms back level, squeeze rear delts.",
+ wz:"不要用背部大幅代偿。",we:"Keep the movement in the rear delts, not the whole back."},
+{id:"facepull",zh:"面拉",en:"Face Pull",eq:["cable"],m:["shoulders"],m2:["back"],c:0,
+ cz:"绳索与脸同高，拉向面部同时外旋，肘高于手腕结束。",ce:"Rope at face height, pull towards face with external rotation.",
+ wz:"肩部健康黄金动作，用轻重量高次数。",we:"Great for shoulder health — light and high-rep."},
+// ---- BICEPS ----
+{id:"bb_curl",zh:"杠铃弯举",en:"Barbell Curl",eq:["barbell"],m:["biceps"],m2:[],c:0,
+ cz:"肘贴身固定，只动前臂，顶峰收缩后慢放。",ce:"Elbows pinned, move only the forearm, slow eccentric.",
+ wz:"不要甩腰借力；手腕不适换EZ杆。",we:"No swinging; use an EZ bar if wrists hurt."},
+{id:"ez_curl",zh:"EZ杆弯举",en:"EZ-bar Curl",eq:["ez"],m:["biceps"],m2:[],c:0,
+ cz:"斜握角度对手腕更友好，其余同杠铃弯举。",ce:"Angled grip is wrist-friendly; same rules as barbell curl.",
+ wz:"控制离心3秒效果更好。",we:"A 3s lowering phase works better."},
+{id:"db_curl",zh:"哑铃交替弯举",en:"Alternating Dumbbell Curl",eq:["dumbbell"],m:["biceps"],m2:[],c:0,
+ cz:"掌心转向上弯起（旋后），交替进行。",ce:"Supinate as you curl, alternate arms.",
+ wz:"身体直立不摇摆。",we:"Stand tall, no rocking."},
+{id:"hammer_curl",zh:"锤式弯举",en:"Hammer Curl",eq:["dumbbell"],m:["biceps"],m2:[],c:0,
+ cz:"掌心相对握，练肱肌与前臂，可双手同时。",ce:"Neutral grip, hits brachialis & forearms.",
+ wz:"同弯举，肘贴身。",we:"Elbows stay pinned."},
+{id:"cable_curl",zh:"绳索弯举",en:"Cable Curl",eq:["cable"],m:["biceps"],m2:[],c:0,
+ cz:"低位滑轮，全程持续张力，底部不完全放松。",ce:"Low pulley, constant tension, no full relax at bottom.",
+ wz:"适合作为最后的力竭动作。",we:"Good as a finisher."},
+// ---- TRICEPS ----
+{id:"cable_pushdown",zh:"绳索下压",en:"Cable Pushdown",eq:["cable"],m:["triceps"],m2:[],c:0,
+ cz:"肘贴身，前臂下压至伸直，绳把末端向外分。",ce:"Elbows pinned, press to full extension, split the rope ends.",
+ wz:"不要耸肩前倾压重量。",we:"Don't lean and shrug into it."},
+{id:"skullcrusher",zh:"仰卧臂屈伸",en:"Skull Crusher",eq:["ez","bench"],m:["triceps"],m2:[],c:0,
+ cz:"大臂垂直固定，杆下放至额头上方，只动肘关节。",ce:"Upper arms vertical, lower to forehead, elbows only.",
+ wz:"用EZ杆并保守选重，肘部有压力就减重。",we:"Stay conservative — elbows take load here."},
+{id:"db_ohext",zh:"哑铃颈后臂屈伸",en:"Overhead Dumbbell Extension",eq:["dumbbell"],m:["triceps"],m2:[],c:0,
+ cz:"双手托举单只哑铃过头，肘朝前下放到颈后再伸直。",ce:"Both hands on one DB overhead, lower behind head, extend.",
+ wz:"注意周围空间与肩部柔韧性。",we:"Mind the space behind you and shoulder mobility."},
+{id:"close_bench",zh:"窄距卧推",en:"Close-grip Bench Press",eq:["barbell","bench"],m:["triceps"],m2:["chest"],c:1,
+ cz:"握距与肩同宽，肘贴身下放至下胸，垂直推起。",ce:"Shoulder-width grip, elbows tucked, bar to lower chest.",
+ wz:"握距不要过窄，手腕保持中立。",we:"Not too narrow — keep wrists stacked."},
+{id:"dip_tri",zh:"双杠臂屈伸（三头）",en:"Dips (triceps)",eq:["dip"],m:["triceps"],m2:["chest"],c:1,
+ cz:"身体保持竖直，肘向后弯曲下放，撑起锁定。",ce:"Stay upright, elbows track back, press to lockout.",
+ wz:"下放至大小臂90°即可。",we:"90° depth is enough."},
+// ---- QUADS / LEGS ----
+{id:"squat",zh:"杠铃深蹲",en:"Barbell Back Squat",eq:["barbell"],m:["quads","glutes"],m2:["hams","abs"],c:1,
+ cz:"杆放上背，核心收紧，髋膝同时弯曲下蹲至大腿平行或更低，膝盖与脚尖同向。",ce:"Bar on upper back, brace, sit to parallel or below, knees track toes.",
+ wz:"在深蹲架内使用保护杠；膝内扣与弓腰是主要风险；新手先用空杆学动作。",we:"Use safety bars; watch knee cave & back rounding; learn with the empty bar."},
+{id:"leg_press_ex",zh:"腿举（倒蹬）",en:"Leg Press",eq:["leg_press"],m:["quads","glutes"],m2:["hams"],c:1,
+ cz:"脚放踏板中部与肩同宽，下放至膝约90°，发力时不完全锁膝。",ce:"Feet mid-platform, lower to ~90°, don't lock knees out.",
+ wz:"臀部始终贴垫，下放过深会使腰离垫受压。",we:"Keep hips on the pad — too deep lifts the lower back."},
+{id:"hack_squat",zh:"哈克深蹲",en:"Hack Squat",eq:["hack"],m:["quads"],m2:["glutes"],c:1,
+ cz:"背贴靠垫，下蹲至大腿平行，沿轨道蹬起。",ce:"Back flat on pad, squat to parallel, drive up.",
+ wz:"膝盖不适者减小幅度。",we:"Reduce depth if knees complain."},
+{id:"smith_squat",zh:"史密斯深蹲",en:"Smith Squat",eq:["smith"],m:["quads","glutes"],m2:["hams"],c:1,
+ cz:"脚略前放，沿轨道下蹲，轨迹固定更易控制。",ce:"Feet slightly forward, squat along the rails.",
+ wz:"记住挂钩方向，力竭前及时挂杆。",we:"Know the hooks; rack before failure."},
+{id:"goblet",zh:"高脚杯深蹲",en:"Goblet Squat",eq:["dumbbell"],m:["quads","glutes"],m2:["abs"],c:1,
+ cz:"双手托哑铃于胸前，肘在膝内侧下蹲，躯干保持直立。",ce:"Hold DB at chest, squat with elbows inside knees, torso tall.",
+ wz:"学深蹲模式的最佳入门动作。",we:"Best way to learn the squat pattern."},
+{id:"lunge",zh:"哑铃箭步蹲",en:"Dumbbell Lunge",eq:["dumbbell"],m:["quads","glutes"],m2:["hams"],c:1,
+ cz:"跨步下蹲至后膝接近地面，前膝与脚尖同向，蹬地起身。",ce:"Step to back-knee-near-floor, front knee over toes, drive up.",
+ wz:"保持躯干直立，步幅过小伤膝。",we:"Torso tall; too short a stride loads the knee."},
+{id:"leg_ext_ex",zh:"腿屈伸",en:"Leg Extension",eq:["leg_ext"],m:["quads"],m2:[],c:0,
+ cz:"调整靠垫与转轴对齐膝关节，伸直顶峰停1秒慢放。",ce:"Axis aligned with knee, extend, 1s squeeze, slow down.",
+ wz:"膝痛者用小重量高次数。",we:"Knee issues: light & high-rep."},
+// ---- HAMS / GLUTES ----
+{id:"leg_curl_ex",zh:"腿弯举",en:"Leg Curl",eq:["leg_curl"],m:["hams"],m2:[],c:0,
+ cz:"转轴对齐膝关节，勾起至最大收缩，慢放。",ce:"Axis at knee, curl to full contraction, slow return.",
+ wz:"避免臀部抬起代偿。",we:"Don't let hips lift off."},
+{id:"db_rdl",zh:"哑铃罗马尼亚硬拉",en:"Dumbbell RDL",eq:["dumbbell"],m:["hams","glutes"],m2:["back"],c:1,
+ cz:"同杠铃RDL，哑铃沿大腿前侧下滑。",ce:"Same as barbell RDL, DBs slide down thighs.",
+ wz:"背平是底线。",we:"Flat back, always."},
+{id:"hip_thrust",zh:"杠铃臀推",en:"Barbell Hip Thrust",eq:["barbell","bench"],m:["glutes"],m2:["hams"],c:1,
+ cz:"上背靠凳，杠铃压髋（垫垫子），臀发力顶起至躯干水平，顶峰收缩。",ce:"Upper back on bench, bar over hips (use pad), drive to level, squeeze.",
+ wz:"顶端不要弓腰，下巴微收。",we:"Don't arch at the top; chin slightly tucked."},
+{id:"abduction",zh:"髋外展",en:"Hip Abduction",eq:["abductor"],m:["glutes"],m2:[],c:0,
+ cz:"身体微前倾更多刺激臀中肌，向外打开顶峰停顿。",ce:"Slight forward lean, open out, pause at peak.",
+ wz:"匀速控制不弹动。",we:"Controlled, no bouncing."},
+{id:"kb_swing",zh:"壶铃摆荡",en:"Kettlebell Swing",eq:["kb"],m:["glutes","hams"],m2:["back","abs"],c:1,
+ cz:"髋铰链发力把壶铃甩至胸口高度，手臂只是绳子。",ce:"Hip hinge snaps the bell to chest height; arms are ropes.",
+ wz:"是髋发力不是蹲起，也不是用手抡。",we:"It's a hinge, not a squat; don't muscle it with arms."},
+// ---- CALVES ----
+{id:"calf_raise",zh:"器械提踵",en:"Machine Calf Raise",eq:["calf"],m:["calves"],m2:[],c:0,
+ cz:"前脚掌踩沿，全幅下放拉伸2秒，顶峰收缩1秒。",ce:"Balls of feet on edge, 2s stretch at bottom, 1s squeeze up top.",
+ wz:"全程慢速，弹动无效。",we:"Slow reps only — bouncing does nothing."},
+{id:"smith_calf",zh:"史密斯提踵",en:"Smith Calf Raise",eq:["smith"],m:["calves"],m2:[],c:0,
+ cz:"垫片踩前脚掌，同器械提踵。",ce:"Balls of feet on a plate, same tempo rules.",
+ wz:"注意平衡。",we:"Mind your balance."},
+{id:"db_calf",zh:"哑铃单腿提踵",en:"Single-leg DB Calf Raise",eq:["dumbbell"],m:["calves"],m2:[],c:0,
+ cz:"单手持铃扶墙，单腿全幅提踵。",ce:"DB in one hand, other hand on wall, full range single-leg.",
+ wz:"左右次数保持一致。",we:"Match reps on both sides."},
+// ---- ABS ----
+{id:"crunch",zh:"卷腹",en:"Crunch",eq:["bw"],m:["abs"],m2:[],c:0,
+ cz:"下背贴地，用腹肌把肩胛卷离地面，呼气收缩。",ce:"Low back on floor, curl shoulder blades up, exhale hard.",
+ wz:"不要用手拉头。",we:"Don't yank your neck."},
+{id:"plank",zh:"平板支撑",en:"Plank",eq:["bw"],m:["abs"],m2:[],c:0,
+ cz:"肘撑，身体一条直线，主动收紧腹臀，以秒计时。",ce:"Straight line, actively brace abs & glutes; measured in seconds.",
+ wz:"塌腰即结束这一组。",we:"Sagging hips = set over."},
+{id:"hanging_leg",zh:"悬垂举腿",en:"Hanging Leg Raise",eq:["pullup"],m:["abs"],m2:[],c:0,
+ cz:"悬垂收紧，用下腹卷起双腿至水平以上，控制下放。",ce:"Dead hang, curl legs above horizontal with lower abs, control down.",
+ wz:"避免摆荡；做不了直腿先做屈膝。",we:"No swinging; bend knees to regress."},
+{id:"cable_crunch",zh:"绳索跪姿卷腹",en:"Cable Crunch",eq:["cable"],m:["abs"],m2:[],c:0,
+ cz:"跪姿握绳于头两侧，用腹肌把胸卷向骨盆。",ce:"Kneel, rope beside head, crunch ribs to pelvis.",
+ wz:"是脊柱卷曲不是髋屈。",we:"Flex the spine, not the hips."},
+];
+const EXMAP=Object.fromEntries(EXDB.map(e=>[e.id,e]));
+function exName(id){const e=EXMAP[id];return e?(LANG==="zh"?e.zh:e.en):id}
+function exNameBoth(id){const e=EXMAP[id];return e?(LANG==="zh"?e.zh+" · "+e.en:e.en):id}
+const MUSCLES=["chest","back","shoulders","biceps","triceps","quads","hams","glutes","calves","abs"];
+
+/* ===== injury risk map: lb=lower back, sh=shoulder, kn=knee, el=elbow, wr=wrist
+   level 2 = excluded when that area is flagged; level 1 = allowed but flagged ⚠ and deprioritized */
+const INJ_AREAS=["lb","sh","kn","el","wr"];
+const RISK={
+ bb_bench:{sh:1,wr:1}, bb_incline:{sh:1}, db_bench:{sh:1}, db_incline:{sh:1}, db_fly:{sh:2},
+ cable_fly:{sh:1}, m_pec_fly:{sh:1}, m_chest_press:{sh:1}, smith_bench:{sh:1}, pushup:{wr:1,sh:1},
+ dip_chest:{sh:2,el:1}, dip_tri:{el:2,sh:1},
+ pullup_ex:{sh:1,el:1}, lat_pd:{sh:1}, bb_row:{lb:2}, db_row:{lb:1}, seated_row:{lb:1},
+ straight_pd:{sh:1}, deadlift:{lb:2}, rdl:{lb:2}, db_rdl:{lb:2}, hyperext:{lb:1},
+ ohp:{sh:2,lb:1}, db_shoulder:{sh:1}, m_shoulder_press:{sh:1}, db_lateral:{sh:1}, cable_lateral:{sh:1}, facepull:{}, rear_fly:{},
+ bb_curl:{wr:1,el:1}, ez_curl:{el:1}, db_curl:{el:1}, hammer_curl:{}, cable_curl:{el:1},
+ cable_pushdown:{el:1}, skullcrusher:{el:2}, db_ohext:{el:1,sh:1}, close_bench:{el:1,sh:1,wr:1},
+ squat:{kn:1,lb:1}, smith_squat:{kn:1,lb:1}, hack_squat:{kn:2}, goblet:{kn:1}, lunge:{kn:2},
+ leg_press_ex:{kn:1,lb:1}, leg_ext_ex:{kn:2}, leg_curl_ex:{}, kb_swing:{lb:2},
+ hip_thrust:{lb:1}, abduction:{}, calf_raise:{}, smith_calf:{}, db_calf:{},
+ crunch:{lb:1}, plank:{}, hanging_leg:{sh:1}, cable_crunch:{lb:1},
+};
+function userInjuries(){return (S.profile&&S.profile.injuries)||[]}
+function riskLevel(exId,inj){if(!inj||!inj.length)return 0;const r=RISK[exId];if(!r)return 0;let m=0;inj.forEach(a=>{if((r[a]||0)>m)m=r[a]});return m}
+function riskAreas(exId,inj){const r=RISK[exId]||{};return (inj||[]).filter(a=>r[a])}
+/* ================= STATE & STORAGE ================= */
+const memStore={};
+const store={
+  get(k){try{return localStorage.getItem(k)}catch(e){return memStore[k]??null}},
+  set(k,v){try{localStorage.setItem(k,v)}catch(e){memStore[k]=v}},
+  del(k){try{localStorage.removeItem(k)}catch(e){delete memStore[k]}}
+};
+const PROV_DEF={
+  anthropic:{model:"claude-sonnet-4-5",base:"https://api.anthropic.com"},
+  deepseek:{model:"deepseek-v4-flash",base:"https://api.deepseek.com"},
+  custom:{model:"",base:""},
+};
+let S={profile:null,gyms:[],activeGym:0,plan:null,logs:[],settings:{lang:"zh",apiKey:"",model:"claude-sonnet-4-5",provider:"anthropic",baseUrl:""}};
+function save(){store.set("gymsense",JSON.stringify(S))}
+function load(){
+  const raw=store.get("gymsense");
+  if(raw){try{const o=JSON.parse(raw);S=Object.assign(S,o);S.settings=Object.assign({lang:"zh",apiKey:"",model:"claude-sonnet-4-5",provider:"anthropic",baseUrl:""},o.settings||{})}catch(e){}}
+  LANG=S.settings.lang||"zh";
+}
+/* current workout session (in progress) */
+let W=null; // {dayIdx, dayKey, start, entries:[{exId, sets:[{w,r,done}]}]}
+
+/* ================= PLAN ENGINE (rules, no LLM) ================= */
+const SPLITS={
+ 2:{name:"split2",days:[{key:"fullA",slots:[["quads",1],["chest",1],["back",1],["shoulders",1],["hams",1],["abs",1]]},
+                       {key:"fullB",slots:[["hams",1],["chest",1],["back",1],["glutes",1],["biceps",1],["triceps",1]]}]},
+ 3:{name:"split3",days:[{key:"push",slots:[["chest",2],["shoulders",2],["triceps",2]]},
+                       {key:"pull",slots:[["back",3],["biceps",2],["shoulders",1]]},
+                       {key:"legs",slots:[["quads",2],["hams",1],["glutes",1],["calves",1],["abs",1]]}]},
+ 4:{name:"split4",days:[{key:"upper",slots:[["chest",2],["back",2],["shoulders",1],["triceps",1]]},
+                       {key:"lower",slots:[["quads",2],["hams",1],["glutes",1],["calves",1],["abs",1]]},
+                       {key:"upper",slots:[["back",2],["chest",2],["shoulders",1],["biceps",1]]},
+                       {key:"lower",slots:[["hams",2],["quads",1],["glutes",1],["calves",1],["abs",1]]}]},
+ 5:{name:"split5",days:[{key:"push",slots:[["chest",2],["shoulders",2],["triceps",2]]},
+                       {key:"pull",slots:[["back",3],["biceps",2],["shoulders",1]]},
+                       {key:"legs",slots:[["quads",2],["hams",1],["glutes",1],["calves",1],["abs",1]]},
+                       {key:"upper",slots:[["chest",2],["back",2],["shoulders",1],["biceps",1],["triceps",1]]},
+                       {key:"lower",slots:[["hams",2],["quads",1],["glutes",1],["calves",1],["abs",1]]}]}
+};
+const GOALPARAM={
+ muscle:{cSets:4,cReps:"8-12",iSets:3,iReps:"10-15",rest:90,restIso:60},
+ strength:{cSets:5,cReps:"3-6",iSets:3,iReps:"6-10",rest:180,restIso:90},
+ lean:{cSets:3,cReps:"12-15",iSets:3,iReps:"15-20",rest:60,restIso:45}
+};
+function suggestFreq(exp){return exp===0?3:(exp===1?4:5)}
+/* structured swim session by goal & experience */
+function swimSegments(goal,exp){
+  const mains = goal==="lean"
+    ? [{d:300,tz:"6×50m 间歇 · 每段间休30秒",te:"6×50m intervals · 30s rest"},
+       {d:600,tz:"6×100m 间歇 · 每段间休40秒",te:"6×100m intervals · 40s rest"},
+       {d:1000,tz:"10×100m 间歇 · 每段间休30秒",te:"10×100m intervals · 30s rest"}]
+    : [{d:400,tz:"400m 轻松连续游 · 专注划水技术",te:"400m easy continuous · focus on technique"},
+       {d:600,tz:"600m 轻松连续游（能边游边换气不喘）",te:"600m easy continuous (conversational effort)"},
+       {d:1000,tz:"1000m 轻松连续游（恢复配速）",te:"1000m easy continuous (recovery pace)"}];
+  const m=mains[Math.min(2,Math.max(0,exp))];
+  return [
+    {k:"segWarm",d:200,tz:"轻松自由泳/蛙泳，逐渐进入状态",te:"easy free/breast, build gradually"},
+    {k:"segMain",d:m.d,tz:m.tz,te:m.te},
+    {k:"segCool",d:200,tz:"慢速放松游 + 拉伸",te:"slow easy swim + stretch"},
+  ];
+}
+function availEquip(){const g=S.gyms[S.activeGym];return g?g.eq:[]}
+function exAvailable(ex,eqList){return ex.eq.every(e=>eqList.includes(e))}
+function candidatesFor(muscle,eqList,inj){
+  return EXDB.filter(ex=>ex.m.includes(muscle)&&exAvailable(ex,eqList)&&riskLevel(ex.id,inj)<2);
+}
+function generatePlan(){
+  const p=S.profile;if(!p)return null;
+  const eqList=availEquip();
+  const inj=p.injuries||[];
+  const freq=Math.min(5,Math.max(2,p.freq));
+  /* split total weekly sessions into strength days + swim days */
+  const swim=Math.min(p.swim||0, Math.max(0,freq-2), 2);
+  const sFreq=Math.min(5,Math.max(2,freq-swim));
+  const split=SPLITS[sFreq];
+  const gp=GOALPARAM[p.goal]||GOALPARAM.muscle;
+  /* safer (risk 0) first, then compounds before isolation */
+  const cmp=(a,b)=>(riskLevel(a.id,inj)-riskLevel(b.id,inj))||(b.c-a.c);
+  const used=new Set(); // limit repeats within the same day
+  const days=split.days.map((d,di)=>{
+    const dayUsed=new Set();
+    const exs=[];
+    d.slots.forEach(([mus,count],si)=>{
+      let cands=candidatesFor(mus,eqList,inj).filter(e=>!dayUsed.has(e.id));
+      cands.sort(cmp);
+      if(cands.length>1){const rot=di%cands.length; cands=cands.slice(rot).concat(cands.slice(0,rot)); cands.sort(cmp);}
+      for(let i=0;i<count&&i<cands.length;i++){
+        const ex=cands[i];dayUsed.add(ex.id);used.add(ex.id);
+        const isC=!!ex.c;
+        const entry={exId:ex.id,sets:isC?gp.cSets:gp.iSets,reps:isC?gp.cReps:gp.iReps,rest:isC?gp.rest:gp.restIso};
+        if(riskLevel(ex.id,inj)===1)entry.cau=1;
+        exs.push(entry);
+      }
+    });
+    return {key:d.key,exercises:exs};
+  });
+  /* interleave swim days: first after 2 strength days, second at the end */
+  if(swim>=1){const sd={key:"swim",exercises:[],swimSegs:swimSegments(p.goal,p.exp)};days.splice(Math.min(2,days.length),0,sd)}
+  if(swim>=2)days.push({key:"swim",exercises:[],swimSegs:swimSegments(p.goal,p.exp)});
+  return {freq,swim,splitName:split.name,goal:p.goal,injuries:inj.slice(),createdAt:new Date().toISOString(),days};
+}
+function substitutesFor(exId){
+  const ex=EXMAP[exId];if(!ex)return[];
+  const eqList=availEquip();
+  const inj=userInjuries();
+  return EXDB.filter(e=>e.id!==exId&&e.m.some(m=>ex.m.includes(m))&&exAvailable(e,eqList)&&riskLevel(e.id,inj)<2)
+    .sort((a,b)=>riskLevel(a.id,inj)-riskLevel(b.id,inj));
+}
+/* last logged sets for an exercise */
+function lastSetsFor(exId){
+  for(let i=S.logs.length-1;i>=0;i--){
+    const en=S.logs[i].entries.find(e=>e.exId===exId);
+    if(en&&en.sets.some(s=>s.done))return en.sets.filter(s=>s.done);
+  }
+  return null;
+}
+function repTop(repsStr){const m=String(repsStr).match(/(\d+)\s*-\s*(\d+)/);return m?+m[2]:+repsStr||12}
+function progressionHint(exId,repsStr){
+  const last=lastSetsFor(exId);if(!last)return null;
+  const top=repTop(repsStr);
+  return last.every(s=>s.r>=top)?T("progression"):null;
+}
+function est1RM(w,r){return r>0?w*(1+r/30):w}
+/* stats */
+function totalVolume(log){let v=0;log.entries.forEach(e=>e.sets.forEach(s=>{if(s.done)v+=(+s.w||0)*(+s.r||0)}));return v}
+function weekKey(d){const dt=new Date(d);const day=(dt.getDay()+6)%7;dt.setDate(dt.getDate()-day);return dt.toISOString().slice(0,10)}
+function thisWeekCount(){const wk=weekKey(new Date());return S.logs.filter(l=>weekKey(l.date)===wk).length}
+function bestFor(exId){let best=0,bestE=0;S.logs.forEach(l=>l.entries.forEach(e=>{if(e.exId===exId)e.sets.forEach(s=>{if(s.done){if(+s.w>best)best=+s.w;const e1=est1RM(+s.w,+s.r);if(e1>bestE)bestE=e1}})}));return{maxw:best,e1rm:bestE}}
+/* ================= EXERCISE ANIMATION ENGINE ================= */
+/* Parametric SVG stick-figure animations. viewBox 0 0 300 200, ground y=186. */
+const CB="#e8ecf2", CD="#7c8595", CG="#39404d", CA="#4ade80", CO="#fbbf24";
+const lp=(a,b,t)=>a+(b-a)*t;
+function lerpPose(A,B,t){const o={};for(const k in A){o[k]=Array.isArray(A[k])?[lp(A[k][0],B[k][0],t),lp(A[k][1],B[k][1],t)]:A[k]}return o}
+function ln(a,b,w,c){return `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${c||CB}" stroke-width="${w||7}" stroke-linecap="round"/>`}
+function cc(p,r,c,sw){return sw?`<circle cx="${p[0]}" cy="${p[1]}" r="${r}" fill="none" stroke="${c}" stroke-width="${sw}"/>`:`<circle cx="${p[0]}" cy="${p[1]}" r="${r}" fill="${c}"/>`}
+function rct(x,y,w,h,c,rx){return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c||CG}" rx="${rx??3}"/>`}
+const ground=()=>`<line x1="18" y1="186" x2="282" y2="186" stroke="#2b313c" stroke-width="2"/>`;
+/* moving equipment markers */
+const MK={
+ plate:p=>cc(p,11,CA,5)+cc(p,2.5,CA),
+ db:p=>ln([p[0]-9,p[1]],[p[0]+9,p[1]],4,CA)+cc([p[0]-9,p[1]],5,CA)+cc([p[0]+9,p[1]],5,CA),
+ kb:p=>cc([p[0],p[1]+6],7,CA)+cc([p[0],p[1]-1],4,CA,3),
+ pad:p=>cc(p,6.5,CA),
+ handle:p=>ln([p[0],p[1]-7],[p[0],p[1]+7],5,CA),
+ none:()=>"",
+};
+const cable=(a,b)=>ln(a,b,2.5,CD);
+function bench(x,y,w){return rct(x,y,w,8,CG,4)+ln([x+10,y+8],[x+10,186],5,CG)+ln([x+w-10,y+8],[x+w-10,186],5,CG)}
+function figSide(f){
+ let s="";
+ if(f.kn2)s+=ln(f.hip,f.kn2,6,CD)+ln(f.kn2,f.an2,6,CD)+ln(f.an2,[f.an2[0]+9,f.an2[1]],4,CD);
+ if(f.el2)s+=ln(f.sh,f.el2,5.5,CD)+ln(f.el2,f.wr2,5.5,CD);
+ s+=ln(f.sh,f.hip,8.5);
+ if(f.kn)s+=ln(f.hip,f.kn,7)+ln(f.kn,f.an,7)+(f.noFoot?"":ln(f.an,[f.an[0]+10,f.an[1]],5));
+ s+=cc(f.hd,8.5,CB);
+ if(f.el)s+=ln(f.sh,f.el,6.5)+ln(f.el,f.wr,6.5);
+ return s;
+}
+function figFront(f){
+ const shm=[(f.shl[0]+f.shr[0])/2,f.shl[1]];
+ let s=ln(f.shl,f.shr,8)+ln(shm,f.hip,8.5);
+ s+=ln([f.hip[0]-9,f.hip[1]],f.knl,7)+ln(f.knl,f.anl,7)+ln(f.anl,[f.anl[0]-8,f.anl[1]],5);
+ s+=ln([f.hip[0]+9,f.hip[1]],f.knr,7)+ln(f.knr,f.anr,7)+ln(f.anr,[f.anr[0]+8,f.anr[1]],5);
+ s+=cc(f.hd,8.5,CB);
+ s+=ln(f.shl,f.ell,6.5)+ln(f.ell,f.wrl,6.5)+ln(f.shr,f.elr,6.5)+ln(f.elr,f.wrr,6.5);
+ return s;
+}
+/* pattern defs: view, frames[A,B], pm(moving point key for path arrow), eq(default marker), st(statics), dyn(extra dynamic parts) */
+const ANIMS={
+benchpress:{view:"side",pm:"wr",eq:"plate",st:()=>ground()+bench(55,140,150),
+ frames:[{hd:[70,131],sh:[95,133],hip:[155,133],kn:[186,156],an:[186,182],el:[87,149],wr:[105,122]},
+         {hd:[70,131],sh:[95,133],hip:[155,133],kn:[186,156],an:[186,182],el:[100,106],wr:[105,86]}]},
+incline:{view:"side",pm:"wr",eq:"plate",st:()=>ground()+ln([88,152],[140,106],9,CG)+ln([140,106],[172,152],0,CG)+ln([98,152],[98,186],5,CG)+ln([160,152],[160,186],5,CG),
+ frames:[{hd:[97,99],sh:[107,111],hip:[140,141],kn:[172,156],an:[172,182],el:[95,122],wr:[117,96]},
+         {hd:[97,99],sh:[107,111],hip:[140,141],kn:[172,156],an:[172,182],el:[112,88],wr:[120,62]}]},
+chestpress:{view:"side",pm:"wr",eq:"handle",st:()=>ground()+rct(108,82,9,70,CG)+rct(118,148,58,8,CG)+ln([200,58],[200,100],4,CG),
+ dyn:f=>ln([200,60],[f.wr[0],f.wr[1]-2],3.5,CD),
+ frames:[{hd:[124,68],sh:[126,86],hip:[132,126],kn:[168,140],an:[166,182],el:[136,108],wr:[147,90]},
+         {hd:[124,68],sh:[126,86],hip:[132,126],kn:[168,140],an:[166,182],el:[168,96],wr:[186,90]}]},
+pushup:{view:"side",pm:"sh",eq:"none",st:()=>ground(),
+ frames:[{hd:[80,151],sh:[95,159],hip:[150,169],kn:[192,176],an:[233,182],noFoot:1,el:[109,177],wr:[95,184]},
+         {hd:[80,121],sh:[95,131],hip:[150,149],kn:[192,166],an:[233,182],noFoot:1,el:[96,158],wr:[95,184]}]},
+dip:{view:"side",pm:"sh",eq:"none",st:()=>ln([105,112],[195,112],5,CG)+ln([112,112],[112,186],4,CG)+ln([188,112],[188,186],4,CG)+ground(),
+ frames:[{hd:[147,101],sh:[149,121],hip:[154,158],kn:[136,170],an:[141,184],noFoot:1,el:[151,118],wr:[150,112]},
+         {hd:[147,120],sh:[149,140],hip:[154,170],kn:[134,180],an:[140,194],noFoot:1,el:[166,124],wr:[150,112]}]},
+pullup:{view:"front",pm:"hd",st:()=>ln([100,38],[200,38],5,CG),
+ dyn:()=>cc([125,38],4,CA)+cc([175,38],4,CA),
+ frames:[{hd:[150,80],shl:[132,96],shr:[168,96],hip:[150,140],knl:[143,163],anl:[140,188],knr:[157,163],anr:[160,188],ell:[128,68],wrl:[125,38],elr:[172,68],wrr:[175,38]},
+         {hd:[150,52],shl:[132,68],shr:[168,68],hip:[150,113],knl:[141,138],anl:[137,162],knr:[159,138],anr:[163,162],ell:[119,56],wrl:[125,38],elr:[181,56],wrr:[175,38]}]},
+pulldown:{view:"front",pm:"wrl",st:()=>cc([150,16],5,CG,4)+rct(126,148,48,7,CG),
+ dyn:f=>cable([150,16],[(f.wrl[0]+f.wrr[0])/2,f.wrl[1]])+ln([f.wrl[0]-10,f.wrl[1]],[f.wrr[0]+10,f.wrr[1]],5,CA),
+ frames:[{hd:[150,78],shl:[132,94],shr:[168,94],hip:[150,142],knl:[140,160],anl:[140,184],knr:[160,160],anr:[160,184],ell:[127,73],wrl:[122,52],elr:[173,73],wrr:[178,52]},
+         {hd:[150,78],shl:[132,94],shr:[168,94],hip:[150,142],knl:[140,160],anl:[140,184],knr:[160,160],anr:[160,184],ell:[121,116],wrl:[124,98],elr:[179,116],wrr:[176,98]}]},
+rowbent:{view:"side",pm:"wr",eq:"plate",st:()=>ground(),
+ frames:[{hd:[91,90],sh:[104,99],hip:[152,121],kn:[149,154],an:[152,183],el:[109,124],wr:[112,149]},
+         {hd:[91,90],sh:[104,99],hip:[152,121],kn:[149,154],an:[152,183],el:[126,119],wr:[117,112]}]},
+rowseated:{view:"side",pm:"wr",eq:"handle",st:()=>ground()+rct(148,148,50,8,CG)+ln([98,150],[98,186],4,CG)+cc([60,101],5,CG,4),
+ dyn:f=>cable([60,101],f.wr),
+ frames:[{hd:[170,77],sh:[167,94],hip:[172,140],kn:[130,133],an:[108,158],el:[146,100],wr:[122,100]},
+         {hd:[174,77],sh:[171,94],hip:[172,140],kn:[130,133],an:[108,158],el:[184,106],wr:[155,101]}]},
+straightpd:{view:"side",pm:"wr",eq:"handle",st:()=>ground()+cc([70,24],5,CG,4)+rct(52,20,8,166,CG),
+ dyn:f=>cable([70,24],f.wr),
+ frames:[{hd:[158,68],sh:[153,84],hip:[162,120],kn:[161,152],an:[164,183],el:[129,73],wr:[107,60]},
+         {hd:[158,68],sh:[153,84],hip:[162,120],kn:[161,152],an:[164,183],el:[139,110],wr:[124,134]}]},
+hinge:{view:"side",pm:"wr",eq:"plate",st:()=>ground(),
+ frames:[{hd:[100,87],sh:[112,98],hip:[161,121],kn:[151,151],an:[155,183],el:[111,122],wr:[112,150]},
+         {hd:[150,57],sh:[150,72],hip:[153,117],kn:[152,151],an:[155,183],el:[150,96],wr:[150,122]}]},
+swing:{view:"side",pm:"wr",eq:"kb",st:()=>ground(),
+ frames:[{hd:[104,92],sh:[115,103],hip:[163,123],kn:[152,152],an:[155,183],el:[132,124],wr:[150,148]},
+         {hd:[148,58],sh:[148,74],hip:[152,118],kn:[151,151],an:[155,183],el:[121,78],wr:[96,80]}]},
+hyperext:{view:"side",pm:"hd",eq:"none",st:()=>ground()+ln([132,132],[176,162],10,CG)+ln([176,162],[176,186],5,CG)+ln([148,143],[148,186],5,CG),
+ frames:[{hd:[101,173],sh:[113,164],hip:[150,137],kn:[181,153],an:[206,170],noFoot:1},
+         {hd:[97,111],sh:[110,120],hip:[150,137],kn:[181,153],an:[206,170],noFoot:1}]},
+ohp:{view:"side",pm:"wr",eq:"plate",st:()=>ground(),
+ frames:[{hd:[146,60],sh:[150,76],hip:[151,120],kn:[151,152],an:[152,183],el:[163,91],wr:[160,70]},
+         {hd:[146,62],sh:[150,78],hip:[151,120],kn:[151,152],an:[152,183],el:[157,51],wr:[155,26]}]},
+shpress_seat:{view:"side",pm:"wr",eq:"db",st:()=>ground()+rct(134,92,9,62,CG)+rct(128,150,52,8,CG)+ln([138,158],[138,186],4,CG)+ln([172,158],[172,186],4,CG),
+ frames:[{hd:[145,72],sh:[148,90],hip:[150,132],kn:[182,146],an:[180,182],el:[166,100],wr:[163,82]},
+         {hd:[145,72],sh:[148,90],hip:[150,132],kn:[182,146],an:[180,182],el:[155,62],wr:[152,40]}]},
+latraise:{view:"front",pm:"wrl",st:()=>ground(),
+ dyn:f=>MK.db(f.wrl)+MK.db(f.wrr),
+ frames:[{hd:[150,46],shl:[131,70],shr:[169,70],hip:[150,128],knl:[141,155],anl:[139,184],knr:[159,155],anr:[161,184],ell:[126,95],wrl:[124,117],elr:[174,95],wrr:[176,117]},
+         {hd:[150,46],shl:[131,70],shr:[169,70],hip:[150,128],knl:[141,155],anl:[139,184],knr:[159,155],anr:[161,184],ell:[103,73],wrl:[79,70],elr:[197,73],wrr:[221,70]}]},
+fly:{view:"front",pm:"wrl",st:()=>ground(),
+ dyn:f=>MK.db(f.wrl)+MK.db(f.wrr),
+ frames:[{hd:[150,46],shl:[131,70],shr:[169,70],hip:[150,128],knl:[141,155],anl:[139,184],knr:[159,155],anr:[161,184],ell:[100,84],wrl:[75,74],elr:[200,84],wrr:[225,74]},
+         {hd:[150,46],shl:[131,70],shr:[169,70],hip:[150,128],knl:[141,155],anl:[139,184],knr:[159,155],anr:[161,184],ell:[118,97],wrl:[141,88],elr:[182,97],wrr:[159,88]}]},
+rearfly:{view:"front",pm:"wrl",st:()=>ground(),
+ dyn:f=>MK.pad(f.wrl)+MK.pad(f.wrr),
+ frames:[{hd:[150,46],shl:[131,70],shr:[169,70],hip:[150,128],knl:[141,155],anl:[139,184],knr:[159,155],anr:[161,184],ell:[118,97],wrl:[141,88],elr:[182,97],wrr:[159,88]},
+         {hd:[150,46],shl:[131,70],shr:[169,70],hip:[150,128],knl:[141,155],anl:[139,184],knr:[159,155],anr:[161,184],ell:[103,80],wrl:[79,74],elr:[197,80],wrr:[221,74]}]},
+facepull:{view:"side",pm:"wr",eq:"handle",st:()=>ground()+cc([58,68],5,CG,4)+rct(42,20,8,166,CG),
+ dyn:f=>cable([58,68],f.wr),
+ frames:[{hd:[164,61],sh:[159,81],hip:[163,127],kn:[159,155],an:[163,183],el:[131,84],wr:[103,77]},
+         {hd:[164,61],sh:[159,81],hip:[163,127],kn:[159,155],an:[163,183],el:[166,71],wr:[137,66]}]},
+curl:{view:"side",pm:"wr",eq:"db",st:()=>ground(),
+ frames:[{hd:[146,60],sh:[149,76],hip:[150,120],kn:[150,152],an:[151,183],el:[153,103],wr:[157,132]},
+         {hd:[146,60],sh:[149,76],hip:[150,120],kn:[150,152],an:[151,183],el:[153,103],wr:[131,86]}]},
+cablecurl:{view:"side",pm:"wr",eq:"handle",st:()=>ground()+cc([95,178],4,CG,3.5)+rct(80,120,7,66,CG),
+ dyn:f=>cable([95,178],f.wr),
+ frames:[{hd:[146,60],sh:[149,76],hip:[150,120],kn:[150,152],an:[151,183],el:[153,103],wr:[142,130]},
+         {hd:[146,60],sh:[149,76],hip:[150,120],kn:[150,152],an:[151,183],el:[153,103],wr:[128,88]}]},
+pushdown:{view:"side",pm:"wr",eq:"handle",st:()=>ground()+cc([182,18],5,CG,4)+rct(196,14,8,172,CG),
+ dyn:f=>cable([182,18],f.wr),
+ frames:[{hd:[146,60],sh:[149,76],hip:[150,120],kn:[150,152],an:[151,183],el:[153,103],wr:[164,82]},
+         {hd:[146,60],sh:[149,76],hip:[150,120],kn:[150,152],an:[151,183],el:[153,103],wr:[164,136]}]},
+skullcrusher:{view:"side",pm:"wr",eq:"plate",st:()=>ground()+bench(55,140,150),
+ frames:[{hd:[70,131],sh:[95,133],hip:[155,133],kn:[186,156],an:[186,182],el:[97,106],wr:[73,112]},
+         {hd:[70,131],sh:[95,133],hip:[155,133],kn:[186,156],an:[186,182],el:[97,106],wr:[97,76]}]},
+ohext:{view:"side",pm:"wr",eq:"db",st:()=>ground(),
+ frames:[{hd:[148,62],sh:[150,78],hip:[151,120],kn:[151,152],an:[152,183],el:[147,55],wr:[122,63]},
+         {hd:[148,62],sh:[150,78],hip:[151,120],kn:[151,152],an:[152,183],el:[147,55],wr:[146,29]}]},
+squat:{view:"side",pm:"sh",eq:"plate",st:()=>ground(),
+ frames:[{hd:[145,57],sh:[148,73],hip:[150,118],kn:[149,151],an:[150,183],el:[161,87],wr:[152,74]},
+         {hd:[150,80],sh:[155,95],hip:[172,142],kn:[139,151],an:[150,183],el:[168,106],wr:[159,96]}]},
+goblet:{view:"side",pm:"wr",eq:"db",st:()=>ground(),
+ frames:[{hd:[145,57],sh:[148,73],hip:[150,118],kn:[149,151],an:[150,183],el:[158,95],wr:[160,82]},
+         {hd:[150,80],sh:[155,95],hip:[172,142],kn:[139,151],an:[150,183],el:[165,117],wr:[167,104]}]},
+lunge:{view:"side",pm:"hip",eq:"db",st:()=>ground(),
+ frames:[{hd:[146,58],sh:[149,73],hip:[150,120],kn:[172,150],an:[185,183],kn2:[131,159],an2:[113,183],el:[154,99],wr:[157,124]},
+         {hd:[146,84],sh:[149,99],hip:[150,146],kn:[178,160],an:[185,183],kn2:[126,173],an2:[113,183],el:[154,124],wr:[157,149]}]},
+legpress:{view:"side",pm:"an",eq:"none",st:()=>ground()+ln([70,100],[112,160],10,CG)+rct(84,160,60,8,CG),
+ dyn:f=>{const dx=f.an[0],dy=f.an[1];return ln([dx+8,dy-16],[dx-8,dy+16],7,CA)},
+ frames:[{hd:[80,110],sh:[92,121],hip:[122,150],kn:[152,120],an:[176,104],noFoot:1,el:[104,140],wr:[118,152]},
+         {hd:[80,110],sh:[92,121],hip:[122,150],kn:[160,131],an:[199,81],noFoot:1,el:[104,140],wr:[118,152]}]},
+legext:{view:"side",pm:"an",eq:"pad",st:()=>ground()+rct(118,128,64,9,CG)+rct(118,72,9,58,CG)+ln([132,137],[132,186],5,CG)+ln([172,137],[172,186],5,CG),
+ frames:[{hd:[136,63],sh:[139,80],hip:[144,124],kn:[177,131],an:[173,168],noFoot:1,el:[148,102],wr:[158,122]},
+         {hd:[136,63],sh:[139,80],hip:[144,124],kn:[177,131],an:[213,128],noFoot:1,el:[148,102],wr:[158,122]}]},
+legcurl:{view:"side",pm:"an",eq:"pad",st:()=>ground()+bench(70,140,140),
+ frames:[{hd:[82,128],sh:[97,131],hip:[152,133],kn:[186,138],an:[218,141],noFoot:1,el:[86,148],wr:[76,160]},
+         {hd:[82,128],sh:[97,131],hip:[152,133],kn:[186,138],an:[184,101],noFoot:1,el:[86,148],wr:[76,160]}]},
+calf:{view:"side",pm:"sh",eq:"plate",st:()=>ground()+rct(128,178,50,8,"#252b35",2),
+ frames:[{hd:[146,60],sh:[149,76],hip:[150,120],kn:[150,151],an:[151,179],noFoot:1,el:[158,92],wr:[152,77]},
+         {hd:[146,48],sh:[149,64],hip:[150,109],kn:[150,142],an:[151,167],noFoot:1,el:[158,80],wr:[152,65]}]},
+hipthrust:{view:"side",pm:"hip",eq:"none",st:()=>ground()+rct(62,126,46,10,CG)+ln([72,136],[72,186],5,CG)+ln([98,136],[98,186],5,CG),
+ dyn:f=>MK.plate([f.hip[0],f.hip[1]-8]),
+ frames:[{hd:[86,122],sh:[100,129],hip:[148,163],kn:[180,150],an:[186,183],el:[112,146],wr:[128,158]},
+         {hd:[86,116],sh:[100,126],hip:[152,133],kn:[181,148],an:[186,183],el:[114,140],wr:[132,136]}]},
+abduction:{view:"front",pm:"knl",st:()=>ground()+rct(124,110,52,8,CG)+ln([134,118],[134,186],4,CG)+ln([166,118],[166,186],4,CG),
+ dyn:f=>MK.pad([f.knl[0]-6,f.knl[1]])+MK.pad([f.knr[0]+6,f.knr[1]]),
+ frames:[{hd:[150,42],shl:[133,64],shr:[167,64],hip:[150,106],knl:[142,138],anl:[140,176],knr:[158,138],anr:[160,176],ell:[128,88],wrl:[132,108],elr:[172,88],wrr:[168,108]},
+         {hd:[150,42],shl:[133,64],shr:[167,64],hip:[150,106],knl:[114,133],anl:[100,170],knr:[186,133],anr:[200,170],ell:[128,88],wrl:[132,108],elr:[172,88],wrr:[168,108]}]},
+crunch:{view:"side",pm:"hd",eq:"none",st:()=>ground(),
+ frames:[{hd:[83,169],sh:[97,172],hip:[150,176],kn:[178,150],an:[196,180],el:[92,158],wr:[82,152]},
+         {hd:[99,142],sh:[110,151],hip:[150,176],kn:[178,150],an:[196,180],el:[104,132],wr:[94,128]}]},
+cablecrunch:{view:"side",pm:"hd",eq:"none",st:()=>ground()+cc([95,20],5,CG,4)+rct(78,16,8,80,CG),
+ dyn:f=>cable([95,20],f.wr)+MK.handle(f.wr),
+ frames:[{hd:[133,79],sh:[141,95],hip:[150,151],kn:[150,183],an:[180,184],noFoot:1,el:[127,98],wr:[121,86]},
+         {hd:[152,106],sh:[157,120],hip:[150,151],kn:[150,183],an:[180,184],noFoot:1,el:[141,120],wr:[137,108]}]},
+plank:{view:"side",pm:"hip",eq:"none",st:()=>ground(),
+ frames:[{hd:[80,140],sh:[97,148],hip:[152,157],kn:[192,165],an:[230,176],noFoot:1,el:[97,180],wr:[72,181]},
+         {hd:[80,137],sh:[97,145],hip:[152,153],kn:[192,163],an:[230,176],noFoot:1,el:[97,180],wr:[72,181]}]},
+hangleg:{view:"side",pm:"an",eq:"none",st:()=>ln([105,38],[195,38],5,CG),
+ dyn:()=>cc([150,38],4,CA),
+ frames:[{hd:[147,71],sh:[150,88],hip:[150,131],kn:[152,156],an:[151,181],noFoot:1,el:[150,62],wr:[150,39]},
+         {hd:[147,71],sh:[150,88],hip:[150,131],kn:[181,126],an:[206,132],noFoot:1,el:[150,62],wr:[150,39]}]},
+};
+/* exercise -> {p:pattern, eq:markerOverride, extra:staticOverlay} */
+const RAILS=f=>ln([105,55],[105,150],3,CD)+ln([113,55],[113,150],3,CD);
+const RAILSQ=f=>ln([148,40],[148,120],3,CD)+ln([156,40],[156,120],3,CD);
+const EXANIM={
+ bb_bench:{p:"benchpress"}, close_bench:{p:"benchpress"}, db_bench:{p:"benchpress",eq:"db"},
+ smith_bench:{p:"benchpress",extra:RAILS},
+ bb_incline:{p:"incline"}, db_incline:{p:"incline",eq:"db"},
+ m_chest_press:{p:"chestpress"}, pushup:{p:"pushup"}, dip_chest:{p:"dip"}, dip_tri:{p:"dip"},
+ db_fly:{p:"fly"}, cable_fly:{p:"fly"}, m_pec_fly:{p:"fly"},
+ pullup_ex:{p:"pullup"}, lat_pd:{p:"pulldown"},
+ bb_row:{p:"rowbent"}, db_row:{p:"rowbent",eq:"db"}, seated_row:{p:"rowseated"}, straight_pd:{p:"straightpd"},
+ deadlift:{p:"hinge"}, rdl:{p:"hinge"}, db_rdl:{p:"hinge",eq:"db"}, kb_swing:{p:"swing"}, hyperext:{p:"hyperext"},
+ ohp:{p:"ohp"}, db_shoulder:{p:"shpress_seat"}, m_shoulder_press:{p:"shpress_seat",eq:"handle"},
+ db_lateral:{p:"latraise"}, cable_lateral:{p:"latraise"}, rear_fly:{p:"rearfly"}, facepull:{p:"facepull"},
+ bb_curl:{p:"curl",eq:"plate"}, ez_curl:{p:"curl",eq:"plate"}, db_curl:{p:"curl"}, hammer_curl:{p:"curl"}, cable_curl:{p:"cablecurl"},
+ cable_pushdown:{p:"pushdown"}, skullcrusher:{p:"skullcrusher"}, db_ohext:{p:"ohext"},
+ squat:{p:"squat"}, smith_squat:{p:"squat",extra:RAILSQ}, goblet:{p:"goblet"}, hack_squat:{p:"squat",extra:RAILSQ},
+ lunge:{p:"lunge"}, leg_press_ex:{p:"legpress"}, leg_ext_ex:{p:"legext"}, leg_curl_ex:{p:"legcurl"},
+ db_rdl2:{p:"hinge"}, hip_thrust:{p:"hipthrust"}, abduction:{p:"abduction"},
+ calf_raise:{p:"calf",eq:"none"}, smith_calf:{p:"calf",extra:RAILSQ}, db_calf:{p:"calf",eq:"none"},
+ crunch:{p:"crunch"}, plank:{p:"plank"}, hanging_leg:{p:"hangleg"}, cable_crunch:{p:"cablecrunch"},
+};
+function renderAnim(exId,t){
+ const cfg=EXANIM[exId];if(!cfg)return null;
+ const pat=ANIMS[cfg.p];if(!pat)return null;
+ const A=pat.frames[0],B=pat.frames[1];
+ const f=lerpPose(A,B,t);
+ let s=pat.st?pat.st(f):"";
+ if(cfg.extra)s+=cfg.extra(f);
+ /* motion path arrow */
+ if(pat.pm&&A[pat.pm]&&B[pat.pm]){
+   const a=A[pat.pm],b=B[pat.pm];
+   s+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${CO}" stroke-width="1.6" stroke-dasharray="4 4" opacity=".55"/>`;
+   const ang=Math.atan2(b[1]-a[1],b[0]-a[0]);
+   const ax=b[0],ay=b[1];
+   s+=`<path d="M ${ax} ${ay} L ${ax-8*Math.cos(ang-0.4)} ${ay-8*Math.sin(ang-0.4)} L ${ax-8*Math.cos(ang+0.4)} ${ay-8*Math.sin(ang+0.4)} Z" fill="${CO}" opacity=".55"/>`;
+ }
+ s+=(pat.view==="front"?figFront(f):figSide(f));
+ if(pat.dyn)s+=pat.dyn(f);
+ const mk=cfg.eq!==undefined?cfg.eq:pat.eq;
+ if(mk&&mk!=="none"&&MK[mk]&&pat.view!=="front"){
+   let anchor=f.wr;
+   if(cfg.p==="squat"||cfg.p==="calf")anchor=[f.sh[0],f.sh[1]-6];
+   else if(cfg.p==="legext"||cfg.p==="legcurl")anchor=f.an;
+   s+=MK[mk](anchor);
+ }
+ return s;
+}
+let animRAF=null;
+function startAnim(exId){
+ cancelAnimationFrame(animRAF);
+ const t0=performance.now();
+ const tick=now=>{
+   const el=document.getElementById("exAnim");
+   if(!el){animRAF=null;return}
+   const cyc=2600; // ms per rep
+   const ph=((now-t0)%cyc)/cyc;
+   const t=(1-Math.cos(ph*2*Math.PI))/2; // 0->1->0 eased
+   const s=renderAnim(exId,t);
+   if(s!==null)el.innerHTML=s;
+   animRAF=requestAnimationFrame(tick);
+ };
+ animRAF=requestAnimationFrame(tick);
+}
+
+/* ================= UI HELPERS ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function cauTag(id){return riskLevel(id,userInjuries())===1?` <span class="tag orange">${T("cautionTag")}</span>`:""}
+function toast(msg){const t=$("#toast");t.textContent=msg;t.style.display="block";clearTimeout(t._h);t._h=setTimeout(()=>t.style.display="none",2400)}
+function openSheet(html){$("#sheetBody").innerHTML=html;$("#modal").classList.add("on")}
+function closeSheet(){$("#modal").classList.remove("on")}
+$("#modal").addEventListener("click",e=>{if(e.target.id==="modal")closeSheet()});
+function switchView(v){
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
+  $("#view-"+v).classList.add("active");
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.v===v));
+  if(v==="plan")renderPlan();if(v==="workout")renderWorkout();if(v==="gym")renderGym();
+  if(v==="progress")renderProgress();if(v==="me")renderMe();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>switchView(t.dataset.v));
+function applyLangTabs(){document.querySelectorAll("[data-t]").forEach(el=>el.textContent=T(el.dataset.t))}
+$("#btnLang").onclick=()=>{LANG=LANG==="zh"?"en":"zh";S.settings.lang=LANG;save();$("#btnLang").textContent=LANG==="zh"?"EN":"中";applyLangTabs();renderPlan()};
+
+/* muscle svg (front+back simplified) */
+function muscleSVG(prim,sec){
+  prim=prim||[];sec=sec||[];
+  const cl=id=>prim.includes(id)?"mus hi":(sec.includes(id)?"mus hi2":"mus");
+  return `<div class="bodywrap">
+  <svg viewBox="0 0 100 220">
+    <ellipse class="bodyoutline" cx="50" cy="16" rx="10" ry="11"/>
+    <path class="bodyoutline" d="M35 30 Q30 34 29 44 L27 78 Q27 84 30 88 L33 118 Q34 128 36 136 L38 170 Q38 186 40 200 L44 214 L56 214 L60 200 Q62 186 62 170 L64 136 Q66 128 67 118 L70 88 Q73 84 73 78 L71 44 Q70 34 65 30 Z"/>
+    <path class="bodyoutline" d="M29 44 L18 66 L14 92 L20 94 L27 72"/><path class="bodyoutline" d="M71 44 L82 66 L86 92 L80 94 L73 72"/>
+    <path class="${cl('shoulders')}" d="M31 33 Q26 36 26 44 L34 44 Q34 36 38 33 Z"/><path class="${cl('shoulders')}" d="M69 33 Q74 36 74 44 L66 44 Q66 36 62 33 Z"/>
+    <path class="${cl('chest')}" d="M37 36 L49 38 L49 56 Q42 58 36 52 Z"/><path class="${cl('chest')}" d="M63 36 L51 38 L51 56 Q58 58 64 52 Z"/>
+    <path class="${cl('biceps')}" d="M25 46 L33 46 L31 64 L24 62 Z"/><path class="${cl('biceps')}" d="M75 46 L67 46 L69 64 L76 62 Z"/>
+    <path class="${cl('abs')}" d="M42 58 L58 58 L57 92 L43 92 Z"/>
+    <path class="${cl('quads')}" d="M35 100 L48 100 L47 148 L38 148 Z"/><path class="${cl('quads')}" d="M65 100 L52 100 L53 148 L62 148 Z"/>
+    <path class="${cl('calves')}" d="M39 156 L46 156 L45 190 L41 190 Z"/><path class="${cl('calves')}" d="M61 156 L54 156 L55 190 L59 190 Z"/>
+  </svg>
+  <svg viewBox="0 0 100 220">
+    <ellipse class="bodyoutline" cx="50" cy="16" rx="10" ry="11"/>
+    <path class="bodyoutline" d="M35 30 Q30 34 29 44 L27 78 Q27 84 30 88 L33 118 Q34 128 36 136 L38 170 Q38 186 40 200 L44 214 L56 214 L60 200 Q62 186 62 170 L64 136 Q66 128 67 118 L70 88 Q73 84 73 78 L71 44 Q70 34 65 30 Z"/>
+    <path class="bodyoutline" d="M29 44 L18 66 L14 92 L20 94 L27 72"/><path class="bodyoutline" d="M71 44 L82 66 L86 92 L80 94 L73 72"/>
+    <path class="${cl('shoulders')}" d="M31 33 Q26 36 26 44 L34 44 Q34 36 38 33 Z"/><path class="${cl('shoulders')}" d="M69 33 Q74 36 74 44 L66 44 Q66 36 62 33 Z"/>
+    <path class="${cl('back')}" d="M37 35 L63 35 L61 70 Q50 76 39 70 Z"/>
+    <path class="${cl('triceps')}" d="M25 46 L33 46 L31 64 L24 62 Z"/><path class="${cl('triceps')}" d="M75 46 L67 46 L69 64 L76 62 Z"/>
+    <path class="${cl('glutes')}" d="M38 90 L62 90 L62 108 Q50 114 38 108 Z"/>
+    <path class="${cl('hams')}" d="M36 112 L48 112 L47 150 L38 150 Z"/><path class="${cl('hams')}" d="M64 112 L52 112 L53 150 L62 150 Z"/>
+    <path class="${cl('calves')}" d="M39 156 L46 156 L45 190 L41 190 Z"/><path class="${cl('calves')}" d="M61 156 L54 156 L55 190 L59 190 Z"/>
+  </svg></div>`;
+}
+
+/* ================= ONBOARDING ================= */
+let OB={step:0,profile:{sex:"male",age:28,height:175,weight:70,exp:1,goal:"muscle",freq:0,injuries:[],swim:0},gym:{name:"",eq:[]}};
+function renderOnboard(){
+  const b=$("#onboardBody");
+  if(OB.step===0){
+    const p=OB.profile;
+    b.innerHTML=`<div style="padding-top:24px">
+    <h1>${T("onbTitle")}</h1><p class="sub mt8">${T("onbSub")}</p>
+    <div class="card mt12">
+      <label class="fl">${T("sex")}</label>
+      <div class="seg" id="obSex"><div data-v="male" class="${p.sex==="male"?"on":""}">${T("male")}</div><div data-v="female" class="${p.sex==="female"?"on":""}">${T("female")}</div></div>
+      <div class="grid3">
+        <div><label class="fl">${T("age")}</label><input id="obAge" type="number" value="${p.age}"></div>
+        <div><label class="fl">${T("height")}</label><input id="obH" type="number" value="${p.height}"></div>
+        <div><label class="fl">${T("weight")}</label><input id="obW" type="number" value="${p.weight}"></div>
+      </div>
+      <label class="fl">${T("exp")}</label>
+      <select id="obExp"><option value="0" ${p.exp===0?"selected":""}>${T("exp0")}</option><option value="1" ${p.exp===1?"selected":""}>${T("exp1")}</option><option value="2" ${p.exp===2?"selected":""}>${T("exp2")}</option></select>
+      <label class="fl">${T("goal")}</label>
+      <div class="seg" id="obGoal"><div data-v="muscle" class="${p.goal==="muscle"?"on":""}">${T("goal_muscle")}</div><div data-v="strength" class="${p.goal==="strength"?"on":""}">${T("goal_strength")}</div><div data-v="lean" class="${p.goal==="lean"?"on":""}">${T("goal_lean")}</div></div>
+      <label class="fl">${T("freq")}</label>
+      <div class="chips" id="obFreq">${[2,3,4,5].map(n=>`<div class="chip ${p.freq===n?"on":""}" data-v="${n}">${n} / wk</div>`).join("")}</div>
+      <p class="dim mt8" id="obFreqSug"></p>
+      <label class="fl">${T("injury")}</label>
+      <div class="chips" id="obInj">
+        <div class="chip ${!(p.injuries&&p.injuries.length)?"on":""}" data-v="none">${T("inj_none")}</div>
+        ${INJ_AREAS.map(a=>`<div class="chip ${p.injuries&&p.injuries.includes(a)?"on":""}" data-v="${a}">${T("inj_"+a)}</div>`).join("")}
+      </div>
+      <label class="fl">🏊 ${T("swimQ")}</label>
+      <div class="seg" id="obSwim">${[0,1,2].map(n=>`<div data-v="${n}" class="${(p.swim||0)===n?"on":""}">${T("swim"+n)}</div>`).join("")}</div>
+    </div>
+    <button class="btn" id="obNext">${T("next")}</button>
+    <p class="dim mt12">${T("disclaimer")}</p></div>`;
+    const updSug=()=>{const sug=suggestFreq(+$("#obExp").value);$("#obFreqSug").textContent=fmt(T("freqSug"),{n:sug});if(!OB.profile.freq){OB.profile.freq=sug;document.querySelectorAll("#obFreq .chip").forEach(c=>c.classList.toggle("on",+c.dataset.v===sug))}};
+    $("#obSex").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;OB.profile.sex=d.dataset.v;document.querySelectorAll("#obSex div").forEach(x=>x.classList.toggle("on",x===d))};
+    $("#obGoal").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;OB.profile.goal=d.dataset.v;document.querySelectorAll("#obGoal div").forEach(x=>x.classList.toggle("on",x===d))};
+    $("#obFreq").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;OB.profile.freq=+d.dataset.v;document.querySelectorAll("#obFreq .chip").forEach(x=>x.classList.toggle("on",x===d))};
+    $("#obInj").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;const v=d.dataset.v;
+      if(!OB.profile.injuries)OB.profile.injuries=[];
+      if(v==="none"){OB.profile.injuries=[]}
+      else{const i=OB.profile.injuries.indexOf(v);i>=0?OB.profile.injuries.splice(i,1):OB.profile.injuries.push(v)}
+      document.querySelectorAll("#obInj .chip").forEach(x=>{
+        const xv=x.dataset.v;
+        x.classList.toggle("on",xv==="none"?OB.profile.injuries.length===0:OB.profile.injuries.includes(xv));
+      })};
+    $("#obSwim").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;OB.profile.swim=+d.dataset.v;document.querySelectorAll("#obSwim div").forEach(x=>x.classList.toggle("on",x===d))};
+    $("#obExp").onchange=()=>{OB.profile.freq=0;updSug()};
+    updSug();
+    $("#obNext").onclick=()=>{
+      OB.profile.age=+$("#obAge").value||25;OB.profile.height=+$("#obH").value||170;OB.profile.weight=+$("#obW").value||65;OB.profile.exp=+$("#obExp").value;
+      if(!OB.profile.freq)OB.profile.freq=suggestFreq(OB.profile.exp);
+      OB.step=1;renderOnboard();
+    };
+  }else{
+    b.innerHTML=`<div style="padding-top:24px">
+    <h1>${T("createGym")}</h1>
+    <div class="card mt12">
+      <label class="fl">${T("gymName")}</label><input id="obGymName" placeholder="${T("gymNamePh")}" value="${esc(OB.gym.name)}">
+      <label class="fl">${T("pickEq")}</label>
+      <div class="chips" id="obEq">${EQUIP.map(e=>`<div class="chip ${OB.gym.eq.includes(e.id)?"on":""}" data-v="${e.id}">${LANG==="zh"?e.zh:e.en}</div>`).join("")}</div>
+      <button class="btn ghost mt12" id="obScan">${T("aiScan")}</button>
+    </div>
+    <div class="row"><button class="btn sec" id="obBack" style="width:38%">${T("back")}</button><button class="btn" id="obGen">${T("genPlan")}</button></div></div>`;
+    $("#obEq").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;const id=d.dataset.v;const i=OB.gym.eq.indexOf(id);i>=0?OB.gym.eq.splice(i,1):OB.gym.eq.push(id);d.classList.toggle("on")};
+    $("#obBack").onclick=()=>{OB.step=0;renderOnboard()};
+    $("#obScan").onclick=()=>{if(!S.settings.apiKey){toast(T("aiScanNeedKey"));return}openScanSheet(ids=>{ids.forEach(id=>{if(!OB.gym.eq.includes(id))OB.gym.eq.push(id)});renderOnboard()})};
+    $("#obGen").onclick=()=>{
+      OB.gym.name=$("#obGymName").value.trim()||(LANG==="zh"?"我的健身房":"My gym");
+      if(!OB.gym.eq.length){toast(T("pickEq"));return}
+      S.profile=OB.profile;S.gyms=[{name:OB.gym.name,eq:OB.gym.eq}];S.activeGym=0;
+      S.plan=generatePlan();save();
+      $("#tabbar").style.display="flex";switchView("plan");
+    };
+  }
+}
+
+/* ================= PLAN VIEW ================= */
+function goalLabel(g){return T("goal_"+g)}
+function renderPlan(){
+  applyLangTabs();
+  const b=$("#planBody");
+  if(!S.plan){b.innerHTML=`<div class="card center"><h2>${T("noPlan")}</h2><p class="sub">${T("noPlanSub")}</p></div>`;return}
+  const p=S.plan;const gym=S.gyms[S.activeGym];
+  let h=`<div class="card card2"><div class="row"><div class="grow">
+    <b>${fmt(T("weekOf"),{n:p.freq,split:T(p.splitName)+(p.swim?` + ${p.swim}×🏊`:"")})}</b>
+    <div class="sub mt8"><span class="tag acc">${goalLabel(p.goal)}</span><span class="tag blue">${esc(gym?gym.name:"")}</span></div>
+    </div></div></div>
+    <div class="notice">${T("warmup")}</div>`;
+  if(userInjuries().length)h+=`<div class="warnbox" style="margin-bottom:12px">🩹 ${userInjuries().map(a=>T("inj_"+a)).join("、")} — ${T("injPlanNote")}</div>`;
+  p.days.forEach((d,di)=>{
+    if(d.swimSegs){
+      h+=`<div class="card daycard" style="border-left-color:#60a5fa"><div class="row mb8"><b class="grow">🏊 ${T("day").replace("{n}",di+1)} · ${TD(d.key)}</b>
+      <button class="btn sm" style="background:#60a5fa;color:#08131f" data-start="${di}">${T("startThis")}</button></div>`;
+      d.swimSegs.forEach((s,si)=>{
+        h+=`<div class="exrow"><div class="exnum">${si+1}</div>
+        <div class="grow"><div class="exname">${T(s.k)} · ${s.d}m</div>
+        <div class="exmeta">${LANG==="zh"?s.tz:s.te}</div></div></div>`;
+      });
+      h+=`<p class="dim mt8">${T("swimNote")}</p>`;
+      if(!availEquip().includes("pool"))h+=`<p class="dim mt8">${T("swimNoPool")}</p>`;
+      if(userInjuries().includes("sh"))h+=`<div class="warnbox mt8">🩹 ${T("swimShWarn")}</div>`;
+      h+=`</div>`;
+      return;
+    }
+    h+=`<div class="card daycard"><div class="row mb8"><b class="grow">${T("day").replace("{n}",di+1)} · ${TD(d.key)}</b>
+    <button class="btn sm" data-start="${di}">${T("startThis")}</button></div>`;
+    d.exercises.forEach((e,ei)=>{
+      const ex=EXMAP[e.exId];
+      h+=`<div class="exrow" data-ex="${e.exId}"><div class="exnum">${ei+1}</div>
+      <div class="grow"><div class="exname">${exName(e.exId)}${e.cau?` <span class="tag orange">${T("cautionTag")}</span>`:""}</div>
+      <div class="exmeta">${e.sets} ${T("sets")} × ${e.reps} ${T("reps")} · ${T("rest")} ${e.rest}s · ${ex?ex.m.map(m=>T("mus_"+m)).join("/"):""}</div></div>
+      <button class="swapmini" data-pswap="${di}-${ei}" title="${T("swap")}">⇄</button>
+      <span class="arrow">›</span></div>`;
+    });
+    h+=`</div>`;
+  });
+  h+=`<button class="btn ghost" id="btnAiExplain">${T("aiExplain")}</button>
+  <button class="btn sec mt8" id="btnRegen">${T("regen")}</button>
+  <p class="dim mt12">${T("planFooter")}</p>`;
+  b.innerHTML=h;
+  b.querySelectorAll("[data-start]").forEach(x=>x.onclick=ev=>{ev.stopPropagation();startWorkout(+x.dataset.start)});
+  b.querySelectorAll("[data-ex]").forEach(x=>x.onclick=()=>openExDetail(x.dataset.ex));
+  b.querySelectorAll("[data-pswap]").forEach(x=>x.onclick=ev=>{ev.stopPropagation();const[di,ei]=x.dataset.pswap.split("-").map(Number);openPlanSwap(di,ei)});
+  $("#btnRegen").onclick=()=>{if(confirm(T("regenConfirm"))){S.plan=generatePlan();save();renderPlan();toast(T("saveOk"))}};
+  $("#btnAiExplain").onclick=aiExplainPlan;
+}
+
+/* swap an exercise inside the saved plan */
+function openPlanSwap(di,ei){
+  const e=S.plan.days[di].exercises[ei];
+  const subs=substitutesFor(e.exId);
+  if(!subs.length){toast(T("noEq"));return}
+  openSheet(`<h3>${T("subFor")}</h3><p class="dim mb8">${exName(e.exId)} →</p>`+
+    subs.map(s=>`<div class="listitem" data-pick="${s.id}"><div><b>${exName(s.id)}</b>${cauTag(s.id)}<div class="exmeta">${s.m.map(m=>T("mus_"+m)).join("/")} · ${s.eq.map(eqName).join("+")}</div></div><span class="arrow">›</span></div>`).join(""));
+  $("#sheetBody").querySelectorAll("[data-pick]").forEach(x=>x.onclick=()=>{
+    const nid=x.dataset.pick;const nx=EXMAP[nid];const gp=GOALPARAM[(S.profile&&S.profile.goal)||"muscle"];
+    S.plan.days[di].exercises[ei]={exId:nid,sets:nx.c?gp.cSets:gp.iSets,reps:nx.c?gp.cReps:gp.iReps,rest:nx.c?gp.rest:gp.restIso};
+    save();closeSheet();renderPlan();toast(T("saveOk"));
+  });
+}
+
+/* exercise detail sheet */
+function openExDetail(exId,fromWorkout){
+  const ex=EXMAP[exId];if(!ex)return;
+  const hasAnim=!!EXANIM[exId];
+  openSheet(`<h3>${exNameBoth(exId)}</h3>
+  ${hasAnim?`<div class="animwrap"><svg id="exAnim" viewBox="0 0 300 200"></svg><div class="animcap">${LANG==="zh"?"动作演示 · 黄色虚线为运动轨迹":"Movement demo · dashed line = bar path"}</div></div>`:""}
+  ${muscleSVG(ex.m,ex.m2)}
+  <div class="sub center mb8">${T("target")}: ${ex.m.map(m=>T("mus_"+m)).join(" / ")}${ex.m2&&ex.m2.length?` （+ ${ex.m2.map(m=>T("mus_"+m)).join("/")}）`:""}</div>
+  <div class="card"><b>✅ ${T("cues")}</b><p class="sub mt8">${LANG==="zh"?ex.cz:ex.ce}</p></div>
+  ${(()=>{const ar=riskAreas(exId,userInjuries());return ar.length?`<div class="warnbox" style="margin-bottom:10px">🩹 ${fmt(T("injDetailWarn"),{a:ar.map(x=>T("inj_"+x)).join("、")})}</div>`:""})()}
+  <div class="warnbox"><b>⚠️ ${T("cautions")}</b><br>${LANG==="zh"?ex.wz:ex.we}</div>
+  <p class="dim mt12">${eqName(ex.eq[0])}${ex.eq.length>1?" + "+ex.eq.slice(1).map(eqName).join(" + "):""}</p>
+  <button class="btn sec mt12" onclick="closeSheet()">${T("done")}</button>`);
+  if(hasAnim)startAnim(exId);
+}
+
+/* ================= WORKOUT ================= */
+function startWorkout(dayIdx){
+  const d=S.plan.days[dayIdx];
+  if(d.swimSegs){
+    W={dayIdx,dayKey:"swim",start:Date.now(),swim:true,
+       segs:d.swimSegs.map(s=>({k:s.k,d:s.d,tz:s.tz,te:s.te,done:false})),entries:[]};
+    switchView("workout");return;
+  }
+  W={dayIdx,dayKey:d.key,start:Date.now(),entries:d.exercises.map(e=>{
+    const last=lastSetsFor(e.exId);
+    const sets=[];for(let i=0;i<e.sets;i++){const ls=last&&last[Math.min(i,last.length-1)];sets.push({w:ls?ls.w:"",r:ls?ls.r:"",done:false})}
+    return {exId:e.exId,reps:e.reps,rest:e.rest,sets};
+  })};
+  switchView("workout");
+}
+function startFree(){W={dayIdx:-1,dayKey:"free",start:Date.now(),entries:[]};switchView("workout")}
+function renderWorkout(){
+  applyLangTabs();
+  const b=$("#workoutBody");
+  if(!W){
+    let h=`<div class="hd"><h1>${T("todayTitle")}</h1></div>`;
+    if(S.plan){h+=`<div class="card"><b>${T("pickDay")}</b>`;
+      S.plan.days.forEach((d,di)=>{h+=`<div class="listitem" data-d="${di}"><span>${T("day").replace("{n}",di+1)} · ${TD(d.key)}</span><span class="arrow">›</span></div>`});
+      h+=`</div>`}
+    h+=`<div class="card center"><p class="sub">${T("emptyWorkSub")}</p><button class="btn sec mt12" id="btnFree">${T("quickStart")}</button></div>`;
+    b.innerHTML=h;
+    b.querySelectorAll("[data-d]").forEach(x=>x.onclick=()=>startWorkout(+x.dataset.d));
+    $("#btnFree").onclick=startFree;
+    return;
+  }
+  const mins=Math.floor((Date.now()-W.start)/60000);
+  if(W.swim){
+    let h=`<div class="hd"><div><h1>🏊 ${TD("swim")}</h1><span class="sub">${mins} ${T("durMin")} · ${new Date().toLocaleDateString()}</span></div>
+    <button class="btn sm" id="btnFinish">${T("finish")}</button></div>`;
+    W.segs.forEach((s,si)=>{
+      h+=`<div class="card"><div class="row">
+      <div class="grow"><b>${T(s.k)} · ${s.d}m</b><div class="exmeta">${LANG==="zh"?s.tz:s.te}</div></div>
+      <button class="done ${s.done?"on":""}" style="width:44px;height:40px;border-radius:10px;border:1px solid var(--line);background:${s.done?"var(--accD)":"var(--bg2)"};color:${s.done?"var(--acc)":"var(--dim)"};font-size:18px;font-weight:800" data-seg="${si}">✓</button></div></div>`;
+    });
+    const sum=W.segs.reduce((a,s)=>a+s.d,0);
+    h+=`<div class="card"><div class="grid2">
+      <div><label class="fl">${T("swimDistL")}</label><input id="swimDist" type="number" inputmode="numeric" value="${sum}"></div>
+      <div><label class="fl">${T("swimTimeL")}</label><input id="swimTime" type="number" inputmode="numeric" placeholder="${mins||""}"></div>
+    </div></div>`;
+    if(userInjuries().includes("sh"))h+=`<div class="warnbox">🩹 ${T("swimShWarn")}</div>`;
+    b.innerHTML=h;
+    b.querySelectorAll("[data-seg]").forEach(btn=>btn.onclick=()=>{const s=W.segs[+btn.dataset.seg];s.done=!s.done;renderWorkout()});
+    $("#btnFinish").onclick=finishWorkout;
+    return;
+  }
+  let h=`<div class="hd"><div><h1>${TD(W.dayKey)}</h1><span class="sub">${mins} ${T("durMin")} · ${new Date().toLocaleDateString()}</span></div>
+  <button class="btn sm" id="btnFinish">${T("finish")}</button></div>`;
+  if(W.entries.some(e=>e.sets.some(s=>s.w!=="")))h+=`<p class="dim mb8">${T("prefillNote")}</p>`;
+  W.entries.forEach((en,ei)=>{
+    const hint=progressionHint(en.exId,en.reps||"");
+    h+=`<div class="card"><div class="row mb8">
+      <div class="grow" style="cursor:pointer" data-det="${en.exId}"><b>${exName(en.exId)}</b>
+      <div class="exmeta">${en.reps?`${T("reps")}: ${en.reps} · `:""}${T("rest")} ${en.rest||90}s</div></div>
+      <button class="btn sm sec" data-swap="${ei}">${T("swap")}</button></div>`;
+    if(hint)h+=`<div class="notice">📈 ${hint}</div>`;
+    h+=`<div class="sethead2"><span>#</span><span>${T("kg")}</span><span>${T("reps")}</span><span>✓</span></div>`;
+    en.sets.forEach((s,si)=>{
+      h+=`<div class="setrow2"><div class="exnum">${si+1}</div>
+      <div class="stepcell"><button class="stepbtn" data-f="w" data-d="-1" data-i="${ei}-${si}">−</button><input type="number" inputmode="decimal" value="${s.w}" data-w="${ei}-${si}" placeholder="kg"><button class="stepbtn" data-f="w" data-d="1" data-i="${ei}-${si}">+</button></div>
+      <div class="stepcell"><button class="stepbtn" data-f="r" data-d="-1" data-i="${ei}-${si}">−</button><input type="number" inputmode="numeric" value="${s.r}" data-r="${ei}-${si}" placeholder="${T("reps")}"><button class="stepbtn" data-f="r" data-d="1" data-i="${ei}-${si}">+</button></div>
+      <button class="done ${s.done?"on":""}" data-done="${ei}-${si}">✓</button></div>`;
+    });
+    h+=`<button class="btn sm sec mt8" data-add="${ei}">${T("addSet")}</button></div>`;
+  });
+  h+=`<button class="btn sec" id="btnAddEx">+ ${T("exercises")}</button>`;
+  b.innerHTML=h;
+  b.querySelectorAll("[data-det]").forEach(x=>x.onclick=()=>openExDetail(x.dataset.det,true));
+  b.querySelectorAll("[data-w]").forEach(inp=>inp.onchange=()=>{const[ei,si]=inp.dataset.w.split("-");W.entries[ei].sets[si].w=inp.value});
+  b.querySelectorAll("[data-r]").forEach(inp=>inp.onchange=()=>{const[ei,si]=inp.dataset.r.split("-");W.entries[ei].sets[si].r=inp.value});
+  /* steppers: tap = ±2.5kg / ±1 rep, hold = auto-repeat */
+  b.querySelectorAll(".stepbtn").forEach(btn=>{
+    const fld=btn.dataset.f,dir=+btn.dataset.d,[ei,si]=btn.dataset.i.split("-").map(Number);
+    const inp=b.querySelector(`input[data-${fld}="${ei}-${si}"]`);
+    const seed=()=>{
+      if(inp.value!=="")return parseFloat(inp.value);
+      const prev=si>0?W.entries[ei].sets[si-1][fld]:"";
+      if(prev!=="")return parseFloat(prev)||0;
+      return fld==="r"?repTop(W.entries[ei].reps||"10"):0;
+    };
+    const step=()=>{
+      const inc=fld==="w"?2.5:1;
+      let v=seed()+dir*inc;
+      if(v<0)v=0;
+      v=Math.round(v*10)/10;
+      inp.value=v;W.entries[ei].sets[si][fld]=v;
+      if(navigator.vibrate)navigator.vibrate(8);
+    };
+    let hold=null,rep=null;
+    const down=e=>{e.preventDefault();step();hold=setTimeout(()=>{rep=setInterval(step,110)},450)};
+    const up=()=>{clearTimeout(hold);clearInterval(rep);hold=rep=null};
+    btn.addEventListener("pointerdown",down);
+    btn.addEventListener("pointerup",up);btn.addEventListener("pointerleave",up);btn.addEventListener("pointercancel",up);
+  });
+  b.querySelectorAll("[data-done]").forEach(btn=>btn.onclick=()=>{
+    const[ei,si]=btn.dataset.done.split("-");const s=W.entries[ei].sets[si];
+    if(!s.done){const row=btn.parentElement;s.w=row.querySelector("input[data-w]").value;s.r=row.querySelector("input[data-r]").value;
+      s.done=true;btn.classList.add("on");startRest(W.entries[ei].rest||90);}
+    else{s.done=false;btn.classList.remove("on")}
+  });
+  b.querySelectorAll("[data-add]").forEach(btn=>btn.onclick=()=>{const en=W.entries[+btn.dataset.add];const last=en.sets[en.sets.length-1];en.sets.push({w:last?last.w:"",r:last?last.r:"",done:false});renderWorkout()});
+  b.querySelectorAll("[data-swap]").forEach(btn=>btn.onclick=()=>openSwap(+btn.dataset.swap));
+  $("#btnAddEx").onclick=()=>openAddExercise();
+  $("#btnFinish").onclick=finishWorkout;
+}
+function openSwap(ei){
+  const en=W.entries[ei];const subs=substitutesFor(en.exId);
+  if(!subs.length){toast(T("noEq"));return}
+  openSheet(`<h3>${T("subFor")}</h3>`+subs.map(s=>`<div class="listitem" data-pick="${s.id}"><div><b>${exName(s.id)}</b>${cauTag(s.id)}<div class="exmeta">${s.m.map(m=>T("mus_"+m)).join("/")} · ${s.eq.map(eqName).join("+")}</div></div><span class="arrow">›</span></div>`).join(""));
+  $("#sheetBody").querySelectorAll("[data-pick]").forEach(x=>x.onclick=()=>{
+    const id=x.dataset.pick;const last=lastSetsFor(id);
+    en.exId=id;en.sets=en.sets.map((s,i)=>({w:last&&last[Math.min(i,last.length-1)]?last[Math.min(i,last.length-1)].w:"",r:last&&last[Math.min(i,last.length-1)]?last[Math.min(i,last.length-1)].r:"",done:false}));
+    closeSheet();renderWorkout();
+  });
+}
+function openAddExercise(){
+  const eqList=availEquip();
+  const avail=EXDB.filter(e=>exAvailable(e,eqList)&&riskLevel(e.id,userInjuries())<2);
+  openSheet(`<h3>${T("exercises")}</h3><div class="chips mb8" id="musFilter">${MUSCLES.map(m=>`<div class="chip" data-m="${m}">${T("mus_"+m)}</div>`).join("")}</div><div id="addList"></div>`);
+  const renderList=f=>{$("#addList").innerHTML=avail.filter(e=>!f||e.m.includes(f)).map(s=>`<div class="listitem" data-pick="${s.id}"><div><b>${exName(s.id)}</b>${cauTag(s.id)}<div class="exmeta">${s.m.map(m=>T("mus_"+m)).join("/")}</div></div><span class="arrow">+</span></div>`).join("");
+    $("#addList").querySelectorAll("[data-pick]").forEach(x=>x.onclick=()=>{
+      const id=x.dataset.pick;const gp=GOALPARAM[(S.profile&&S.profile.goal)||"muscle"];const ex=EXMAP[id];
+      const last=lastSetsFor(id);const n=ex.c?gp.cSets:gp.iSets;const sets=[];
+      for(let i=0;i<n;i++){const ls=last&&last[Math.min(i,last.length-1)];sets.push({w:ls?ls.w:"",r:ls?ls.r:"",done:false})}
+      W.entries.push({exId:id,reps:ex.c?gp.cReps:gp.iReps,rest:ex.c?gp.rest:gp.restIso,sets});
+      closeSheet();renderWorkout();
+    })};
+  renderList(null);
+  $("#musFilter").onclick=e=>{const d=e.target.closest("[data-m]");if(!d)return;const on=d.classList.contains("on");document.querySelectorAll("#musFilter .chip").forEach(c=>c.classList.remove("on"));if(!on){d.classList.add("on");renderList(d.dataset.m)}else renderList(null)};
+}
+function finishWorkout(){
+  if(W.swim){
+    const done=W.segs.filter(s=>s.done);
+    if(!done.length){W=null;renderWorkout();return}
+    if(!confirm(T("finishConfirm")))return;
+    const dist=+($("#swimDist")&&$("#swimDist").value)||done.reduce((a,s)=>a+s.d,0);
+    const mins=+($("#swimTime")&&$("#swimTime").value)||Math.max(1,Math.round((Date.now()-W.start)/60000));
+    const log={date:new Date().toISOString(),dayKey:"swim",durMin:mins,swimDist:dist,segsDone:done.length,entries:[]};
+    S.logs.push(log);save();W=null;
+    openShareCard(log,0);renderWorkout();return;
+  }
+  const done=W.entries.filter(e=>e.sets.some(s=>s.done));
+  if(!done.length){W=null;renderWorkout();return}
+  if(!confirm(T("finishConfirm")))return;
+  const prevBest={};done.forEach(e=>{prevBest[e.exId]=bestFor(e.exId).maxw});
+  const log={date:new Date().toISOString(),dayKey:W.dayKey,durMin:Math.max(1,Math.round((Date.now()-W.start)/60000)),
+    entries:done.map(e=>({exId:e.exId,sets:e.sets.filter(s=>s.done).map(s=>({w:+s.w||0,r:+s.r||0,done:true}))}))};
+  const prs=[];log.entries.forEach(e=>{const mx=Math.max(...e.sets.map(s=>s.w));if(mx>(prevBest[e.exId]||0)&&mx>0)prs.push({exId:e.exId,w:mx})});
+  log.prs=prs;
+  S.logs.push(log);save();stopRest();
+  const vol=totalVolume(log);
+  W=null;
+  openShareCard(log,vol);
+  renderWorkout();
+}
+
+/* rest timer */
+let restIv=null,restLeft=0;
+function startRest(sec){restLeft=sec;$("#restLabel").textContent=T("restLabel");$("#restbar").classList.add("on");updRest();
+  clearInterval(restIv);restIv=setInterval(()=>{restLeft--;updRest();if(restLeft<=0){stopRest();beep()}},1000)}
+function updRest(){$("#restTime").textContent=restLeft+"s"}
+function stopRest(){clearInterval(restIv);$("#restbar").classList.remove("on")}
+$("#restSkip").onclick=stopRest;
+$("#restPlus").onclick=()=>{restLeft+=15;updRest()};
+$("#restMinus").onclick=()=>{restLeft=Math.max(1,restLeft-15);updRest()};
+function beep(){try{const ctx=new (window.AudioContext||window.webkitAudioContext)();const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;g.gain.value=.15;o.start();setTimeout(()=>{o.stop();ctx.close()},350);if(navigator.vibrate)navigator.vibrate(200)}catch(e){}}
+
+/* ================= GYM VIEW ================= */
+function renderGym(){
+  applyLangTabs();
+  const b=$("#gymBody");
+  let h=`<div class="hd"><h1>${T("gymTitle")}</h1><button class="btn sm" id="btnAddGym">${T("addGym")}</button></div>`;
+  S.gyms.forEach((g,gi)=>{
+    h+=`<div class="card ${gi===S.activeGym?"daycard":""}"><div class="row">
+    <div class="grow"><b>${esc(g.name)}</b><div class="sub">${fmt(T("eqCount"),{n:g.eq.length})}${gi===S.activeGym?` · <span style="color:var(--acc)">${T("active")}</span>`:""}</div></div></div>
+    <div class="row mt8" style="flex-wrap:wrap">
+      ${gi!==S.activeGym?`<button class="btn sm sec" data-act="${gi}">${T("setActive")}</button>`:""}
+      <button class="btn sm sec" data-edit="${gi}">${T("editEq")}</button>
+      ${S.gyms.length>1?`<button class="btn sm warn" data-del="${gi}">${T("delGym")}</button>`:""}
+    </div>
+    <div class="mt8">${g.eq.slice(0,8).map(id=>`<span class="tag">${eqName(id)}</span>`).join("")}${g.eq.length>8?`<span class="tag">+${g.eq.length-8}</span>`:""}</div></div>`;
+  });
+  b.innerHTML=h;
+  $("#btnAddGym").onclick=()=>openGymEditor(-1);
+  b.querySelectorAll("[data-act]").forEach(x=>x.onclick=()=>{S.activeGym=+x.dataset.act;S.plan=generatePlan();save();renderGym();toast(T("saveOk"))});
+  b.querySelectorAll("[data-edit]").forEach(x=>x.onclick=()=>openGymEditor(+x.dataset.edit));
+  b.querySelectorAll("[data-del]").forEach(x=>x.onclick=()=>{if(confirm(T("delGymConfirm"))){S.gyms.splice(+x.dataset.del,1);if(S.activeGym>=S.gyms.length)S.activeGym=0;S.plan=generatePlan();save();renderGym()}});
+}
+function openGymEditor(gi){
+  const isNew=gi<0;const g=isNew?{name:"",eq:[]}:JSON.parse(JSON.stringify(S.gyms[gi]));
+  function renderSheet(){
+    openSheet(`<h3>${isNew?T("addGym"):T("editEq")}</h3>
+    <label class="fl">${T("gymName")}</label><input id="geName" value="${esc(g.name)}" placeholder="${T("gymNamePh")}">
+    <label class="fl">${T("pickEq")}</label>
+    <div class="chips" id="geEq">${EQUIP.map(e=>`<div class="chip ${g.eq.includes(e.id)?"on":""}" data-v="${e.id}">${LANG==="zh"?e.zh:e.en}</div>`).join("")}</div>
+    <button class="btn ghost mt12" id="geScan">${T("aiScan")}</button>
+    <button class="btn mt8" id="geSave">${T("save")}</button>`);
+    $("#geEq").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;const id=d.dataset.v;const i=g.eq.indexOf(id);i>=0?g.eq.splice(i,1):g.eq.push(id);d.classList.toggle("on")};
+    $("#geScan").onclick=()=>{if(!S.settings.apiKey){toast(T("aiScanNeedKey"));return}
+      g.name=$("#geName").value;
+      openScanSheet(ids=>{ids.forEach(id=>{if(!g.eq.includes(id))g.eq.push(id)});renderSheet()})};
+    $("#geSave").onclick=()=>{
+      g.name=$("#geName").value.trim()||(LANG==="zh"?"我的健身房":"My gym");
+      if(!g.eq.length){toast(T("pickEq"));return}
+      if(isNew){S.gyms.push(g);S.activeGym=S.gyms.length-1}else S.gyms[gi]=g;
+      S.plan=generatePlan();save();closeSheet();renderGym();toast(T("saveOk"));
+    };
+  }
+  renderSheet();
+}
+
+/* AI scan sheet (shared) */
+function openScanSheet(onDone){
+  openSheet(`<h3>${T("aiScan")}</h3><p class="sub mb8">${T("scanTip")}</p>
+  ${aiProvider()==="deepseek"?`<div class="warnbox mb8">${T("visionUnsup")}</div>`:""}
+  <input type="file" id="scanFile" accept="image/*" multiple capture="environment">
+  <div id="scanStatus" class="mt12"></div>`);
+  $("#scanFile").onchange=async e=>{
+    const files=[...e.target.files].slice(0,4);
+    if(!files.length)return;
+    $("#scanStatus").innerHTML=`<span class="spin"></span> ${T("scanning")}`;
+    try{
+      const ids=await aiScanEquipment(files);
+      closeSheet();toast(fmt(T("scanDone"),{n:ids.length}));onDone(ids);
+    }catch(err){$("#scanStatus").innerHTML=`<span style="color:var(--red)">${T("scanFail")}</span><div class="dim mt8">${esc(err.message||err)}</div>`}
+  };
+}
+
+/* ================= PROGRESS ================= */
+let progExSel=null;
+function renderProgress(){
+  applyLangTabs();
+  const b=$("#progressBody");
+  if(!S.logs.length){b.innerHTML=`<div class="hd"><h1>${T("progTitle")}</h1></div><div class="card center"><p class="sub">${T("noHistory")}</p></div>`;return}
+  const totV=S.logs.reduce((a,l)=>a+totalVolume(l),0);
+  const exIds=[...new Set(S.logs.flatMap(l=>l.entries.map(e=>e.exId)))];
+  if(!progExSel||!exIds.includes(progExSel))progExSel=exIds[0];
+  const best=bestFor(progExSel);
+  /* per-session best est1RM series for selected exercise */
+  const series=[];S.logs.forEach(l=>{let m=0;l.entries.forEach(e=>{if(e.exId===progExSel)e.sets.forEach(s=>{const v=est1RM(s.w,s.r);if(v>m)m=v})});if(m>0)series.push({d:l.date.slice(5,10),v:Math.round(m)})});
+  /* weekly volume */
+  const wk={};S.logs.forEach(l=>{const k=weekKey(l.date);wk[k]=(wk[k]||0)+totalVolume(l)});
+  const wkArr=Object.entries(wk).slice(-8);const wkMax=Math.max(...wkArr.map(x=>x[1]),1);
+  let h=`<div class="hd"><h1>${T("progTitle")}</h1><button class="btn sm sec" id="btnAiWeekly">${T("aiWeekly")}</button></div>
+  <div class="statgrid mb8">
+    <div class="stat"><b>${S.logs.length}</b><span>${T("statWorkouts")}</span></div>
+    <div class="stat"><b>${(totV/1000).toFixed(1)}</b><span>${T("statVolume")}</span></div>
+    <div class="stat"><b>${thisWeekCount()}${S.plan?"/"+S.plan.freq:""}</b><span>${T("statStreak")}</span></div>
+  </div>
+  <div class="card"><b>${T("exChart")}</b>
+    <select id="progEx" class="mt8">${exIds.map(id=>`<option value="${id}" ${id===progExSel?"selected":""}>${exName(id)}</option>`).join("")}</select>
+    <div class="row mt8"><span class="tag acc">${T("maxw")} ${best.maxw}kg</span><span class="tag blue">${T("est1rm")} ${Math.round(best.e1rm)}kg</span></div>
+    ${lineChart(series)}
+  </div>
+  <div class="card"><b>${T("weekVol")}</b><div class="mt8">
+  ${wkArr.map(([k,v])=>`<div class="row mt8"><span class="dim" style="width:64px">${k.slice(5)}</span><div class="bar grow"><i style="width:${Math.round(v/wkMax*100)}%"></i></div><span class="sub" style="width:56px;text-align:right">${Math.round(v)}</span></div>`).join("")}
+  </div></div>
+  <div class="card"><b>${T("history")}</b>${S.logs.slice().reverse().slice(0,20).map((l,i)=>{
+    const idx=S.logs.length-1-i;
+    const meta=l.swimDist!==undefined?`🏊 ${l.swimDist}m · ${l.durMin} ${T("durMin")}`:`${l.entries.length} ${T("exercises")} · ${Math.round(totalVolume(l))} kg${l.prs&&l.prs.length?` · <span style="color:var(--orange)">🏆 ${l.prs.length} ${T("newPR")}</span>`:""}`;
+    return `<div class="listitem" data-log="${idx}"><div><b>${l.date.slice(0,10)} · ${TD(l.dayKey)}</b>
+    <div class="exmeta">${meta}</div></div><span class="arrow">›</span></div>`}).join("")}
+  </div>`;
+  b.innerHTML=h;
+  $("#progEx").onchange=e=>{progExSel=e.target.value;renderProgress()};
+  $("#btnAiWeekly").onclick=aiWeeklyReview;
+  b.querySelectorAll("[data-log]").forEach(x=>x.onclick=()=>{
+    const l=S.logs[+x.dataset.log];if(!l)return;
+    const body=l.swimDist!==undefined
+      ?`<div class="card"><b>🏊 ${T("swimSession")}</b><div class="sub mt8">${T("swimDistL")}: ${l.swimDist}m · ${T("swimTimeL")}: ${l.durMin}</div></div>`
+      :l.entries.map(e=>`<div class="card"><b>${exName(e.exId)}</b><div class="sub mt8">${e.sets.map(s=>`${s.w}kg×${s.r}`).join("　")}</div></div>`).join("");
+    openSheet(`<h3>${l.date.slice(0,10)} · ${TD(l.dayKey)}</h3>`+body+`<button class="btn sec mt8" id="reShare">${T("share")}</button>`);
+    $("#reShare").onclick=()=>{closeSheet();openShareCard(l,totalVolume(l))};
+  });
+}
+function lineChart(series){
+  if(series.length<2)return `<div class="svgchart" style="display:flex;align-items:center;justify-content:center"><span class="dim">— ${series.length} pt —</span></div>`;
+  const w=320,hh=170,pad=28;
+  const vs=series.map(s=>s.v);const mn=Math.min(...vs),mx=Math.max(...vs);const rng=mx-mn||1;
+  const pts=series.map((s,i)=>{const x=pad+i*(w-pad*1.5)/(series.length-1);const y=hh-pad-((s.v-mn)/rng)*(hh-pad*2);return[x,y]});
+  return `<svg class="svgchart" viewBox="0 0 ${w} ${hh}" preserveAspectRatio="none">
+  <polyline points="${pts.map(p=>p.join(",")).join(" ")}" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linejoin="round"/>
+  ${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="3.4" fill="#4ade80"/><text x="${p[0]}" y="${p[1]-9}" fill="#9aa3b2" font-size="10" text-anchor="middle">${series[i].v}</text>`).join("")}
+  <text x="${pad}" y="${hh-6}" fill="#6b7482" font-size="10">${series[0].d}</text>
+  <text x="${w-pad/2}" y="${hh-6}" fill="#6b7482" font-size="10" text-anchor="end">${series[series.length-1].d}</text></svg>`;
+}
+
+/* ================= SHARE CARD ================= */
+function openShareCard(log,vol){
+  const cv=$("#shareCanvas"),ctx=cv.getContext("2d");
+  const grad=ctx.createLinearGradient(0,0,750,1000);grad.addColorStop(0,"#0e1013");grad.addColorStop(1,"#123c22");
+  ctx.fillStyle=grad;ctx.fillRect(0,0,750,1000);
+  ctx.fillStyle="#4ade80";ctx.font="bold 54px -apple-system,sans-serif";ctx.fillText("GymSense",60,110);
+  ctx.fillStyle="#9aa3b2";ctx.font="26px -apple-system,sans-serif";ctx.fillText(log.date.slice(0,10)+" · "+TD(log.dayKey),60,160);
+  ctx.strokeStyle="#2b313c";ctx.beginPath();ctx.moveTo(60,200);ctx.lineTo(690,200);ctx.stroke();
+  const isSwim=log.swimDist!==undefined;
+  const stats=isSwim
+    ?[[log.swimDist+" m",T("swimDistL")],[log.segsDone,T("segMain")],[log.durMin+" "+T("durMin"),"⏱"],["🏊",T("swimSession")]]
+    :[[Math.round(vol)+" kg",T("totalVol")],[log.entries.length,T("exercises")],[log.entries.reduce((a,e)=>a+e.sets.length,0),T("setsDone")],[log.durMin+" "+T("durMin"),"⏱"]];
+  stats.forEach((s,i)=>{const x=60+(i%2)*330,y=280+Math.floor(i/2)*150;
+    ctx.fillStyle="#eef1f5";ctx.font="bold 56px -apple-system,sans-serif";ctx.fillText(String(s[0]),x,y);
+    ctx.fillStyle="#6b7482";ctx.font="24px -apple-system,sans-serif";ctx.fillText(String(s[1]),x,y+38)});
+  let y=620;ctx.font="28px -apple-system,sans-serif";
+  if(isSwim){ctx.fillStyle="#60a5fa";ctx.font="bold 34px -apple-system,sans-serif";ctx.fillText("🏊 "+T("swimSession"),60,y);y+=52}
+  log.entries.slice(0,6).forEach(e=>{
+    const bs=e.sets.reduce((a,s)=>(+s.w>+a.w?s:a),e.sets[0]);
+    ctx.fillStyle="#eef1f5";ctx.fillText(exName(e.exId),60,y);
+    ctx.fillStyle="#4ade80";ctx.textAlign="right";ctx.fillText(bs.w+"kg × "+bs.r,690,y);ctx.textAlign="left";
+    y+=52;});
+  if(log.prs&&log.prs.length){ctx.fillStyle="#fbbf24";ctx.font="bold 30px -apple-system,sans-serif";ctx.fillText("🏆 "+T("newPR")+": "+log.prs.map(p=>exName(p.exId)+" "+p.w+"kg").join("  "),60,y+30)}
+  ctx.fillStyle="#6b7482";ctx.font="22px -apple-system,sans-serif";ctx.fillText(LANG==="zh"?"器械感知 · AI力量教练":"The AI coach that knows your gym",60,950);
+  const url=cv.toDataURL("image/png");
+  openSheet(`<h3>${T("share")}</h3><img src="${url}" style="width:100%;border-radius:14px"><p class="dim mt8 center">${T("shareMade")}</p><button class="btn sec mt12" onclick="closeSheet()">${T("done")}</button>`);
+}
+
+/* ================= ME ================= */
+function renderMe(){
+  applyLangTabs();
+  const b=$("#meBody");const p=S.profile||{};
+  b.innerHTML=`<div class="hd"><h1>${T("meTitle")}</h1></div>
+  <div class="card"><b>${T("profile")}</b>
+    <div class="sub mt8">${T(p.sex||"male")} · ${p.age} · ${p.height}cm · ${p.weight}kg · ${T("exp"+(p.exp??1))} · ${goalLabel(p.goal||"muscle")} · ${p.freq}/wk${p.swim?` · 🏊×${p.swim}`:""}${(p.injuries&&p.injuries.length)?` · 🩹 ${p.injuries.map(a=>T("inj_"+a)).join("/")}`:""}</div>
+    <button class="btn sm sec mt8" id="btnEditProfile">${T("editProfile")}</button></div>
+  <div class="card"><b>${T("aiSet")}</b>
+    <p class="dim mt8">${S.settings.apiKey?("✅ "+T("aiOn")+" · "+esc(S.settings.provider||"anthropic")):T("aiOff")}</p>
+    <label class="fl">${T("provider")}</label>
+    <select id="setProv">
+      <option value="anthropic" ${(S.settings.provider||"anthropic")==="anthropic"?"selected":""}>${T("prov_anthropic")}</option>
+      <option value="deepseek" ${S.settings.provider==="deepseek"?"selected":""}>${T("prov_deepseek")}</option>
+      <option value="custom" ${S.settings.provider==="custom"?"selected":""}>${T("prov_custom")}</option>
+    </select>
+    <div id="baseWrap" style="display:${(S.settings.provider||"anthropic")==="anthropic"?"none":"block"}">
+      <label class="fl">${T("baseUrlL")}</label><input id="setBase" value="${esc(S.settings.baseUrl||((PROV_DEF[S.settings.provider]||{}).base||""))}" placeholder="https://api.deepseek.com">
+    </div>
+    <label class="fl">${T("apiKey")}</label><input id="setKey" type="password" value="${esc(S.settings.apiKey)}" placeholder="${T("apiKeyPh")}">
+    <label class="fl">${T("model")}</label><input id="setModel" value="${esc(S.settings.model)}">
+    <div id="provHint">${S.settings.provider==="deepseek"?`<div class="warnbox mt8">${T("visionUnsup")}</div>`:""}</div>
+    <button class="btn sm sec mt12" id="btnSaveKey">${T("save")}</button>
+    <button class="btn ghost mt8" id="btnChat">💬 ${T("aiChat")}</button></div>
+  <div class="card"><b>${T("dataTitle")}</b>
+    <div class="row mt8" style="flex-wrap:wrap">
+    <button class="btn sm sec" id="btnExport">${T("exportData")}</button>
+    <button class="btn sm sec" id="btnImport">${T("importData")}</button>
+    <button class="btn sm warn" id="btnReset">${T("resetAll")}</button></div>
+    <input type="file" id="impFile" accept=".json" style="display:none"></div>
+  <div class="card"><b>${T("disclaimerT")}</b><p class="dim mt8">${T("disclaimer")}</p></div>
+  <p class="dim center">GymSense MVP v1.4 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
+  $("#btnEditProfile").onclick=()=>{OB.step=0;OB.profile=Object.assign({},S.profile);$("#tabbar").style.display="none";
+    document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));$("#view-onboard").classList.add("active");
+    renderOnboard();
+    // patch: when editing, "next" goes straight back
+    const orig=$("#obNext");orig.textContent=T("save");
+    orig.onclick=()=>{S.profile={sex:OB.profile.sex,age:+$("#obAge").value||25,height:+$("#obH").value||170,weight:+$("#obW").value||65,exp:+$("#obExp").value,goal:OB.profile.goal,freq:OB.profile.freq||suggestFreq(+$("#obExp").value),injuries:OB.profile.injuries||[],swim:OB.profile.swim||0};
+      S.plan=generatePlan();save();$("#tabbar").style.display="flex";switchView("me");toast(T("saveOk"))};
+  };
+  $("#setProv").onchange=()=>{
+    const p=$("#setProv").value;const def=PROV_DEF[p]||PROV_DEF.custom;
+    $("#setModel").value=def.model;
+    $("#setBase").value=def.base;
+    $("#baseWrap").style.display=p==="anthropic"?"none":"block";
+    $("#provHint").innerHTML=p==="deepseek"?`<div class="warnbox mt8">${T("visionUnsup")}</div>`:"";
+  };
+  $("#btnSaveKey").onclick=()=>{
+    const p=$("#setProv").value;const def=PROV_DEF[p]||PROV_DEF.custom;
+    S.settings.provider=p;
+    S.settings.baseUrl=$("#setBase").value.trim()||def.base;
+    S.settings.apiKey=$("#setKey").value.trim();
+    S.settings.model=$("#setModel").value.trim()||def.model||"claude-sonnet-4-5";
+    save();renderMe();toast(T("saveOk"));
+  };
+  $("#btnChat").onclick=openChat;
+  $("#btnExport").onclick=()=>{
+    const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="gymsense-data.json";a.click();
+  };
+  $("#btnImport").onclick=()=>$("#impFile").click();
+  $("#impFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+    rd.onload=()=>{try{const o=JSON.parse(rd.result);if(o&&o.profile!==undefined){S=o;save();LANG=S.settings.lang||"zh";toast(T("saveOk"));switchView("plan")}else toast("Invalid file")}catch(err){toast("Invalid file")}};
+    rd.readAsText(f)};
+  $("#btnReset").onclick=()=>{if(confirm(T("resetConfirm"))){store.del("gymsense");location.reload()}};
+}
+/* ================= AI LAYER (optional, user's own API key) ================= */
+const AI_SYS=()=>LANG==="zh"
+ ?"你是GymSense应用内的健身教练助手。规则：1) 训练计划的组数、次数、重量等数字由应用的规则引擎决定，你只负责解释、答疑和提出方向性建议，不要直接开新的训练处方数字；2) 涉及疼痛、伤病、疾病、用药时，一律建议咨询医生或专业人士，不做诊断；3) 回答简洁实用，用要点式短段落，不超过250字；4) 只依据下面提供的用户数据，不要编造用户没有的记录。"
+ :"You are the in-app coach assistant of GymSense. Rules: 1) Set/rep/weight numbers come from the app's rules engine — you explain, answer and give directional advice only, never prescribe new numbers; 2) For pain, injury, illness or medication always refer to a doctor or professional, no diagnosis; 3) Be concise and practical, short bullet-style paragraphs, under 180 words; 4) Use only the user data provided — never invent records the user doesn't have.";
+function userContext(){
+  const p=S.profile||{};const gym=S.gyms[S.activeGym];
+  const recent=S.logs.slice(-8).map(l=>({date:l.date.slice(0,10),day:l.dayKey,
+    entries:l.entries.map(e=>({ex:EXMAP[e.exId]?EXMAP[e.exId].en:e.exId,sets:e.sets.map(s=>s.w+"kgx"+s.r)}))}));
+  return JSON.stringify({profile:{sex:p.sex,age:p.age,height:p.height,weight:p.weight,exp:p.exp,goal:p.goal,freq:p.freq,flaggedInjuries:(p.injuries||[]).map(a=>({lb:"lower back",sh:"shoulder",kn:"knee",el:"elbow",wr:"wrist"}[a]||a)),swimSessionsPerWeek:p.swim||0},
+    gym:gym?{name:gym.name,equipment:gym.eq}:null,
+    plan:S.plan?S.plan.days.map(d=>({day:d.key,exercises:d.exercises.map(e=>({ex:EXMAP[e.exId]?EXMAP[e.exId].en:e.exId,sets:e.sets,reps:e.reps}))})):null,
+    recentWorkouts:recent});
+}
+function aiProvider(){return S.settings.provider||"anthropic"}
+function aiBase(){
+  const st=S.settings;const def=PROV_DEF[aiProvider()]||PROV_DEF.custom;
+  return (st.baseUrl||def.base||"").replace(/\/+$/,"");
+}
+function wrapNetErr(e){
+  const m=String((e&&e.message)||e);
+  if(e&&e.name==="TypeError"||m.includes("Failed to fetch")||m.includes("Load failed")||m.includes("NetworkError"))return new Error(T("netErr"));
+  return e;
+}
+async function callAI(messages,maxTokens){
+  const st=S.settings;const key=st.apiKey;if(!key)throw new Error(T("aiScanNeedKey"));
+  try{
+    if(aiProvider()==="anthropic"){
+      const res=await fetch(aiBase()+"/v1/messages",{
+        method:"POST",
+        headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body:JSON.stringify({model:st.model||"claude-sonnet-4-5",max_tokens:maxTokens||800,system:AI_SYS(),messages})
+      });
+      if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,200))}
+      const data=await res.json();
+      return (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n");
+    }
+    /* OpenAI-compatible path (DeepSeek / custom) */
+    const res=await fetch(aiBase()+"/chat/completions",{
+      method:"POST",
+      headers:{"content-type":"application/json","authorization":"Bearer "+key},
+      body:JSON.stringify({model:st.model||PROV_DEF.deepseek.model,max_tokens:maxTokens||800,
+        messages:[{role:"system",content:AI_SYS()}].concat(messages)})
+    });
+    if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,200))}
+    const data=await res.json();
+    const ch=(data.choices||[])[0];
+    return (ch&&ch.message&&ch.message.content)||"";
+  }catch(e){throw wrapNetErr(e)}
+}
+/* file -> base64 (downscaled) */
+function fileToB64(file,maxW){return new Promise((ok,bad)=>{
+  const img=new Image();const url=URL.createObjectURL(file);
+  img.onload=()=>{const sc=Math.min(1,(maxW||1024)/img.width);
+    const c=document.createElement("canvas");c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+    URL.revokeObjectURL(url);ok(c.toDataURL("image/jpeg",.8).split(",")[1])};
+  img.onerror=bad;img.src=url;})}
+async function aiScanEquipment(files){
+  const key=S.settings.apiKey;if(!key)throw new Error(T("aiScanNeedKey"));
+  const imgs=[];for(const f of files)imgs.push(await fileToB64(f,1024));
+  const catList=EQUIP.map(e=>`${e.id}: ${e.en} / ${e.zh}`).join("\n");
+  const prompt="Identify every piece of gym equipment visible in these photos. Map each to the closest category id from this list:\n"+catList+"\nReturn ONLY a JSON array of matching category ids, e.g. [\"barbell\",\"m_lat\"]. No other text.";
+  let txt="";
+  try{
+    if(aiProvider()==="anthropic"){
+      const content=imgs.map(b=>({type:"image",source:{type:"base64",media_type:"image/jpeg",data:b}}));
+      content.push({type:"text",text:prompt});
+      const res=await fetch(aiBase()+"/v1/messages",{
+        method:"POST",
+        headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body:JSON.stringify({model:S.settings.model||"claude-sonnet-4-5",max_tokens:400,messages:[{role:"user",content}]})
+      });
+      if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,200))}
+      const data=await res.json();
+      txt=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
+    }else{
+      /* OpenAI-compatible vision format; providers without vision will return an error shown to the user */
+      const content=imgs.map(b=>({type:"image_url",image_url:{url:"data:image/jpeg;base64,"+b}}));
+      content.push({type:"text",text:prompt});
+      const res=await fetch(aiBase()+"/chat/completions",{
+        method:"POST",
+        headers:{"content-type":"application/json","authorization":"Bearer "+S.settings.apiKey},
+        body:JSON.stringify({model:S.settings.model||PROV_DEF.deepseek.model,max_tokens:400,messages:[{role:"user",content}]})
+      });
+      if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,200))}
+      const data=await res.json();
+      const ch=(data.choices||[])[0];
+      txt=(ch&&ch.message&&ch.message.content)||"";
+    }
+  }catch(e){throw wrapNetErr(e)}
+  const m=txt.match(/\[[\s\S]*?\]/);if(!m)throw new Error("parse");
+  const ids=JSON.parse(m[0]).filter(id=>EQMAP[id]);
+  if(!ids.length)throw new Error("none");
+  return ids;
+}
+function aiSheetShell(title){
+  openSheet(`<h3>${title}</h3><div id="aiOut"><span class="spin"></span> ${T("aiThinking")}</div><button class="btn sec mt12" onclick="closeSheet()">${T("done")}</button>`);
+}
+async function aiExplainPlan(){
+  if(!S.settings.apiKey){toast(T("aiScanNeedKey"));return}
+  aiSheetShell(T("aiExplain").replace("🤖 ",""));
+  try{
+    const q=LANG==="zh"?"请解释这份训练计划的编排逻辑：为什么这样分化、动作顺序的原因、以及执行时最需要注意的2-3点。":"Explain the logic of this plan: why this split, the exercise ordering, and the top 2-3 things to watch when executing it.";
+    const out=await callAI([{role:"user",content:"USER DATA:\n"+userContext()+"\n\nQUESTION: "+q}]);
+    $("#aiOut").innerHTML=`<div class="msg a">${esc(out)}</div>`;
+  }catch(e){$("#aiOut").innerHTML=`<span style="color:var(--red)">${T("aiErr")}${esc(e.message)}</span>`}
+}
+async function aiWeeklyReview(){
+  if(!S.settings.apiKey){toast(T("aiScanNeedKey"));return}
+  aiSheetShell(T("aiWeekly").replace("🤖 ",""));
+  try{
+    const q=LANG==="zh"?"请基于最近的训练记录做一次复盘：1) 训练频率与计划的差距；2) 哪些动作在进步、哪些停滞；3) 下周的1-2条方向性建议（不要给具体重量数字）。":"Review my recent workouts: 1) adherence vs plan; 2) which lifts progressed vs stalled; 3) 1-2 directional suggestions for next week (no specific weight prescriptions).";
+    const out=await callAI([{role:"user",content:"USER DATA:\n"+userContext()+"\n\nQUESTION: "+q}]);
+    $("#aiOut").innerHTML=`<div class="msg a">${esc(out)}</div>`;
+  }catch(e){$("#aiOut").innerHTML=`<span style="color:var(--red)">${T("aiErr")}${esc(e.message)}</span>`}
+}
+let chatHist=[];
+function openChat(){
+  if(!S.settings.apiKey){toast(T("aiScanNeedKey"));return}
+  openSheet(`<h3>${T("aiChat")}</h3><div id="chatBox" style="min-height:120px;max-height:46vh;overflow-y:auto">${chatHist.map(m=>`<div class="msg ${m.role==="user"?"u":"a"}">${esc(m.content)}</div>`).join("")}</div>
+  <div class="row mt12"><input id="chatIn" class="grow" placeholder="${T("aiChatPh")}"><button class="btn sm" id="chatSend">${T("send")}</button></div>`);
+  const send=async()=>{
+    const v=$("#chatIn").value.trim();if(!v)return;
+    $("#chatIn").value="";
+    chatHist.push({role:"user",content:v});
+    const box=$("#chatBox");
+    box.innerHTML+=`<div class="msg u">${esc(v)}</div><div class="msg a" id="pending"><span class="spin"></span></div>`;box.scrollTop=box.scrollHeight;
+    try{
+      const msgs=[{role:"user",content:"USER DATA:\n"+userContext()}, {role:"assistant",content:"OK, I have the user's context."}].concat(chatHist.slice(-10));
+      const out=await callAI(msgs);
+      chatHist.push({role:"assistant",content:out});
+      const p=document.getElementById("pending");if(p){p.id="";p.textContent=out}
+      box.scrollTop=box.scrollHeight;
+    }catch(e){const p=document.getElementById("pending");if(p){p.id="";p.innerHTML=`<span style="color:var(--red)">${T("aiErr")}${esc(e.message)}</span>`}}
+  };
+  $("#chatSend").onclick=send;
+  $("#chatIn").onkeydown=e=>{if(e.key==="Enter")send()};
+}
+/* ================= INIT ================= */
+load();
+applyLangTabs();
+$("#btnLang").textContent=LANG==="zh"?"EN":"中";
+if(!S.profile){
+  $("#tabbar").style.display="none";
+  $("#view-onboard").classList.add("active");
+  renderOnboard();
+}else{
+  switchView("plan");
+}
+</script>
+</body>
+</html>

@@ -237,6 +237,20 @@ applyDropped:"已过滤 {n} 条无效或不适合你的动作（器械不符 / �
 applyFail:"未能生成有效方案：请先在对话里把想要的改动说得更具体，再点一次。",
 applyOk:"计划已更新",
 splitCustom:"自定义分化（AI 调整）",
+mediaTitle:"动作图解资料库",
+dlPlanMedia:"⬇️ 下载本计划的动作图解",
+dlAllMedia:"⬇️ 下载全部动作图解",
+mediaCached:"已缓存 {a}/{b} 个动作的真人图解（离线可用）",
+mediaClear:"清空图解缓存",
+mediaClearConfirm:"删除所有已下载的动作图解？",
+dlProgress:"下载中 {i}/{n}：{name}",
+dlDone:"完成：新增 {ok} 个图解{fail}",
+dlFailPart:"，{n} 个下载失败（可稍后重试）",
+dlNothing:"本计划的动作图解均已缓存 ✅",
+mediaSrcNote:"图解与步骤来自开源项目 free-exercise-db（公有领域授权），首次下载需联网，之后离线可用。",
+steps:"📖 动作步骤（英文原文）",
+photoDemo:"真人示范 · 起始/结束姿势交替播放",
+dlThis:"⬇️ 下载此动作的真人图解",
 aiChat:"问 AI 教练",aiChatPh:"例：肩膀有点不舒服，今天怎么调整？",send:"发送",
 dataTitle:"数据管理",exportData:"导出数据 (JSON)",importData:"导入数据",resetAll:"清空全部数据",
 resetConfirm:"⚠️ 将删除档案、计划与全部历史记录。确定？",
@@ -318,6 +332,20 @@ applyDropped:"{n} invalid or unsuitable items filtered (equipment mismatch / inj
 applyFail:"Couldn't produce a valid revision — be more specific in chat, then try again.",
 applyOk:"Plan updated",
 splitCustom:"Custom split (AI-adjusted)",
+mediaTitle:"Exercise media library",
+dlPlanMedia:"⬇️ Download media for this plan",
+dlAllMedia:"⬇️ Download all exercise media",
+mediaCached:"{a}/{b} exercises cached with real-photo demos (offline)",
+mediaClear:"Clear media cache",
+mediaClearConfirm:"Delete all downloaded exercise media?",
+dlProgress:"Downloading {i}/{n}: {name}",
+dlDone:"Done: {ok} added{fail}",
+dlFailPart:", {n} failed (retry later)",
+dlNothing:"All media for this plan is already cached ✅",
+mediaSrcNote:"Photos & steps from the open-source free-exercise-db project (public domain). Needs network once; offline afterwards.",
+steps:"📖 Instructions",
+photoDemo:"Real-photo demo · start/end positions alternating",
+dlThis:"⬇️ Download real-photo demo",
 aiChat:"Ask the AI coach",aiChatPh:"e.g. My shoulder feels off — how should I adjust today?",send:"Send",
 dataTitle:"Data",exportData:"Export data (JSON)",importData:"Import data",resetAll:"Erase all data",
 resetConfirm:"⚠️ This deletes profile, plan and all history. Sure?",
@@ -578,6 +606,76 @@ const RISK={
  crunch:{lb:1}, plank:{}, hanging_leg:{sh:1}, cable_crunch:{lb:1},
 };
 function userInjuries(){return (S.profile&&S.profile.injuries)||[]}
+
+/* ===== free-exercise-db media library (public domain, github-hosted) ===== */
+const MEDIA_BASES=[
+ "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main",
+ "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main"
+];
+const EDB_MAP={
+ bb_bench:"Barbell_Bench_Press_-_Medium_Grip", bb_incline:"Barbell_Incline_Bench_Press_-_Medium_Grip",
+ db_bench:"Dumbbell_Bench_Press", db_incline:"Incline_Dumbbell_Press", db_fly:"Dumbbell_Flyes",
+ cable_fly:"Cable_Crossover", m_pec_fly:"Butterfly", m_chest_press:"Machine_Bench_Press",
+ smith_bench:"Smith_Machine_Bench_Press", pushup:"Pushups", dip_chest:"Dips_-_Chest_Version", dip_tri:"Dips_-_Triceps_Version",
+ pullup_ex:"Pullups", lat_pd:"Wide-Grip_Lat_Pulldown", bb_row:"Bent_Over_Barbell_Row", db_row:"One-Arm_Dumbbell_Row",
+ seated_row:"Seated_Cable_Rows", straight_pd:"Straight-Arm_Pulldown", deadlift:"Barbell_Deadlift",
+ rdl:"Romanian_Deadlift", db_rdl:"Stiff-Legged_Dumbbell_Deadlift", hyperext:"Hyperextensions_Back_Extensions",
+ ohp:"Standing_Military_Press", db_shoulder:"Seated_Dumbbell_Press", m_shoulder_press:"Machine_Shoulder_Military_Press",
+ db_lateral:"Side_Lateral_Raise", cable_lateral:"Cable_Seated_Lateral_Raise", rear_fly:"Reverse_Machine_Flyes", facepull:"Face_Pull",
+ bb_curl:"Barbell_Curl", ez_curl:"EZ-Bar_Curl", db_curl:"Dumbbell_Alternate_Bicep_Curl",
+ hammer_curl:"Alternate_Hammer_Curl", cable_curl:"Standing_Biceps_Cable_Curl",
+ cable_pushdown:"Triceps_Pushdown", skullcrusher:"EZ-Bar_Skullcrusher", db_ohext:"Standing_Dumbbell_Triceps_Extension",
+ close_bench:"Close-Grip_Barbell_Bench_Press",
+ squat:"Barbell_Squat", smith_squat:"Smith_Machine_Squat", goblet:"Goblet_Squat", lunge:"Dumbbell_Lunges",
+ leg_press_ex:"Leg_Press", hack_squat:"Hack_Squat", leg_ext_ex:"Leg_Extensions", leg_curl_ex:"Lying_Leg_Curls",
+ kb_swing:"One-Arm_Kettlebell_Swings", hip_thrust:"Barbell_Hip_Thrust", abduction:"Thigh_Abductor",
+ calf_raise:"Standing_Calf_Raises", smith_calf:"Smith_Machine_Calf_Raise", db_calf:"Standing_Dumbbell_Calf_Raise",
+ crunch:"Crunches", plank:"Plank", hanging_leg:"Hanging_Leg_Raise", cable_crunch:"Cable_Crunch",
+};
+/* IndexedDB blob cache (in-memory fallback) */
+let _idb=null;const _memMedia=new Map();
+function idbOpen(){return new Promise((ok,bad)=>{
+  if(!window.indexedDB)return ok(null);
+  if(_idb)return ok(_idb);
+  try{const r=indexedDB.open("gymsense-media",1);
+    r.onupgradeneeded=()=>r.result.createObjectStore("media");
+    r.onsuccess=()=>{_idb=r.result;ok(_idb)};
+    r.onerror=()=>ok(null);
+  }catch(e){ok(null)}
+})}
+async function mediaGet(k){const db=await idbOpen();if(!db)return _memMedia.get(k)||null;
+  return new Promise(ok=>{try{const t=db.transaction("media").objectStore("media").get(k);t.onsuccess=()=>ok(t.result||null);t.onerror=()=>ok(null)}catch(e){ok(null)}})}
+async function mediaSet(k,v){const db=await idbOpen();if(!db){_memMedia.set(k,v);return}
+  return new Promise(ok=>{try{const t=db.transaction("media","readwrite").objectStore("media").put(v,k);t.onsuccess=()=>ok();t.onerror=()=>ok()}catch(e){ok()}})}
+async function mediaKeys(){const db=await idbOpen();if(!db)return[..._memMedia.keys()];
+  return new Promise(ok=>{try{const t=db.transaction("media").objectStore("media").getAllKeys();t.onsuccess=()=>ok(t.result||[]);t.onerror=()=>ok([])}catch(e){ok([])}})}
+async function mediaClearAll(){_memMedia.clear();const db=await idbOpen();if(!db)return;
+  return new Promise(ok=>{try{const t=db.transaction("media","readwrite").objectStore("media").clear();t.onsuccess=()=>ok();t.onerror=()=>ok()}catch(e){ok()}})}
+/* download one exercise's media (json meta + 2 photos) with mirror fallback */
+async function mediaFetchOne(exId){
+  const edb=EDB_MAP[exId];if(!edb)return false;
+  for(const base of MEDIA_BASES){
+    try{
+      const mr=await fetch(base+"/exercises/"+edb+".json");
+      if(!mr.ok)continue;
+      const meta=await mr.json();
+      const imgs=[];
+      for(const rel of (meta.images||[]).slice(0,2)){
+        const ir=await fetch(base+"/exercises/"+rel);
+        if(!ir.ok)throw 0;
+        imgs.push(await ir.blob());
+      }
+      if(!imgs.length)continue;
+      await mediaSet(exId,{edbId:edb,name:meta.name||edb,instructions:meta.instructions||[],imgs,ts:Date.now()});
+      return true;
+    }catch(e){}
+  }
+  return false;
+}
+function planExIds(){
+  if(!S.plan)return[];
+  return [...new Set(S.plan.days.filter(d=>!d.swimSegs).flatMap(d=>d.exercises.map(e=>e.exId)))].filter(id=>EDB_MAP[id]);
+}
 function riskLevel(exId,inj){if(!inj||!inj.length)return 0;const r=RISK[exId];if(!r)return 0;let m=0;inj.forEach(a=>{if((r[a]||0)>m)m=r[a]});return m}
 function riskAreas(exId,inj){const r=RISK[exId]||{};return (inj||[]).filter(a=>r[a])}
 /* ================= STATE & STORAGE ================= */
@@ -1080,6 +1178,7 @@ function renderPlan(){
     </div></div></div>
     <div class="notice">${T("warmup")}</div>`;
   if(userInjuries().length)h+=`<div class="warnbox" style="margin-bottom:12px">🩹 ${userInjuries().map(a=>T("inj_"+a)).join("、")} — ${T("injPlanNote")}</div>`;
+  h+=`<button class="btn sec" id="btnDlMedia" style="margin-bottom:12px">${T("dlPlanMedia")}</button>`;
   p.days.forEach((d,di)=>{
     if(d.swimSegs){
       h+=`<div class="card daycard" style="border-left-color:#60a5fa"><div class="row mb8"><b class="grow">🏊 ${T("day").replace("{n}",di+1)} · ${TD(d.key)}</b>
@@ -1116,6 +1215,30 @@ function renderPlan(){
   b.querySelectorAll("[data-pswap]").forEach(x=>x.onclick=ev=>{ev.stopPropagation();const[di,ei]=x.dataset.pswap.split("-").map(Number);openPlanSwap(di,ei)});
   $("#btnRegen").onclick=()=>{if(confirm(T("regenConfirm"))){S.plan=generatePlan();save();renderPlan();toast(T("saveOk"))}};
   $("#btnAiExplain").onclick=aiExplainPlan;
+  /* media download button: show how many are uncached */
+  (async()=>{
+    const btn=$("#btnDlMedia");if(!btn)return;
+    const cached=new Set(await mediaKeys());
+    const missing=planExIds().filter(id=>!cached.has(id));
+    if(missing.length)btn.textContent=`${T("dlPlanMedia")}（${missing.length}）`;
+    btn.onclick=()=>missing.length?dlMediaFlow(missing):toast(T("dlNothing"));
+  })();
+}
+
+/* sequential media download with progress sheet */
+async function dlMediaFlow(ids){
+  openSheet(`<h3>${T("mediaTitle")}</h3><div id="dlStatus" class="sub"></div><div class="bar mt12"><i id="dlBar" style="width:0%"></i></div><p class="dim mt12">${T("mediaSrcNote")}</p>`);
+  let okN=0,failN=0;
+  for(let i=0;i<ids.length;i++){
+    const st=document.getElementById("dlStatus");if(!st)return; // sheet closed -> abort
+    st.textContent=fmt(T("dlProgress"),{i:i+1,n:ids.length,name:exName(ids[i])});
+    (await mediaFetchOne(ids[i]))?okN++:failN++;
+    const bar=document.getElementById("dlBar");if(bar)bar.style.width=Math.round((i+1)/ids.length*100)+"%";
+  }
+  closeSheet();
+  toast(fmt(T("dlDone"),{ok:okN,fail:failN?fmt(T("dlFailPart"),{n:failN}):""}));
+  const cur=document.querySelector(".tab.active");
+  switchView(cur?cur.dataset.v:"plan");
 }
 
 /* swap an exercise inside the saved plan */
@@ -1137,6 +1260,7 @@ function openExDetail(exId,fromWorkout){
   const ex=EXMAP[exId];if(!ex)return;
   const hasAnim=!!EXANIM[exId];
   openSheet(`<h3>${exNameBoth(exId)}</h3>
+  <div id="edbMedia"></div>
   ${hasAnim?`<div class="animwrap"><svg id="exAnim" viewBox="0 0 300 200"></svg><div class="animcap">${LANG==="zh"?"动作演示 · 黄色虚线为运动轨迹":"Movement demo · dashed line = bar path"}</div></div>`:""}
   ${muscleSVG(ex.m,ex.m2)}
   <div class="sub center mb8">${T("target")}: ${ex.m.map(m=>T("mus_"+m)).join(" / ")}${ex.m2&&ex.m2.length?` （+ ${ex.m2.map(m=>T("mus_"+m)).join("/")}）`:""}</div>
@@ -1146,6 +1270,30 @@ function openExDetail(exId,fromWorkout){
   <p class="dim mt12">${eqName(ex.eq[0])}${ex.eq.length>1?" + "+ex.eq.slice(1).map(eqName).join(" + "):""}</p>
   <button class="btn sec mt12" onclick="closeSheet()">${T("done")}</button>`);
   if(hasAnim)startAnim(exId);
+  loadEdbMedia(exId);
+}
+/* photo demo block inside detail sheet */
+let photoFlipIv=null;
+async function loadEdbMedia(exId){
+  const slot=document.getElementById("edbMedia");if(!slot)return;
+  const rec=await mediaGet(exId);
+  if(!rec){
+    if(EDB_MAP[exId])slot.innerHTML=`<button class="btn ghost" style="margin-bottom:10px" id="dlOne">${T("dlThis")}</button>`;
+    const b=document.getElementById("dlOne");
+    if(b)b.onclick=async()=>{b.innerHTML=`<span class="spin"></span>`;(await mediaFetchOne(exId))?loadEdbMedia(exId):(b.textContent="✕ "+T("scanFail"))};
+    return;
+  }
+  const urls=rec.imgs.map(b=>URL.createObjectURL(b));
+  slot.innerHTML=`<div class="animwrap"><img id="edbImg" src="${urls[0]}" style="width:100%;display:block;background:#fff">
+  <div class="animcap">${T("photoDemo")}</div></div>
+  ${rec.instructions&&rec.instructions.length?`<details class="card" style="margin-bottom:10px"><summary style="cursor:pointer;font-weight:700">${T("steps")}</summary><ol style="padding-left:18px;margin-top:8px">${rec.instructions.map(s=>`<li class="sub" style="margin-bottom:6px">${esc(s)}</li>`).join("")}</ol></details>`:""}`;
+  clearInterval(photoFlipIv);
+  let fi=0;
+  photoFlipIv=setInterval(()=>{
+    const img=document.getElementById("edbImg");
+    if(!img){clearInterval(photoFlipIv);urls.forEach(u=>URL.revokeObjectURL(u));return}
+    fi=(fi+1)%urls.length;img.src=urls[fi];
+  },1000);
 }
 
 /* ================= WORKOUT ================= */
@@ -1491,6 +1639,12 @@ function renderMe(){
     <div id="provHint">${S.settings.provider==="deepseek"?`<div class="warnbox mt8">${T("visionUnsup")}</div>`:""}</div>
     <button class="btn sm sec mt12" id="btnSaveKey">${T("save")}</button>
     <button class="btn ghost mt8" id="btnChat">💬 ${T("aiChat")}</button></div>
+  <div class="card"><b>${T("mediaTitle")}</b>
+    <p class="dim mt8" id="mediaStats">…</p>
+    <div class="row mt8" style="flex-wrap:wrap">
+    <button class="btn sm sec" id="btnDlAll">${T("dlAllMedia")}</button>
+    <button class="btn sm warn" id="btnMediaClear">${T("mediaClear")}</button></div>
+    <p class="dim mt8">${T("mediaSrcNote")}</p></div>
   <div class="card"><b>${T("dataTitle")}</b>
     <div class="row mt8" style="flex-wrap:wrap">
     <button class="btn sm sec" id="btnExport">${T("exportData")}</button>
@@ -1498,7 +1652,7 @@ function renderMe(){
     <button class="btn sm warn" id="btnReset">${T("resetAll")}</button></div>
     <input type="file" id="impFile" accept=".json" style="display:none"></div>
   <div class="card"><b>${T("disclaimerT")}</b><p class="dim mt8">${T("disclaimer")}</p></div>
-  <p class="dim center">GymSense MVP v1.5 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
+  <p class="dim center">GymSense MVP v1.6 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
   $("#btnEditProfile").onclick=()=>{OB.step=0;OB.profile=Object.assign({},S.profile);$("#tabbar").style.display="none";
     document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));$("#view-onboard").classList.add("active");
     renderOnboard();
@@ -1532,6 +1686,17 @@ function renderMe(){
     rd.onload=()=>{try{const o=JSON.parse(rd.result);if(o&&o.profile!==undefined){S=o;save();LANG=S.settings.lang||"zh";toast(T("saveOk"));switchView("plan")}else toast("Invalid file")}catch(err){toast("Invalid file")}};
     rd.readAsText(f)};
   $("#btnReset").onclick=()=>{if(confirm(T("resetConfirm"))){store.del("gymsense");location.reload()}};
+  /* media library card */
+  (async()=>{
+    const all=Object.keys(EDB_MAP);
+    const cached=new Set(await mediaKeys());
+    const el=$("#mediaStats");if(el)el.textContent=fmt(T("mediaCached"),{a:all.filter(id=>cached.has(id)).length,b:all.length});
+    $("#btnDlAll").onclick=()=>{
+      const missing=all.filter(id=>!cached.has(id));
+      missing.length?dlMediaFlow(missing):toast(T("dlNothing"));
+    };
+    $("#btnMediaClear").onclick=async()=>{if(confirm(T("mediaClearConfirm"))){await mediaClearAll();renderMe();toast(T("saveOk"))}};
+  })();
 }
 /* ================= AI LAYER (optional, user's own API key) ================= */
 const AI_SYS=()=>LANG==="zh"

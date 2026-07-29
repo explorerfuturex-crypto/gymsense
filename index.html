@@ -223,8 +223,12 @@ exChart:"动作进步曲线",pickEx:"选择动作",est1rm:"估算1RM",maxw:"最�
 weekVol:"每周容量 (kg)",history:"训练历史",noHistory:"完成第一次训练后，这里会出现你的进步数据。",
 aiWeekly:"🤖 AI 周复盘",share:"分享成绩卡",
 meTitle:"我的",profile:"个人档案",aiSet:"AI 设置",
-apiKey:"Anthropic API Key",apiKeyPh:"sk-ant-…（只保存在本机）",
-model:"模型",aiOn:"AI 已启用",aiOff:"未启用 AI（填入 Key 后可用：扫描器械 / 计划解释 / 周复盘 / 问答）",
+apiKey:"API Key",apiKeyPh:"sk-…（只保存在本机，不上传任何服务器）",
+model:"模型",aiOn:"AI 已启用",aiOff:"未启用 AI（选择服务商并填入 Key 后可用：扫描器械 / 计划解释 / 周复盘 / 问答）",
+provider:"AI 服务商",prov_anthropic:"Anthropic (Claude)",prov_deepseek:"DeepSeek",prov_custom:"自定义（OpenAI 兼容接口）",
+baseUrlL:"API 地址 (Base URL)",
+visionUnsup:"注意：DeepSeek 接口暂不支持图片输入，「AI 扫描器械」不可用（AI 解释 / 周复盘 / 问答不受影响）。需要扫器械请改用支持视觉的服务商，或在自定义里填支持视觉的模型（如通义 qwen-vl 系列）。",
+netErr:"请求未能到达服务器：可能是网络问题，或该服务商不允许网页直连（CORS 拦截）。请检查网络后重试；若反复出现，需要部署一个轻量转发代理（可以找 Claude 帮你生成）。",
 aiChat:"问 AI 教练",aiChatPh:"例：肩膀有点不舒服，今天怎么调整？",send:"发送",
 dataTitle:"数据管理",exportData:"导出数据 (JSON)",importData:"导入数据",resetAll:"清空全部数据",
 resetConfirm:"⚠️ 将删除档案、计划与全部历史记录。确定？",
@@ -292,8 +296,12 @@ exChart:"Exercise progression",pickEx:"Choose exercise",est1rm:"Est. 1RM",maxw:"
 weekVol:"Weekly volume (kg)",history:"History",noHistory:"Finish your first workout and your progress will appear here.",
 aiWeekly:"🤖 AI weekly review",share:"Share card",
 meTitle:"Me",profile:"Profile",aiSet:"AI settings",
-apiKey:"Anthropic API Key",apiKeyPh:"sk-ant-… (stored on this device only)",
-model:"Model",aiOn:"AI enabled",aiOff:"AI off (add a key to enable: equipment scan / plan explainer / weekly review / Q&A)",
+apiKey:"API Key",apiKeyPh:"sk-… (stored on this device only)",
+model:"Model",aiOn:"AI enabled",aiOff:"AI off (pick a provider and add a key to enable: equipment scan / plan explainer / weekly review / Q&A)",
+provider:"AI provider",prov_anthropic:"Anthropic (Claude)",prov_deepseek:"DeepSeek",prov_custom:"Custom (OpenAI-compatible)",
+baseUrlL:"API base URL",
+visionUnsup:"Note: the DeepSeek API doesn't accept image input yet — equipment scan won't work (explain / review / Q&A are fine). For scanning, use a vision-capable provider or a vision model via Custom.",
+netErr:"The request never reached the server — network issue, or this provider blocks direct browser calls (CORS). Retry on a good connection; if it persists, a tiny relay proxy is needed (ask Claude to generate one).",
 aiChat:"Ask the AI coach",aiChatPh:"e.g. My shoulder feels off — how should I adjust today?",send:"Send",
 dataTitle:"Data",exportData:"Export data (JSON)",importData:"Import data",resetAll:"Erase all data",
 resetConfirm:"⚠️ This deletes profile, plan and all history. Sure?",
@@ -563,11 +571,16 @@ const store={
   set(k,v){try{localStorage.setItem(k,v)}catch(e){memStore[k]=v}},
   del(k){try{localStorage.removeItem(k)}catch(e){delete memStore[k]}}
 };
-let S={profile:null,gyms:[],activeGym:0,plan:null,logs:[],settings:{lang:"zh",apiKey:"",model:"claude-sonnet-4-5"}};
+const PROV_DEF={
+  anthropic:{model:"claude-sonnet-4-5",base:"https://api.anthropic.com"},
+  deepseek:{model:"deepseek-v4-flash",base:"https://api.deepseek.com"},
+  custom:{model:"",base:""},
+};
+let S={profile:null,gyms:[],activeGym:0,plan:null,logs:[],settings:{lang:"zh",apiKey:"",model:"claude-sonnet-4-5",provider:"anthropic",baseUrl:""}};
 function save(){store.set("gymsense",JSON.stringify(S))}
 function load(){
   const raw=store.get("gymsense");
-  if(raw){try{const o=JSON.parse(raw);S=Object.assign(S,o);S.settings=Object.assign({lang:"zh",apiKey:"",model:"claude-sonnet-4-5"},o.settings||{})}catch(e){}}
+  if(raw){try{const o=JSON.parse(raw);S=Object.assign(S,o);S.settings=Object.assign({lang:"zh",apiKey:"",model:"claude-sonnet-4-5",provider:"anthropic",baseUrl:""},o.settings||{})}catch(e){}}
   LANG=S.settings.lang||"zh";
 }
 /* current workout session (in progress) */
@@ -1337,6 +1350,7 @@ function openGymEditor(gi){
 /* AI scan sheet (shared) */
 function openScanSheet(onDone){
   openSheet(`<h3>${T("aiScan")}</h3><p class="sub mb8">${T("scanTip")}</p>
+  ${aiProvider()==="deepseek"?`<div class="warnbox mb8">${T("visionUnsup")}</div>`:""}
   <input type="file" id="scanFile" accept="image/*" multiple capture="environment">
   <div id="scanStatus" class="mt12"></div>`);
   $("#scanFile").onchange=async e=>{
@@ -1446,9 +1460,19 @@ function renderMe(){
     <div class="sub mt8">${T(p.sex||"male")} · ${p.age} · ${p.height}cm · ${p.weight}kg · ${T("exp"+(p.exp??1))} · ${goalLabel(p.goal||"muscle")} · ${p.freq}/wk${p.swim?` · 🏊×${p.swim}`:""}${(p.injuries&&p.injuries.length)?` · 🩹 ${p.injuries.map(a=>T("inj_"+a)).join("/")}`:""}</div>
     <button class="btn sm sec mt8" id="btnEditProfile">${T("editProfile")}</button></div>
   <div class="card"><b>${T("aiSet")}</b>
-    <p class="dim mt8">${S.settings.apiKey?("✅ "+T("aiOn")):T("aiOff")}</p>
+    <p class="dim mt8">${S.settings.apiKey?("✅ "+T("aiOn")+" · "+esc(S.settings.provider||"anthropic")):T("aiOff")}</p>
+    <label class="fl">${T("provider")}</label>
+    <select id="setProv">
+      <option value="anthropic" ${(S.settings.provider||"anthropic")==="anthropic"?"selected":""}>${T("prov_anthropic")}</option>
+      <option value="deepseek" ${S.settings.provider==="deepseek"?"selected":""}>${T("prov_deepseek")}</option>
+      <option value="custom" ${S.settings.provider==="custom"?"selected":""}>${T("prov_custom")}</option>
+    </select>
+    <div id="baseWrap" style="display:${(S.settings.provider||"anthropic")==="anthropic"?"none":"block"}">
+      <label class="fl">${T("baseUrlL")}</label><input id="setBase" value="${esc(S.settings.baseUrl||((PROV_DEF[S.settings.provider]||{}).base||""))}" placeholder="https://api.deepseek.com">
+    </div>
     <label class="fl">${T("apiKey")}</label><input id="setKey" type="password" value="${esc(S.settings.apiKey)}" placeholder="${T("apiKeyPh")}">
     <label class="fl">${T("model")}</label><input id="setModel" value="${esc(S.settings.model)}">
+    <div id="provHint">${S.settings.provider==="deepseek"?`<div class="warnbox mt8">${T("visionUnsup")}</div>`:""}</div>
     <button class="btn sm sec mt12" id="btnSaveKey">${T("save")}</button>
     <button class="btn ghost mt8" id="btnChat">💬 ${T("aiChat")}</button></div>
   <div class="card"><b>${T("dataTitle")}</b>
@@ -1458,7 +1482,7 @@ function renderMe(){
     <button class="btn sm warn" id="btnReset">${T("resetAll")}</button></div>
     <input type="file" id="impFile" accept=".json" style="display:none"></div>
   <div class="card"><b>${T("disclaimerT")}</b><p class="dim mt8">${T("disclaimer")}</p></div>
-  <p class="dim center">GymSense MVP v1.3 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
+  <p class="dim center">GymSense MVP v1.4 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
   $("#btnEditProfile").onclick=()=>{OB.step=0;OB.profile=Object.assign({},S.profile);$("#tabbar").style.display="none";
     document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));$("#view-onboard").classList.add("active");
     renderOnboard();
@@ -1467,7 +1491,21 @@ function renderMe(){
     orig.onclick=()=>{S.profile={sex:OB.profile.sex,age:+$("#obAge").value||25,height:+$("#obH").value||170,weight:+$("#obW").value||65,exp:+$("#obExp").value,goal:OB.profile.goal,freq:OB.profile.freq||suggestFreq(+$("#obExp").value),injuries:OB.profile.injuries||[],swim:OB.profile.swim||0};
       S.plan=generatePlan();save();$("#tabbar").style.display="flex";switchView("me");toast(T("saveOk"))};
   };
-  $("#btnSaveKey").onclick=()=>{S.settings.apiKey=$("#setKey").value.trim();S.settings.model=$("#setModel").value.trim()||"claude-sonnet-4-5";save();renderMe();toast(T("saveOk"))};
+  $("#setProv").onchange=()=>{
+    const p=$("#setProv").value;const def=PROV_DEF[p]||PROV_DEF.custom;
+    $("#setModel").value=def.model;
+    $("#setBase").value=def.base;
+    $("#baseWrap").style.display=p==="anthropic"?"none":"block";
+    $("#provHint").innerHTML=p==="deepseek"?`<div class="warnbox mt8">${T("visionUnsup")}</div>`:"";
+  };
+  $("#btnSaveKey").onclick=()=>{
+    const p=$("#setProv").value;const def=PROV_DEF[p]||PROV_DEF.custom;
+    S.settings.provider=p;
+    S.settings.baseUrl=$("#setBase").value.trim()||def.base;
+    S.settings.apiKey=$("#setKey").value.trim();
+    S.settings.model=$("#setModel").value.trim()||def.model||"claude-sonnet-4-5";
+    save();renderMe();toast(T("saveOk"));
+  };
   $("#btnChat").onclick=openChat;
   $("#btnExport").onclick=()=>{
     const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
@@ -1492,16 +1530,41 @@ function userContext(){
     plan:S.plan?S.plan.days.map(d=>({day:d.key,exercises:d.exercises.map(e=>({ex:EXMAP[e.exId]?EXMAP[e.exId].en:e.exId,sets:e.sets,reps:e.reps}))})):null,
     recentWorkouts:recent});
 }
+function aiProvider(){return S.settings.provider||"anthropic"}
+function aiBase(){
+  const st=S.settings;const def=PROV_DEF[aiProvider()]||PROV_DEF.custom;
+  return (st.baseUrl||def.base||"").replace(/\/+$/,"");
+}
+function wrapNetErr(e){
+  const m=String((e&&e.message)||e);
+  if(e&&e.name==="TypeError"||m.includes("Failed to fetch")||m.includes("Load failed")||m.includes("NetworkError"))return new Error(T("netErr"));
+  return e;
+}
 async function callAI(messages,maxTokens){
-  const key=S.settings.apiKey;if(!key)throw new Error(T("aiScanNeedKey"));
-  const res=await fetch("https://api.anthropic.com/v1/messages",{
-    method:"POST",
-    headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-    body:JSON.stringify({model:S.settings.model||"claude-sonnet-4-5",max_tokens:maxTokens||800,system:AI_SYS(),messages})
-  });
-  if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,180))}
-  const data=await res.json();
-  return (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n");
+  const st=S.settings;const key=st.apiKey;if(!key)throw new Error(T("aiScanNeedKey"));
+  try{
+    if(aiProvider()==="anthropic"){
+      const res=await fetch(aiBase()+"/v1/messages",{
+        method:"POST",
+        headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body:JSON.stringify({model:st.model||"claude-sonnet-4-5",max_tokens:maxTokens||800,system:AI_SYS(),messages})
+      });
+      if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,200))}
+      const data=await res.json();
+      return (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n");
+    }
+    /* OpenAI-compatible path (DeepSeek / custom) */
+    const res=await fetch(aiBase()+"/chat/completions",{
+      method:"POST",
+      headers:{"content-type":"application/json","authorization":"Bearer "+key},
+      body:JSON.stringify({model:st.model||PROV_DEF.deepseek.model,max_tokens:maxTokens||800,
+        messages:[{role:"system",content:AI_SYS()}].concat(messages)})
+    });
+    if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,200))}
+    const data=await res.json();
+    const ch=(data.choices||[])[0];
+    return (ch&&ch.message&&ch.message.content)||"";
+  }catch(e){throw wrapNetErr(e)}
 }
 /* file -> base64 (downscaled) */
 function fileToB64(file,maxW){return new Promise((ok,bad)=>{
@@ -1512,19 +1575,38 @@ function fileToB64(file,maxW){return new Promise((ok,bad)=>{
     URL.revokeObjectURL(url);ok(c.toDataURL("image/jpeg",.8).split(",")[1])};
   img.onerror=bad;img.src=url;})}
 async function aiScanEquipment(files){
+  const key=S.settings.apiKey;if(!key)throw new Error(T("aiScanNeedKey"));
   const imgs=[];for(const f of files)imgs.push(await fileToB64(f,1024));
   const catList=EQUIP.map(e=>`${e.id}: ${e.en} / ${e.zh}`).join("\n");
-  const content=imgs.map(b=>({type:"image",source:{type:"base64",media_type:"image/jpeg",data:b}}));
-  content.push({type:"text",text:"Identify every piece of gym equipment visible in these photos. Map each to the closest category id from this list:\n"+catList+"\nReturn ONLY a JSON array of matching category ids, e.g. [\"barbell\",\"m_lat\"]. No other text."});
-  const key=S.settings.apiKey;if(!key)throw new Error(T("aiScanNeedKey"));
-  const res=await fetch("https://api.anthropic.com/v1/messages",{
-    method:"POST",
-    headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-    body:JSON.stringify({model:S.settings.model||"claude-sonnet-4-5",max_tokens:400,messages:[{role:"user",content}]})
-  });
-  if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,180))}
-  const data=await res.json();
-  const txt=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
+  const prompt="Identify every piece of gym equipment visible in these photos. Map each to the closest category id from this list:\n"+catList+"\nReturn ONLY a JSON array of matching category ids, e.g. [\"barbell\",\"m_lat\"]. No other text.";
+  let txt="";
+  try{
+    if(aiProvider()==="anthropic"){
+      const content=imgs.map(b=>({type:"image",source:{type:"base64",media_type:"image/jpeg",data:b}}));
+      content.push({type:"text",text:prompt});
+      const res=await fetch(aiBase()+"/v1/messages",{
+        method:"POST",
+        headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body:JSON.stringify({model:S.settings.model||"claude-sonnet-4-5",max_tokens:400,messages:[{role:"user",content}]})
+      });
+      if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,200))}
+      const data=await res.json();
+      txt=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
+    }else{
+      /* OpenAI-compatible vision format; providers without vision will return an error shown to the user */
+      const content=imgs.map(b=>({type:"image_url",image_url:{url:"data:image/jpeg;base64,"+b}}));
+      content.push({type:"text",text:prompt});
+      const res=await fetch(aiBase()+"/chat/completions",{
+        method:"POST",
+        headers:{"content-type":"application/json","authorization":"Bearer "+S.settings.apiKey},
+        body:JSON.stringify({model:S.settings.model||PROV_DEF.deepseek.model,max_tokens:400,messages:[{role:"user",content}]})
+      });
+      if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,200))}
+      const data=await res.json();
+      const ch=(data.choices||[])[0];
+      txt=(ch&&ch.message&&ch.message.content)||"";
+    }
+  }catch(e){throw wrapNetErr(e)}
   const m=txt.match(/\[[\s\S]*?\]/);if(!m)throw new Error("parse");
   const ids=JSON.parse(m[0]).filter(id=>EQMAP[id]);
   if(!ids.length)throw new Error("none");

@@ -229,6 +229,14 @@ provider:"AI 服务商",prov_anthropic:"Anthropic (Claude)",prov_deepseek:"DeepS
 baseUrlL:"API 地址 (Base URL)",
 visionUnsup:"注意：DeepSeek 接口暂不支持图片输入，「AI 扫描器械」不可用（AI 解释 / 周复盘 / 问答不受影响）。需要扫器械请改用支持视觉的服务商，或在自定义里填支持视觉的模型（如通义 qwen-vl 系列）。",
 netErr:"请求未能到达服务器：可能是网络问题，或该服务商不允许网页直连（CORS 拦截）。请检查网络后重试；若反复出现，需要部署一个轻量转发代理（可以找 Claude 帮你生成）。",
+modelMissing:"请在「AI 设置」中填写模型名（例如 qwen3-vl-flash）",
+applyBtn:"📋 把对话共识应用到计划",
+applyTitle:"AI 计划修改方案（预览）",
+applyConfirmBtn:"✅ 确认应用此计划",
+applyDropped:"已过滤 {n} 条无效或不适合你的动作（器械不符 / 伤病高风险）",
+applyFail:"未能生成有效方案：请先在对话里把想要的改动说得更具体，再点一次。",
+applyOk:"计划已更新",
+splitCustom:"自定义分化（AI 调整）",
 aiChat:"问 AI 教练",aiChatPh:"例：肩膀有点不舒服，今天怎么调整？",send:"发送",
 dataTitle:"数据管理",exportData:"导出数据 (JSON)",importData:"导入数据",resetAll:"清空全部数据",
 resetConfirm:"⚠️ 将删除档案、计划与全部历史记录。确定？",
@@ -302,6 +310,14 @@ provider:"AI provider",prov_anthropic:"Anthropic (Claude)",prov_deepseek:"DeepSe
 baseUrlL:"API base URL",
 visionUnsup:"Note: the DeepSeek API doesn't accept image input yet — equipment scan won't work (explain / review / Q&A are fine). For scanning, use a vision-capable provider or a vision model via Custom.",
 netErr:"The request never reached the server — network issue, or this provider blocks direct browser calls (CORS). Retry on a good connection; if it persists, a tiny relay proxy is needed (ask Claude to generate one).",
+modelMissing:"Enter a model name in AI settings (e.g. qwen3-vl-flash)",
+applyBtn:"📋 Apply our discussion to my plan",
+applyTitle:"AI plan revision (preview)",
+applyConfirmBtn:"✅ Apply this plan",
+applyDropped:"{n} invalid or unsuitable items filtered (equipment mismatch / injury risk)",
+applyFail:"Couldn't produce a valid revision — be more specific in chat, then try again.",
+applyOk:"Plan updated",
+splitCustom:"Custom split (AI-adjusted)",
 aiChat:"Ask the AI coach",aiChatPh:"e.g. My shoulder feels off — how should I adjust today?",send:"Send",
 dataTitle:"Data",exportData:"Export data (JSON)",importData:"Import data",resetAll:"Erase all data",
 resetConfirm:"⚠️ This deletes profile, plan and all history. Sure?",
@@ -1079,7 +1095,7 @@ function renderPlan(){
       h+=`</div>`;
       return;
     }
-    h+=`<div class="card daycard"><div class="row mb8"><b class="grow">${T("day").replace("{n}",di+1)} · ${TD(d.key)}</b>
+    h+=`<div class="card daycard"><div class="row mb8"><b class="grow">${T("day").replace("{n}",di+1)} · ${d.label?esc(d.label):TD(d.key)}</b>
     <button class="btn sm" data-start="${di}">${T("startThis")}</button></div>`;
     d.exercises.forEach((e,ei)=>{
       const ex=EXMAP[e.exId];
@@ -1140,7 +1156,7 @@ function startWorkout(dayIdx){
        segs:d.swimSegs.map(s=>({k:s.k,d:s.d,tz:s.tz,te:s.te,done:false})),entries:[]};
     switchView("workout");return;
   }
-  W={dayIdx,dayKey:d.key,start:Date.now(),entries:d.exercises.map(e=>{
+  W={dayIdx,dayKey:d.key,label:d.label||"",start:Date.now(),entries:d.exercises.map(e=>{
     const last=lastSetsFor(e.exId);
     const sets=[];for(let i=0;i<e.sets;i++){const ls=last&&last[Math.min(i,last.length-1)];sets.push({w:ls?ls.w:"",r:ls?ls.r:"",done:false})}
     return {exId:e.exId,reps:e.reps,rest:e.rest,sets};
@@ -1182,7 +1198,7 @@ function renderWorkout(){
     $("#btnFinish").onclick=finishWorkout;
     return;
   }
-  let h=`<div class="hd"><div><h1>${TD(W.dayKey)}</h1><span class="sub">${mins} ${T("durMin")} · ${new Date().toLocaleDateString()}</span></div>
+  let h=`<div class="hd"><div><h1>${W.label?esc(W.label):TD(W.dayKey)}</h1><span class="sub">${mins} ${T("durMin")} · ${new Date().toLocaleDateString()}</span></div>
   <button class="btn sm" id="btnFinish">${T("finish")}</button></div>`;
   if(W.entries.some(e=>e.sets.some(s=>s.w!=="")))h+=`<p class="dim mb8">${T("prefillNote")}</p>`;
   W.entries.forEach((en,ei)=>{
@@ -1281,7 +1297,7 @@ function finishWorkout(){
   if(!done.length){W=null;renderWorkout();return}
   if(!confirm(T("finishConfirm")))return;
   const prevBest={};done.forEach(e=>{prevBest[e.exId]=bestFor(e.exId).maxw});
-  const log={date:new Date().toISOString(),dayKey:W.dayKey,durMin:Math.max(1,Math.round((Date.now()-W.start)/60000)),
+  const log={date:new Date().toISOString(),dayKey:W.dayKey,dayLabel:W.label||"",durMin:Math.max(1,Math.round((Date.now()-W.start)/60000)),
     entries:done.map(e=>({exId:e.exId,sets:e.sets.filter(s=>s.done).map(s=>({w:+s.w||0,r:+s.r||0,done:true}))}))};
   const prs=[];log.entries.forEach(e=>{const mx=Math.max(...e.sets.map(s=>s.w));if(mx>(prevBest[e.exId]||0)&&mx>0)prs.push({exId:e.exId,w:mx})});
   log.prs=prs;
@@ -1396,7 +1412,7 @@ function renderProgress(){
   <div class="card"><b>${T("history")}</b>${S.logs.slice().reverse().slice(0,20).map((l,i)=>{
     const idx=S.logs.length-1-i;
     const meta=l.swimDist!==undefined?`🏊 ${l.swimDist}m · ${l.durMin} ${T("durMin")}`:`${l.entries.length} ${T("exercises")} · ${Math.round(totalVolume(l))} kg${l.prs&&l.prs.length?` · <span style="color:var(--orange)">🏆 ${l.prs.length} ${T("newPR")}</span>`:""}`;
-    return `<div class="listitem" data-log="${idx}"><div><b>${l.date.slice(0,10)} · ${TD(l.dayKey)}</b>
+    return `<div class="listitem" data-log="${idx}"><div><b>${l.date.slice(0,10)} · ${l.dayLabel?esc(l.dayLabel):TD(l.dayKey)}</b>
     <div class="exmeta">${meta}</div></div><span class="arrow">›</span></div>`}).join("")}
   </div>`;
   b.innerHTML=h;
@@ -1482,7 +1498,7 @@ function renderMe(){
     <button class="btn sm warn" id="btnReset">${T("resetAll")}</button></div>
     <input type="file" id="impFile" accept=".json" style="display:none"></div>
   <div class="card"><b>${T("disclaimerT")}</b><p class="dim mt8">${T("disclaimer")}</p></div>
-  <p class="dim center">GymSense MVP v1.4 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
+  <p class="dim center">GymSense MVP v1.5 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
   $("#btnEditProfile").onclick=()=>{OB.step=0;OB.profile=Object.assign({},S.profile);$("#tabbar").style.display="none";
     document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));$("#view-onboard").classList.add("active");
     renderOnboard();
@@ -1503,7 +1519,7 @@ function renderMe(){
     S.settings.provider=p;
     S.settings.baseUrl=$("#setBase").value.trim()||def.base;
     S.settings.apiKey=$("#setKey").value.trim();
-    S.settings.model=$("#setModel").value.trim()||def.model||"claude-sonnet-4-5";
+    S.settings.model=$("#setModel").value.trim()||def.model;
     save();renderMe();toast(T("saveOk"));
   };
   $("#btnChat").onclick=openChat;
@@ -1519,8 +1535,8 @@ function renderMe(){
 }
 /* ================= AI LAYER (optional, user's own API key) ================= */
 const AI_SYS=()=>LANG==="zh"
- ?"你是GymSense应用内的健身教练助手。规则：1) 训练计划的组数、次数、重量等数字由应用的规则引擎决定，你只负责解释、答疑和提出方向性建议，不要直接开新的训练处方数字；2) 涉及疼痛、伤病、疾病、用药时，一律建议咨询医生或专业人士，不做诊断；3) 回答简洁实用，用要点式短段落，不超过250字；4) 只依据下面提供的用户数据，不要编造用户没有的记录。"
- :"You are the in-app coach assistant of GymSense. Rules: 1) Set/rep/weight numbers come from the app's rules engine — you explain, answer and give directional advice only, never prescribe new numbers; 2) For pain, injury, illness or medication always refer to a doctor or professional, no diagnosis; 3) Be concise and practical, short bullet-style paragraphs, under 180 words; 4) Use only the user data provided — never invent records the user doesn't have.";
+ ?"你是GymSense应用内的健身教练助手。规则：1) 训练计划的组数、次数、重量等数字默认由应用的规则引擎决定，你负责解释、答疑和方向性建议；用户讨论调整计划时可以给出具体方案建议；2) 涉及疼痛、伤病、疾病、用药时，一律建议咨询医生或专业人士，不做诊断；3) 回答简洁实用，用要点式短段落，不超过250字；4) 只依据下面提供的用户数据，不要编造用户没有的记录；5) 收到【计划修改指令】时，严格按指令只输出JSON，不输出任何其他文字。"
+ :"You are the in-app coach assistant of GymSense. Rules: 1) Set/rep/weight numbers default to the app's rules engine — you explain, answer and give directional advice; concrete plan suggestions are fine when the user discusses changes; 2) For pain, injury, illness or medication always refer to a doctor or professional, no diagnosis; 3) Be concise and practical, short bullet-style paragraphs, under 180 words; 4) Use only the user data provided — never invent records; 5) When you receive a [PLAN REVISION COMMAND], output ONLY the requested JSON, nothing else.";
 function userContext(){
   const p=S.profile||{};const gym=S.gyms[S.activeGym];
   const recent=S.logs.slice(-8).map(l=>({date:l.date.slice(0,10),day:l.dayKey,
@@ -1554,10 +1570,12 @@ async function callAI(messages,maxTokens){
       return (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n");
     }
     /* OpenAI-compatible path (DeepSeek / custom) */
+    const mdl=st.model||(aiProvider()==="deepseek"?PROV_DEF.deepseek.model:"");
+    if(!mdl)throw new Error(T("modelMissing"));
     const res=await fetch(aiBase()+"/chat/completions",{
       method:"POST",
       headers:{"content-type":"application/json","authorization":"Bearer "+key},
-      body:JSON.stringify({model:st.model||PROV_DEF.deepseek.model,max_tokens:maxTokens||800,
+      body:JSON.stringify({model:mdl,max_tokens:maxTokens||800,
         messages:[{role:"system",content:AI_SYS()}].concat(messages)})
     });
     if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,200))}
@@ -1594,12 +1612,14 @@ async function aiScanEquipment(files){
       txt=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
     }else{
       /* OpenAI-compatible vision format; providers without vision will return an error shown to the user */
+      const mdl=S.settings.model||(aiProvider()==="deepseek"?PROV_DEF.deepseek.model:"");
+      if(!mdl)throw new Error(T("modelMissing"));
       const content=imgs.map(b=>({type:"image_url",image_url:{url:"data:image/jpeg;base64,"+b}}));
       content.push({type:"text",text:prompt});
       const res=await fetch(aiBase()+"/chat/completions",{
         method:"POST",
         headers:{"content-type":"application/json","authorization":"Bearer "+S.settings.apiKey},
-        body:JSON.stringify({model:S.settings.model||PROV_DEF.deepseek.model,max_tokens:400,messages:[{role:"user",content}]})
+        body:JSON.stringify({model:mdl,max_tokens:400,messages:[{role:"user",content}]})
       });
       if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,200))}
       const data=await res.json();
@@ -1636,8 +1656,10 @@ async function aiWeeklyReview(){
 let chatHist=[];
 function openChat(){
   if(!S.settings.apiKey){toast(T("aiScanNeedKey"));return}
-  openSheet(`<h3>${T("aiChat")}</h3><div id="chatBox" style="min-height:120px;max-height:46vh;overflow-y:auto">${chatHist.map(m=>`<div class="msg ${m.role==="user"?"u":"a"}">${esc(m.content)}</div>`).join("")}</div>
-  <div class="row mt12"><input id="chatIn" class="grow" placeholder="${T("aiChatPh")}"><button class="btn sm" id="chatSend">${T("send")}</button></div>`);
+  openSheet(`<h3>${T("aiChat")}</h3><div id="chatBox" style="min-height:120px;max-height:42vh;overflow-y:auto">${chatHist.map(m=>`<div class="msg ${m.role==="user"?"u":"a"}">${esc(m.content)}</div>`).join("")}</div>
+  <div class="row mt12"><input id="chatIn" class="grow" placeholder="${T("aiChatPh")}"><button class="btn sm" id="chatSend">${T("send")}</button></div>
+  <button class="btn ghost mt8" id="chatApply">${T("applyBtn")}</button>`);
+  $("#chatApply").onclick=aiApplyPlanFlow;
   const send=async()=>{
     const v=$("#chatIn").value.trim();if(!v)return;
     $("#chatIn").value="";
@@ -1654,6 +1676,66 @@ function openChat(){
   };
   $("#chatSend").onclick=send;
   $("#chatIn").onkeydown=e=>{if(e.key==="Enter")send()};
+}
+
+/* ===== apply chat consensus to the plan (validated, user-confirmed) ===== */
+async function aiApplyPlanFlow(){
+  if(!S.settings.apiKey){toast(T("aiScanNeedKey"));return}
+  openSheet(`<h3>${T("applyTitle")}</h3><div id="aiOut"><span class="spin"></span> ${T("aiThinking")}</div>`);
+  try{
+    const eqList=availEquip();const inj=userInjuries();
+    const avail=EXDB.filter(e=>exAvailable(e,eqList)&&riskLevel(e.id,inj)<2);
+    const list=avail.map(e=>e.id+" = "+e.zh+" / "+e.en).join("\n");
+    const curStrength=S.plan?S.plan.days.filter(d=>!d.swimSegs).length:3;
+    const instr="【计划修改指令】[PLAN REVISION COMMAND] Based on the USER DATA and our conversation, output the FULL revised strength plan as ONLY one JSON object, no other text. Format: {\"days\":[{\"key\":\"push|pull|legs|upper|lower|fullA|fullB\",\"name\":\"短标题(中文,可选)\",\"exercises\":[{\"exId\":\"...\",\"sets\":4,\"reps\":\"8-12\",\"rest\":90}]}]}. Hard rules: exId MUST come from this whitelist only:\n"+list+"\nOutput exactly "+curStrength+" strength day(s); do NOT include swim days (the app keeps them automatically). sets 1-6 integer, reps like \"8-12\", rest in seconds 30-240.";
+    const msgs=[{role:"user",content:"USER DATA:\n"+userContext()},{role:"assistant",content:"OK, I have the user's context."}]
+      .concat(chatHist.slice(-10)).concat([{role:"user",content:instr}]);
+    const out=await callAI(msgs,2000);
+    const m=out.match(/\{[\s\S]*\}/);if(!m)throw new Error(T("applyFail"));
+    let obj;try{obj=JSON.parse(m[0])}catch(e){throw new Error(T("applyFail"))}
+    const gp=GOALPARAM[(S.profile&&S.profile.goal)||"muscle"];
+    let dropped=0;const KEYS=["push","pull","legs","upper","lower","fullA","fullB"];
+    const days=(obj.days||[]).map(d=>{
+      const exs=(d.exercises||[]).map(e=>{
+        const ex=EXMAP[e&&e.exId];
+        if(!ex||!exAvailable(ex,eqList)||riskLevel(e.exId,inj)>=2){dropped++;return null}
+        let sets=Math.round(+e.sets)||(ex.c?gp.cSets:gp.iSets);sets=Math.min(8,Math.max(1,sets));
+        let reps=String(e.reps||"").trim();if(!/^\d{1,2}(-\d{1,2})?$/.test(reps))reps=ex.c?gp.cReps:gp.iReps;
+        let rest=Math.round(+e.rest)||(ex.c?gp.rest:gp.restIso);rest=Math.min(300,Math.max(30,rest));
+        const en={exId:e.exId,sets,reps,rest};
+        if(riskLevel(e.exId,inj)===1)en.cau=1;
+        return en;
+      }).filter(Boolean);
+      if(!exs.length)return null;
+      return {key:KEYS.includes(d.key)?d.key:"fullA",label:String(d.name||"").slice(0,14),exercises:exs};
+    }).filter(Boolean);
+    if(!days.length)throw new Error(T("applyFail"));
+    /* preview */
+    let h=`<h3>${T("applyTitle")}</h3>`;
+    if(dropped)h+=`<div class="warnbox" style="margin-bottom:10px">${fmt(T("applyDropped"),{n:dropped})}</div>`;
+    days.forEach((d,di)=>{
+      h+=`<div class="card daycard"><b>${T("day").replace("{n}",di+1)} · ${d.label?esc(d.label):TD(d.key)}</b>`;
+      d.exercises.forEach((e,ei)=>{
+        h+=`<div class="exrow"><div class="exnum">${ei+1}</div><div class="grow"><div class="exname">${exName(e.exId)}${e.cau?` <span class="tag orange">${T("cautionTag")}</span>`:""}</div><div class="exmeta">${e.sets} ${T("sets")} × ${e.reps} · ${T("rest")} ${e.rest}s</div></div></div>`;
+      });
+      h+=`</div>`;
+    });
+    h+=`<button class="btn" id="applyGo">${T("applyConfirmBtn")}</button><button class="btn sec mt8" onclick="closeSheet()">${T("cancel")}</button>`;
+    $("#sheetBody").innerHTML=h;
+    $("#applyGo").onclick=()=>{
+      const swims=S.plan?S.plan.days.filter(d=>d.swimSegs):[];
+      const newDays=days.slice();
+      if(swims[0])newDays.splice(Math.min(2,newDays.length),0,swims[0]);
+      if(swims[1])newDays.push(swims[1]);
+      if(!S.plan)S.plan={freq:newDays.length,goal:(S.profile||{}).goal||"muscle",createdAt:new Date().toISOString()};
+      S.plan.days=newDays;S.plan.splitName="splitCustom";
+      save();closeSheet();switchView("plan");toast(T("applyOk"));
+    };
+  }catch(e){
+    const out=document.getElementById("aiOut");
+    if(out)out.innerHTML=`<span style="color:var(--red)">${esc(e.message||e)}</span>`;
+    else toast(String(e.message||e));
+  }
 }
 /* ================= INIT ================= */
 load();

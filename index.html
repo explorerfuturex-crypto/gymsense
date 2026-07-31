@@ -291,6 +291,37 @@ exportIds:"导出动作ID清单",
 themeL:"外观",theme_auto:"跟随系统",theme_dark:"深色",theme_light:"浅色",
 uiTitle:"外观与语言",
 tipsTitle:"ℹ️ 训练提示（点击展开）",
+todayHdr:"今日",todayRec:"今天：{name}",todayMeta:"{n} 个动作 · 预计 {min} 分钟",
+startNow:"开始训练",freeAlt:"自由训练",
+doneToday:"今天已完成 ✅",doneMeta:"容量 {vol} kg · {n} 个动作",again:"再练一场（自由训练）",
+welcomeBack:"欢迎回来 · 距上次训练 {d} 天",comebackNote:"休息了一阵，本次按 {p}% 重量预填，先找回状态。",
+firstTrainTip:"第一次训练：选一个能标准完成目标次数的重量，最后一组接近但不到力竭。",
+noPlanToday:"还没有训练计划",
+rdTitle:"今天状态如何？",rdSkip:"跳过",
+rd_sleep:"昨晚睡眠",rd_sore:"目标肌群酸痛",rd_feel:"今天状态",
+rd_g:"好",rd_m:"一般",rd_b:"差",rd_none:"无",rd_slight:"轻微",rd_heavy:"明显",
+rdApply:"开始训练",rdRest:"今天休息",rdSwitch:"↪ 换练下一计划日",
+rdExpl0:"状态不错，按计划来。",
+rdExpl23:"状态一般：孤立动作各减 1 组、今天不加重，保住复合动作质量。",
+rdExpl46:"今天状态较差：总组数减 30%、重量按九成预填。轻一点，明天会感谢今天。",
+rdExplSore:"目标肌群还很酸——建议换练下一个计划日，让它多恢复一天。",
+rdUnlock:"💡 练满 4 次后，GymSense 会在每次训练前按你的状态微调当天安排。",
+plateCalc:"配片计算",plateBar:"杠重",plateSide:"每边",
+plateNo:"无法精确组合，最近可行：",plateApply:"回填 {w} kg",platesL:"可用杠铃片 (kg/片)",
+tgtLine:"🎯 本组目标：{w} kg × {r}",tgtFrozen:"（今日不加重）",
+baselineTip:"基线期 · 记下你能标准完成的重量",
+tgtDeload:"连续两次未达下限：建议下次减重 10%",
+scanSwap:"📷 拍一下你面前的器械",scanSwapNoKey:"开启 AI 后可拍照换动作（我的 → AI 设置）",
+scanNone:"没认出来，从列表里选吧",scanAddEq:"把「{name}」加入这家健身房的档案？",scanFrom:"该器械上可做：",
+welcomeTag:"你所在健身房的 AI 力量教练",
+welcomeSub:"按你的器械生成计划 · 逐组记录 · 智能进阶。无需注册，数据只存在你的手机上。",
+welcomeGo:"开始",
+fgTitle:"开练前，三件事",
+fg1:"① 每组重量会自动预填，改完打勾就行",
+fg2:"② 打勾后自动开始组间休息倒计时",
+fg3:"③ 器械被占？点「⇄ 换动作」或拍一下旁边的器械",
+fgGo:"开始训练",
+unlockTeaser:"🎉 首训完成！练满 4 次后解锁状态微调与逐组进阶目标。",
 aiChat:"问 AI 教练",aiChatPh:"例：肩膀有点不舒服，今天怎么调整？",send:"发送",
 dataTitle:"数据管理",exportData:"导出数据 (JSON)",importData:"导入数据",resetAll:"清空全部数据",
 resetConfirm:"⚠️ 将删除档案、计划与全部历史记录。确定？",
@@ -394,6 +425,37 @@ exportIds:"Export exercise ID list",
 themeL:"Appearance",theme_auto:"System",theme_dark:"Dark",theme_light:"Light",
 uiTitle:"Appearance & language",
 tipsTitle:"ℹ️ Training notes (tap to expand)",
+todayHdr:"Today",todayRec:"Today: {name}",todayMeta:"{n} exercises · ~{min} min",
+startNow:"Start workout",freeAlt:"Free session",
+doneToday:"Done for today ✅",doneMeta:"{vol} kg volume · {n} exercises",again:"Train again (free session)",
+welcomeBack:"Welcome back · {d} days since last workout",comebackNote:"Been a while — weights prefilled at {p}% to ease back in.",
+firstTrainTip:"First workout: pick a weight you can lift with good form for the target reps — last set near (not at) failure.",
+noPlanToday:"No plan yet",
+rdTitle:"How are you today?",rdSkip:"Skip",
+rd_sleep:"Sleep last night",rd_sore:"Target muscles sore?",rd_feel:"Feeling today",
+rd_g:"Good",rd_m:"OK",rd_b:"Poor",rd_none:"None",rd_slight:"Slight",rd_heavy:"Very",
+rdApply:"Start workout",rdRest:"Rest today",rdSwitch:"↪ Switch to next plan day",
+rdExpl0:"Feeling good — train as planned.",
+rdExpl23:"Average day: −1 set on isolation moves, no load increases today — protect the big lifts.",
+rdExpl46:"Rough day: total sets −30%, weights prefilled at 90%. Go light — tomorrow will thank you.",
+rdExplSore:"Target muscles are still sore — better to switch to the next plan day and let them recover.",
+rdUnlock:"💡 After 4 workouts, GymSense will fine-tune each session to your daily readiness.",
+plateCalc:"Plate calculator",plateBar:"Bar",plateSide:"Per side",
+plateNo:"Can't load exactly — nearest options:",plateApply:"Fill {w} kg",platesL:"Available plates (kg each)",
+tgtLine:"🎯 Target: {w} kg × {r}",tgtFrozen:"(no increase today)",
+baselineTip:"Baseline phase · log a weight you can lift with good form",
+tgtDeload:"Below range twice in a row: consider −10% next time",
+scanSwap:"📷 Snap the machine in front of you",scanSwapNoKey:"Enable AI to swap by photo (Me → AI settings)",
+scanNone:"Couldn't recognize it — pick from the list",scanAddEq:"Add \"{name}\" to this gym's profile?",scanFrom:"Doable on this equipment:",
+welcomeTag:"The AI strength coach that knows your gym",
+welcomeSub:"Plans built from your gym's equipment · set-by-set logging · smart progression. No sign-up; data stays on your phone.",
+welcomeGo:"Get started",
+fgTitle:"Three things before you start",
+fg1:"① Weights are prefilled — adjust and tick each set",
+fg2:"② Ticking a set auto-starts the rest timer",
+fg3:"③ Machine taken? Tap \"⇄ Swap\" or snap the one next to you",
+fgGo:"Start workout",
+unlockTeaser:"🎉 First workout done! 4 workouts unlock readiness tuning & per-set targets.",
 aiChat:"Ask the AI coach",aiChatPh:"e.g. My shoulder feels off — how should I adjust today?",send:"Send",
 dataTitle:"Data",exportData:"Export data (JSON)",importData:"Import data",resetAll:"Erase all data",
 resetConfirm:"⚠️ This deletes profile, plan and all history. Sure?",
@@ -782,12 +844,122 @@ const PROV_DEF={
   deepseek:{model:"deepseek-v4-flash",base:"https://api.deepseek.com"},
   custom:{model:"",base:""},
 };
-let S={profile:null,gyms:[],activeGym:0,plan:null,logs:[],settings:{lang:"zh",apiKey:"",model:"claude-sonnet-4-5",provider:"anthropic",baseUrl:"",theme:"auto"}};
+const SCHEMA=2;
+let S={schemaVersion:SCHEMA,profile:null,gyms:[],activeGym:0,plan:null,logs:[],flags:{},settings:{lang:"zh",apiKey:"",model:"claude-sonnet-4-5",provider:"anthropic",baseUrl:"",theme:"auto"}};
 function save(){store.set("gymsense",JSON.stringify(S))}
+const DEF_PLATES=[25,20,15,10,5,2.5,1.25];
+function migrate(o,raw){
+  const v=o.schemaVersion||1;
+  if(v<SCHEMA){
+    /* snapshot old data once before migrating (rollback safety) */
+    try{if(!store.get("gymsense-backup-v"+v))store.set("gymsense-backup-v"+v,raw)}catch(e){}
+    if(!o.flags)o.flags={};
+    (o.gyms||[]).forEach(g=>{if(!g.barKg)g.barKg=20;if(!g.plates)g.plates=DEF_PLATES.slice()});
+    (o.logs||[]).forEach(l=>{if(l.dayIdx===undefined)l.dayIdx=null});
+    if(o.profile)o.flags.welcomed=true; /* existing users skip welcome */
+    o.schemaVersion=SCHEMA;
+  }
+  return o;
+}
 function load(){
   const raw=store.get("gymsense");
-  if(raw){try{const o=JSON.parse(raw);S=Object.assign(S,o);S.settings=Object.assign({lang:"zh",apiKey:"",model:"claude-sonnet-4-5",provider:"anthropic",baseUrl:"",theme:"auto"},o.settings||{})}catch(e){}}
+  if(raw){try{
+    let o=JSON.parse(raw);o=migrate(o,raw);
+    S=Object.assign(S,o);
+    S.flags=o.flags||{};
+    S.settings=Object.assign({lang:"zh",apiKey:"",model:"claude-sonnet-4-5",provider:"anthropic",baseUrl:"",theme:"auto"},o.settings||{});
+  }catch(e){}}
   LANG=S.settings.lang||"zh";
+}
+/* ===== user state machine (P0: S0-S4) ===== */
+function daysSinceLastLog(){
+  if(!S.logs.length)return null;
+  return Math.floor((Date.now()-new Date(S.logs[S.logs.length-1].date).getTime())/86400000);
+}
+function userState(){
+  if(!S.profile)return "S0";
+  const n=S.logs.length;
+  if(n===0)return "S1";
+  if(n<4)return "S2";
+  return daysSinceLastLog()>=14?"S4":"S3";
+}
+function comebackFactor(){
+  if(userState()!=="S4")return 1;
+  return daysSinceLastLog()>=28?0.8:0.9;
+}
+/* ===== P0-1 today recommendation ===== */
+function recDayIdx(){
+  const days=S.plan?S.plan.days:[];if(!days.length)return 0;
+  for(let i=S.logs.length-1;i>=0;i--){
+    const l=S.logs[i];
+    let idx=(l.dayIdx!==undefined&&l.dayIdx!==null&&l.dayIdx>=0)?l.dayIdx:days.findIndex(d=>d.key===l.dayKey);
+    if(idx>=0&&idx<days.length)return (idx+1)%days.length;
+  }
+  return 0;
+}
+function todayLog(){const t=new Date().toISOString().slice(0,10);for(let i=S.logs.length-1;i>=0;i--){if(S.logs[i].date.slice(0,10)===t)return S.logs[i]}return null}
+function estMinutes(d){if(d.swimSegs)return 40;let sec=0;d.exercises.forEach(e=>{sec+=e.sets*((e.rest||90)+40)});return Math.max(15,Math.round(sec/60))}
+/* ===== P0-4 double-progression engine ===== */
+function exSessions(exId){let n=0;S.logs.forEach(l=>{if((l.entries||[]).some(e=>e.exId===exId&&e.sets&&e.sets.length))n++});return n}
+function nthLastSetsFor(exId,nth){ /* nth=0 latest, 1 previous... */
+  let seen=0;
+  for(let i=S.logs.length-1;i>=0;i--){
+    const en=(S.logs[i].entries||[]).find(e=>e.exId===exId);
+    if(en&&en.sets.some(s=>s.done)){if(seen===nth)return en.sets.filter(s=>s.done);seen++}
+  }
+  return null;
+}
+const LOWER_COMPOUND=["squat","smith_squat","hack_squat","leg_press_ex","deadlift","rdl","db_rdl","hip_thrust"];
+function progressionTarget(exId,repsStr,freeze){
+  const m=String(repsStr||"").match(/(\d+)\s*-\s*(\d+)/);
+  const lo=m?+m[1]:(+repsStr||8), hi=m?+m[2]:(+repsStr||12);
+  const sessions=exSessions(exId);
+  if(sessions<2)return {baseline:true,lo,hi};
+  const last=nthLastSetsFor(exId,0);
+  if(!last||!last.length)return {baseline:true,lo,hi};
+  const w=Math.max(...last.map(s=>+s.w||0));
+  if(w<=0)return {baseline:true,lo,hi};
+  const bestReps=Math.max(...last.map(s=>+s.r||0));
+  if(freeze)return {w,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi,frozen:true};
+  if(sessions===2)return {w,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi};
+  const allHi=last.every(s=>(+s.r||0)>=hi);
+  const anyBelowLo=last.some(s=>(+s.r||0)<lo);
+  if(allHi){
+    const inc=LOWER_COMPOUND.includes(exId)?5:2.5;
+    return {w:Math.round((w+inc)*10)/10,reps:lo,lo,hi,inc:true};
+  }
+  if(anyBelowLo){
+    const prev=nthLastSetsFor(exId,1);
+    const prevBelow=prev&&prev.some(s=>(+s.r||0)<lo);
+    return {w,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi,hold:true,deload:!!prevBelow};
+  }
+  return {w,reps:Math.min(hi,bestReps+1),lo,hi};
+}
+/* ===== P0-2 readiness adjustments ===== */
+function applyReadiness(entries,score,factorW){
+  entries.forEach(en=>{
+    const ex=EXMAP[en.exId];if(!ex)return;
+    if(score>=4){
+      en.sets=en.sets.slice(0,Math.max(1,Math.floor(en.sets.length*0.7)));
+      en.sets.forEach(s=>{if(s.w!=="")s.w=Math.round((+s.w*factorW)*2)/2});
+    }else if(score>=2&&!ex.c&&en.sets.length>1){
+      en.sets=en.sets.slice(0,en.sets.length-1);
+    }
+  });
+}
+/* ===== P0-3 plate math ===== */
+function plateBreakdown(total,barKg,plates){
+  const sorted=plates.slice().sort((a,b)=>b-a);
+  const minP=Math.min(...sorted);
+  let per=(total-barKg)/2;
+  if(per<-1e-9)return {bad:true,lower:barKg,upper:barKg};
+  const out=[];let rem=per;
+  for(const p of sorted){while(rem>=p-1e-9){out.push(p);rem-=p}}
+  if(rem>1e-6){
+    const lower=barKg+2*(per-rem);
+    return {bad:true,lower:Math.round(lower*100)/100,upper:Math.round((lower+2*minP)*100)/100};
+  }
+  return {plates:out,per:Math.round(per*100)/100};
 }
 /* theme: auto follows system; anim stick-figure colors follow theme */
 function applyTheme(){
@@ -1260,7 +1432,7 @@ function renderOnboard(){
     $("#obGen").onclick=()=>{
       OB.gym.name=$("#obGymName").value.trim()||(LANG==="zh"?"我的健身房":"My gym");
       if(!OB.gym.eq.length){toast(T("pickEq"));return}
-      S.profile=OB.profile;S.gyms=[{name:OB.gym.name,eq:OB.gym.eq}];S.activeGym=0;
+      S.profile=OB.profile;S.gyms=[{name:OB.gym.name,eq:OB.gym.eq,barKg:20,plates:DEF_PLATES.slice()}];S.activeGym=0;
       S.plan=generatePlan();save();
       $("#tabbar").style.display="flex";switchView("plan");
     };
@@ -1274,7 +1446,31 @@ function renderPlan(){
   const b=$("#planBody");
   if(!S.plan){b.innerHTML=`<div class="card center"><h2>${T("noPlan")}</h2><p class="sub">${T("noPlanSub")}</p></div>`;return}
   const p=S.plan;const gym=S.gyms[S.activeGym];
-  let h=`<div class="card card2"><div class="row"><div class="grow">
+  /* ===== P0-1 today card ===== */
+  let h="";
+  {
+    const st=userState();const tl=todayLog();
+    if(tl){
+      h+=`<div class="card" style="border:1px solid var(--acc2)"><div class="dim">${T("todayHdr")}</div>
+      <b style="font-size:18px">${T("doneToday")}</b>
+      <div class="sub mt8">${fmt(T("doneMeta"),{vol:Math.round(totalVolume(tl))+(tl.swimDist?` · 🏊 ${tl.swimDist}m`:""),n:tl.entries.length||tl.segsDone||0})}</div>
+      <button class="btn sec mt12" id="btnTodayFree">${T("again")}</button></div>`;
+    }else{
+      const ri=recDayIdx();const d=p.days[ri];
+      const isSwim=!!d.swimSegs;
+      const nm=isSwim?("🏊 "+TD("swim")):(d.label?esc(d.label):TD(d.key));
+      h+=`<div class="card" style="border:1px solid ${isSwim?"#60a5fa":"var(--acc2)"}">
+      <div class="dim">${T("todayHdr")}</div>`;
+      if(st==="S4")h+=`<div class="sub mt8">👋 ${fmt(T("welcomeBack"),{d:daysSinceLastLog()})}</div>
+        <div class="notice mt8" style="padding:8px 10px">${fmt(T("comebackNote"),{p:Math.round(comebackFactor()*100)})}</div>`;
+      h+=`<b style="font-size:19px">${fmt(T("todayRec"),{name:`${T("day").replace("{n}",ri+1)} · ${nm}`})}</b>
+      <div class="sub mt8">${isSwim?`${d.swimSegs.reduce((a,s)=>a+s.d,0)}m · ~${estMinutes(d)} ${T("durMin")}`:fmt(T("todayMeta"),{n:d.exercises.length,min:estMinutes(d)})}</div>`;
+      if(st==="S1")h+=`<div class="notice mt8" style="padding:8px 10px">💪 ${T("firstTrainTip")}</div>`;
+      h+=`<button class="btn mt12" id="btnTodayStart" ${isSwim?'style="background:#60a5fa;color:#08131f"':''}>${T("startNow")}</button>
+      <button class="btn sec mt8" id="btnTodayFree">${T("freeAlt")}</button></div>`;
+    }
+  }
+  h+=`<div class="card card2"><div class="row"><div class="grow">
     <b>${fmt(T("weekOf"),{n:p.freq,split:T(p.splitName)+(p.swim?` + ${p.swim}×🏊`:"")})}</b>
     <div class="sub mt8"><span class="tag acc">${goalLabel(p.goal)}</span><span class="tag blue">${esc(gym?gym.name:"")}</span></div>
     </div></div></div>`;
@@ -1330,6 +1526,8 @@ function renderPlan(){
     if(e.target.closest("[data-start]"))return;
     x.closest(".daycard").classList.toggle("open");
   });
+  const bts=$("#btnTodayStart");if(bts)bts.onclick=()=>startWorkout(recDayIdx());
+  const btf=$("#btnTodayFree");if(btf)btf.onclick=startFree;
   b.querySelectorAll("[data-start]").forEach(x=>x.onclick=ev=>{ev.stopPropagation();startWorkout(+x.dataset.start)});
   b.querySelectorAll("[data-ex]").forEach(x=>x.onclick=()=>openExDetail(x.dataset.ex));
   b.querySelectorAll("[data-pswap]").forEach(x=>x.onclick=ev=>{ev.stopPropagation();const[di,ei]=x.dataset.pswap.split("-").map(Number);openPlanSwap(di,ei)});
@@ -1430,12 +1628,71 @@ function startWorkout(dayIdx){
        segs:d.swimSegs.map(s=>({k:s.k,d:s.d,tz:s.tz,te:s.te,done:false})),entries:[]};
     switchView("workout");return;
   }
-  W={dayIdx,dayKey:d.key,label:d.label||"",start:Date.now(),entries:d.exercises.map(e=>{
+  /* first-run 3-card guide (once, before very first strength workout) */
+  if(!S.flags.firstGuide&&S.logs.length===0){
+    S.flags.firstGuide=1;save();
+    openSheet(`<h3>${T("fgTitle")}</h3><div class="card"><p class="sub">${T("fg1")}</p><p class="sub mt8">${T("fg2")}</p><p class="sub mt8">${T("fg3")}</p></div><button class="btn mt8" id="fgGo">${T("fgGo")}</button>`);
+    $("#fgGo").onclick=()=>{closeSheet();startWorkout(dayIdx)};
+    return;
+  }
+  /* P0-2: readiness check for stable users (auto-skips to silent mode after 3 skips) */
+  if(userState()==="S3"&&(S.flags.rdSkips||0)<3){openReadiness(dayIdx);return}
+  beginStrength(dayIdx,null);
+}
+function beginStrength(dayIdx,readiness){
+  const d=S.plan.days[dayIdx];
+  const cf=comebackFactor();
+  const freeze=(readiness&&readiness.score>=2)||cf<1;
+  W={dayIdx,dayKey:d.key,label:d.label||"",start:Date.now(),cf,freeze,readiness:readiness||null,entries:d.exercises.map(e=>{
+    const tgt=progressionTarget(e.exId,e.reps,freeze);
     const last=lastSetsFor(e.exId);
-    const sets=[];for(let i=0;i<e.sets;i++){const ls=last&&last[Math.min(i,last.length-1)];sets.push({w:ls?ls.w:"",r:ls?ls.r:"",done:false})}
-    return {exId:e.exId,reps:e.reps,rest:e.rest,sets};
+    const sets=[];
+    for(let i=0;i<e.sets;i++){
+      const ls=last&&last[Math.min(i,last.length-1)];
+      let w=(tgt&&!tgt.baseline)?tgt.w:(ls?ls.w:"");
+      if(w!==""&&cf<1)w=Math.round((+w*cf)*2)/2;
+      sets.push({w,r:"",done:false});
+    }
+    return {exId:e.exId,reps:e.reps,rest:e.rest,sets,target:tgt};
   })};
+  if(readiness)applyReadiness(W.entries,readiness.score,0.9);
   switchView("workout");
+}
+/* P0-2 readiness sheet: 3 taps, big buttons */
+function openReadiness(dayIdx){
+  const a=[null,null,null];
+  const QS=[["rd_sleep",["rd_g","rd_m","rd_b"]],["rd_sore",["rd_none","rd_slight","rd_heavy"]],["rd_feel",["rd_g","rd_m","rd_b"]]];
+  function render(){
+    let h=`<div class="row"><h3 class="grow">${T("rdTitle")}</h3><button class="btn sm sec" id="rdSkip">${T("rdSkip")}</button></div>`;
+    QS.forEach((q,qi)=>{
+      h+=`<label class="fl">${T(q[0])}</label><div class="seg" data-q="${qi}">${q[1].map((o,oi)=>`<div data-o="${oi}" class="${a[qi]===oi?"on":""}" style="padding:12px 4px">${T(o)}</div>`).join("")}</div>`;
+    });
+    const done=a.every(x=>x!==null);
+    if(done){
+      const score=a[0]+a[1]+a[2];
+      const sore=a[1]===2;
+      const expl=sore?T("rdExplSore"):(score>=4?T("rdExpl46"):(score>=2?T("rdExpl23"):T("rdExpl0")));
+      h+=`<div class="${score>=2||sore?"warnbox":"notice"} mt12">${expl}</div>`;
+      if(sore)h+=`<button class="btn mt12" id="rdSwitch">${T("rdSwitch")}</button>`;
+      h+=`<button class="btn ${sore?"sec":""} mt8" id="rdGo">${T("rdApply")}</button>`;
+      if(score>=4)h+=`<button class="btn sec mt8" id="rdRest">${T("rdRest")}</button>`;
+    }
+    openSheet(h);
+    document.querySelectorAll("[data-q]").forEach(seg=>seg.onclick=e=>{
+      const d=e.target.closest("[data-o]");if(!d)return;
+      a[+seg.dataset.q]=+d.dataset.o;render();
+    });
+    $("#rdSkip").onclick=()=>{S.flags.rdSkips=(S.flags.rdSkips||0)+1;save();closeSheet();beginStrength(dayIdx,null)};
+    const go=$("#rdGo");
+    if(go)go.onclick=()=>{S.flags.rdSkips=0;save();closeSheet();beginStrength(dayIdx,{a:a.slice(),score:a[0]+a[1]+a[2]})};
+    const sw=$("#rdSwitch");
+    if(sw)sw.onclick=()=>{S.flags.rdSkips=0;save();closeSheet();
+      const n=(dayIdx+1)%S.plan.days.length;
+      S.plan.days[n].swimSegs?startWorkout(n):beginStrength(n,null)};
+    const rest=$("#rdRest");
+    if(rest)rest.onclick=closeSheet;
+  }
+  render();
 }
 function startFree(){W={dayIdx:-1,dayKey:"free",start:Date.now(),entries:[]};switchView("workout")}
 function renderWorkout(){
@@ -1474,14 +1731,25 @@ function renderWorkout(){
   }
   let h=`<div class="hd"><div><h1>${W.label?esc(W.label):TD(W.dayKey)}</h1><span class="sub">${mins} ${T("durMin")} · ${new Date().toLocaleDateString()}</span></div>
   <button class="btn sm" id="btnFinish">${T("finish")}</button></div>`;
-  if(W.entries.some(e=>e.sets.some(s=>s.w!=="")))h+=`<p class="dim mb8">${T("prefillNote")}</p>`;
+  const st9=userState();
+  if(st9==="S1"||st9==="S2")h+=`<p class="dim mb8">${T("rdUnlock")}</p>`;
+  if(W.cf&&W.cf<1)h+=`<div class="notice mb8">${fmt(T("comebackNote"),{p:Math.round(W.cf*100)})}</div>`;
+  if(W.readiness){const sc=W.readiness.score;h+=`<div class="${sc>=2?"warnbox":"notice"} mb8">${sc>=4?T("rdExpl46"):(sc>=2?T("rdExpl23"):T("rdExpl0"))}</div>`}
   W.entries.forEach((en,ei)=>{
-    const hint=progressionHint(en.exId,en.reps||"");
+    const isBar=EXMAP[en.exId]&&EXMAP[en.exId].eq.some(q=>["barbell","smith","ez"].includes(q));
     h+=`<div class="card"><div class="row mb8">
       <div class="grow" style="cursor:pointer" data-det="${en.exId}"><b>${exName(en.exId)}</b>
       <div class="exmeta">${en.reps?`${T("reps")}: ${en.reps} · `:""}${T("rest")} ${en.rest||90}s</div></div>
+      ${isBar?`<button class="swapmini" data-plate="${ei}" title="${T("plateCalc")}">🏋️</button>`:""}
       <button class="btn sm sec" data-swap="${ei}">${T("swap")}</button></div>`;
-    if(hint)h+=`<div class="notice">📈 ${hint}</div>`;
+    const tgt=en.target;
+    if(tgt){
+      if(tgt.baseline)h+=`<p class="dim mb8">🧭 ${T("baselineTip")}</p>`;
+      else{
+        const rTxt=tgt.reps<tgt.hi?`${tgt.reps}-${tgt.hi}`:String(tgt.reps);
+        h+=`<div class="notice mb8" style="padding:7px 10px">${fmt(T("tgtLine"),{w:tgt.w,r:rTxt})}${tgt.frozen?` <span class="dim">${T("tgtFrozen")}</span>`:""}${tgt.deload?`<br><span class="dim">${T("tgtDeload")}</span>`:""}</div>`;
+      }
+    }
     h+=`<div class="sethead2"><span>#</span><span>${T("kg")}</span><span>${T("reps")}</span><span>✓</span></div>`;
     en.sets.forEach((s,si)=>{
       h+=`<div class="setrow2"><div class="exnum">${si+1}</div>
@@ -1528,18 +1796,90 @@ function renderWorkout(){
   });
   b.querySelectorAll("[data-add]").forEach(btn=>btn.onclick=()=>{const en=W.entries[+btn.dataset.add];const last=en.sets[en.sets.length-1];en.sets.push({w:last?last.w:"",r:last?last.r:"",done:false});renderWorkout()});
   b.querySelectorAll("[data-swap]").forEach(btn=>btn.onclick=()=>openSwap(+btn.dataset.swap));
+  b.querySelectorAll("[data-plate]").forEach(btn=>btn.onclick=()=>openPlateCalc(+btn.dataset.plate));
   $("#btnAddEx").onclick=()=>openAddExercise();
   $("#btnFinish").onclick=finishWorkout;
 }
 function openSwap(ei){
-  const en=W.entries[ei];const subs=substitutesFor(en.exId);
+  const en=W.entries[ei];
+  const subs=substitutesFor(en.exId);
   if(!subs.length){toast(T("noEq"));return}
-  openSheet(`<h3>${T("subFor")}</h3>`+subs.map(s=>`<div class="listitem" data-pick="${s.id}"><div><b>${exName(s.id)}</b>${cauTag(s.id)}<div class="exmeta">${s.m.map(m=>T("mus_"+m)).join("/")} · ${s.eq.map(eqName).join("+")}</div></div><span class="arrow">›</span></div>`).join(""));
-  $("#sheetBody").querySelectorAll("[data-pick]").forEach(x=>x.onclick=()=>{
-    const id=x.dataset.pick;const last=lastSetsFor(id);
-    en.exId=id;en.sets=en.sets.map((s,i)=>({w:last&&last[Math.min(i,last.length-1)]?last[Math.min(i,last.length-1)].w:"",r:last&&last[Math.min(i,last.length-1)]?last[Math.min(i,last.length-1)].r:"",done:false}));
+  /* P0-5: scan the machine in front of you -> filtered swap list */
+  openSheet(`<h3>${T("subFor")}</h3>
+  <button class="btn ghost mb8" id="swScan">${T("scanSwap")}</button>
+  <input type="file" id="swFile" accept="image/*" capture="environment" style="display:none">
+  <div id="swNote"></div><div id="swList"></div>`);
+  const pick=id=>{
+    const last=lastSetsFor(id);
+    en.exId=id;en.target=progressionTarget(id,en.reps,W.freeze);
+    en.sets=en.sets.map((s,i)=>{
+      const ls=last&&last[Math.min(i,last.length-1)];
+      let w=(en.target&&!en.target.baseline)?en.target.w:(ls?ls.w:"");
+      return {w,r:"",done:false};
+    });
     closeSheet();renderWorkout();
-  });
+  };
+  const renderList=items=>{
+    $("#swList").innerHTML=items.map(s=>`<div class="listitem" data-pick="${s.id}"><div><b>${exName(s.id)}</b>${cauTag(s.id)}<div class="exmeta">${s.m.map(m=>T("mus_"+m)).join("/")} · ${s.eq.map(eqName).join("+")}</div></div><span class="arrow">›</span></div>`).join("");
+    $("#swList").querySelectorAll("[data-pick]").forEach(x=>x.onclick=()=>pick(x.dataset.pick));
+  };
+  renderList(subs);
+  $("#swScan").onclick=()=>{
+    if(!S.settings.apiKey){toast(T("scanSwapNoKey"));return}
+    $("#swFile").click();
+  };
+  $("#swFile").onchange=async e=>{
+    const f=e.target.files[0];if(!f)return;
+    const btn=$("#swScan");btn.innerHTML=`<span class="spin"></span> ${T("scanning")}`;
+    try{
+      const ids=await aiScanEquipment([f]);
+      /* self-reinforcing gym profile: offer to add newly seen equipment */
+      const gym=S.gyms[S.activeGym];
+      ids.forEach(id=>{
+        if(gym&&!gym.eq.includes(id)&&confirm(fmt(T("scanAddEq"),{name:eqName(id)}))){gym.eq.push(id);save()}
+      });
+      const pool=substitutesFor(en.exId);
+      const filtered=pool.filter(s=>s.eq.some(q=>ids.includes(q)));
+      btn.textContent=T("scanSwap");
+      if(!filtered.length){toast(T("scanNone"));renderList(pool);return}
+      $("#swNote").innerHTML=`<p class="sub mb8">✅ ${ids.map(eqName).join("、")} — ${T("scanFrom")}</p>`;
+      renderList(filtered);
+    }catch(err){btn.textContent=T("scanSwap");toast(T("scanNone"))}
+  };
+}
+/* ===== P0-3 plate calculator ===== */
+function openPlateCalc(ei){
+  const gym=S.gyms[S.activeGym]||{};
+  const bar=+gym.barKg||20;
+  const plates=(gym.plates&&gym.plates.length?gym.plates:DEF_PLATES).slice();
+  const minInc=2*Math.min(...plates);
+  const en=W.entries[ei];
+  let si=en.sets.findIndex(s=>!s.done);if(si<0)si=en.sets.length-1;
+  let w=+en.sets[si].w||(en.target&&en.target.w)||bar;
+  w=Math.max(bar,w);
+  function render(){
+    const bd=plateBreakdown(w,bar,plates);
+    let inner;
+    if(bd.bad){
+      inner=`<p class="sub">${T("plateNo")}</p><div class="row mt8"><button class="btn sm sec grow" id="pcL">${bd.lower} kg</button><button class="btn sm sec grow" id="pcU">${bd.upper} kg</button></div>`;
+    }else{
+      inner=`<div class="sub">${T("plateSide")}</div><div class="mt8">${bd.plates.length?bd.plates.map(p=>`<span class="tag acc" style="font-size:16px;padding:7px 12px;margin:3px 4px 3px 0">${p}</span>`).join("<b> + </b>"):"—"}</div>`;
+    }
+    openSheet(`<h3>${T("plateCalc")} · ${exName(en.exId)}</h3>
+    <div class="row" style="justify-content:center;gap:16px;margin-top:6px">
+      <button class="stepbtn" style="width:54px;height:50px;border-radius:12px;font-size:24px" id="pcM">−</button>
+      <b style="font-size:32px;min-width:120px;text-align:center">${w}<span class="sub" style="font-size:15px"> kg</span></b>
+      <button class="stepbtn" style="width:54px;height:50px;border-radius:12px;font-size:24px" id="pcP">+</button>
+    </div>
+    <p class="dim center mt8">${T("plateBar")} ${bar} kg</p>
+    <div class="card mt12">${inner}</div>
+    <button class="btn mt8" id="pcApply">${fmt(T("plateApply"),{w})}</button>`);
+    $("#pcM").onclick=()=>{w=Math.max(bar,Math.round((w-minInc)*100)/100);render()};
+    $("#pcP").onclick=()=>{w=Math.round((w+minInc)*100)/100;render()};
+    if(bd.bad){$("#pcL").onclick=()=>{w=bd.lower;render()};$("#pcU").onclick=()=>{w=bd.upper;render()}}
+    $("#pcApply").onclick=()=>{en.sets[si].w=w;closeSheet();renderWorkout()};
+  }
+  render();
 }
 function openAddExercise(){
   const eqList=availEquip();
@@ -1571,7 +1911,7 @@ function finishWorkout(){
   if(!done.length){W=null;renderWorkout();return}
   if(!confirm(T("finishConfirm")))return;
   const prevBest={};done.forEach(e=>{prevBest[e.exId]=bestFor(e.exId).maxw});
-  const log={date:new Date().toISOString(),dayKey:W.dayKey,dayLabel:W.label||"",durMin:Math.max(1,Math.round((Date.now()-W.start)/60000)),
+  const log={date:new Date().toISOString(),dayKey:W.dayKey,dayLabel:W.label||"",dayIdx:(W.dayIdx!==undefined&&W.dayIdx>=0)?W.dayIdx:null,readiness:W.readiness?{a:W.readiness.a,score:W.readiness.score}:undefined,durMin:Math.max(1,Math.round((Date.now()-W.start)/60000)),
     entries:done.map(e=>({exId:e.exId,sets:e.sets.filter(s=>s.done).map(s=>({w:+s.w||0,r:+s.r||0,done:true}))}))};
   const prs=[];log.entries.forEach(e=>{const mx=Math.max(...e.sets.map(s=>s.w));if(mx>(prevBest[e.exId]||0)&&mx>0)prs.push({exId:e.exId,w:mx})});
   log.prs=prs;
@@ -1579,6 +1919,7 @@ function finishWorkout(){
   const vol=totalVolume(log);
   W=null;
   openShareCard(log,vol);
+  if(S.logs.length===1)setTimeout(()=>toast(T("unlockTeaser")),600);
   renderWorkout();
 }
 
@@ -1615,15 +1956,22 @@ function renderGym(){
   b.querySelectorAll("[data-del]").forEach(x=>x.onclick=()=>{if(confirm(T("delGymConfirm"))){S.gyms.splice(+x.dataset.del,1);if(S.activeGym>=S.gyms.length)S.activeGym=0;S.plan=generatePlan();save();renderGym()}});
 }
 function openGymEditor(gi){
-  const isNew=gi<0;const g=isNew?{name:"",eq:[]}:JSON.parse(JSON.stringify(S.gyms[gi]));
+  const isNew=gi<0;const g=isNew?{name:"",eq:[],barKg:20,plates:DEF_PLATES.slice()}:JSON.parse(JSON.stringify(S.gyms[gi]));
+  if(!g.barKg)g.barKg=20;if(!g.plates)g.plates=DEF_PLATES.slice();
   function renderSheet(){
     openSheet(`<h3>${isNew?T("addGym"):T("editEq")}</h3>
     <label class="fl">${T("gymName")}</label><input id="geName" value="${esc(g.name)}" placeholder="${T("gymNamePh")}">
     <label class="fl">${T("pickEq")}</label>
     <div class="chips" id="geEq">${EQUIP.map(e=>`<div class="chip ${g.eq.includes(e.id)?"on":""}" data-v="${e.id}">${LANG==="zh"?e.zh:e.en}</div>`).join("")}</div>
+    <label class="fl">${T("plateBar")} (kg)</label>
+    <div class="seg" id="geBar">${[20,15,10].map(b=>`<div data-v="${b}" class="${g.barKg===b?"on":""}">${b}</div>`).join("")}</div>
+    <label class="fl">${T("platesL")}</label>
+    <div class="chips" id="gePlates">${DEF_PLATES.map(p=>`<div class="chip ${g.plates.includes(p)?"on":""}" data-v="${p}">${p}</div>`).join("")}</div>
     <button class="btn ghost mt12" id="geScan">${T("aiScan")}</button>
     <button class="btn mt8" id="geSave">${T("save")}</button>`);
     $("#geEq").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;const id=d.dataset.v;const i=g.eq.indexOf(id);i>=0?g.eq.splice(i,1):g.eq.push(id);d.classList.toggle("on")};
+    $("#geBar").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;g.barKg=+d.dataset.v;document.querySelectorAll("#geBar div").forEach(x=>x.classList.toggle("on",x===d))};
+    $("#gePlates").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;const p=+d.dataset.v;const i=g.plates.indexOf(p);i>=0?g.plates.splice(i,1):g.plates.push(p);d.classList.toggle("on")};
     $("#geScan").onclick=()=>{if(!S.settings.apiKey){toast(T("aiScanNeedKey"));return}
       g.name=$("#geName").value;
       openScanSheet(ids=>{ids.forEach(id=>{if(!g.eq.includes(id))g.eq.push(id)});renderSheet()})};
@@ -1788,7 +2136,7 @@ function renderMe(){
     <button class="btn sm warn" id="btnReset">${T("resetAll")}</button></div>
     <input type="file" id="impFile" accept=".json" style="display:none"></div>
   <div class="card"><b>${T("disclaimerT")}</b><p class="dim mt8">${T("disclaimer")}</p></div>
-  <p class="dim center">GymSense MVP v1.8 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
+  <p class="dim center">GymSense MVP v1.9 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
   $("#setTheme").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;
     S.settings.theme=d.dataset.v;save();applyTheme();
     document.querySelectorAll("#setTheme div").forEach(x=>x.classList.toggle("on",x===d));toast(T("saveOk"))};
@@ -2054,10 +2402,18 @@ load();
 applyTheme();
 applyLangTabs();
 $("#btnLang").textContent=LANG==="zh"?"EN":"中";
+function renderWelcome(){
+  $("#onboardBody").innerHTML=`<div class="center" style="padding-top:16vh">
+  <div class="logo" style="font-size:36px">Gym<em>Sense</em></div>
+  <h2 style="margin-top:16px;font-size:19px">${T("welcomeTag")}</h2>
+  <p class="sub mt12" style="padding:0 8px">${T("welcomeSub")}</p>
+  <button class="btn" id="welcomeGo" style="margin-top:30px">${T("welcomeGo")}</button></div>`;
+  $("#welcomeGo").onclick=()=>{S.flags.welcomed=1;save();renderOnboard()};
+}
 if(!S.profile){
   $("#tabbar").style.display="none";
   $("#view-onboard").classList.add("active");
-  renderOnboard();
+  S.flags.welcomed?renderOnboard():renderWelcome();
 }else{
   switchView("plan");
 }

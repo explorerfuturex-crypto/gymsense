@@ -151,13 +151,13 @@ html[data-theme="light"] .setrow2 .done.on{color:var(--acc)}
 .animwrap svg{width:100%;height:215px;display:block}
 .animcap{text-align:center;font-size:11.5px;color:var(--dim);padding:0 0 8px}
 /* stepper inputs */
-.setrow2{display:grid;grid-template-columns:26px 1fr 1fr 42px;gap:7px;align-items:center;margin-bottom:8px}
-.sethead2{display:grid;grid-template-columns:26px 1fr 1fr 42px;gap:7px;font-size:11px;color:var(--dim);margin-bottom:6px;text-align:center;font-weight:700}
+.setrow2{display:grid;grid-template-columns:24px 1fr 1fr 52px;gap:8px;align-items:center;margin-bottom:9px}
+.sethead2{display:grid;grid-template-columns:24px 1fr 1fr 52px;gap:8px;font-size:11px;color:var(--dim);margin-bottom:6px;text-align:center;font-weight:700}
 .stepcell{display:flex;align-items:stretch;background:var(--bg2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .stepcell input{border:none;border-radius:0;background:transparent;text-align:center;padding:9px 2px;font-size:16px;font-weight:700;min-width:0;flex:1}
 .stepbtn{width:36px;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;color:var(--acc);background:var(--card2);border:none;cursor:pointer;user-select:none;touch-action:manipulation}
 .stepbtn:active{background:var(--accD)}
-.setrow2 .done{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--dim);font-size:18px;cursor:pointer;font-weight:800}
+.setrow2 .done{width:52px;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);color:var(--dim);font-size:20px;cursor:pointer;font-weight:800}
 .setrow2 .done.on{background:var(--accD);border-color:var(--acc2);color:var(--acc)}
 .swapmini{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card2);color:var(--sub);font-size:14px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 </style>
@@ -328,6 +328,8 @@ tgtAddLoad:"🎯 自重已全部达到上限：建议负重 +2.5kg × {r}（腰�
 tgtTimeLine:"🎯 本组目标：{r} 秒",
 bwHint:"自重动作：重量留空即为纯自重，负重时只填附加重量",
 bestRepsTag:"最佳 {n} 次",
+rdNeedAll:"回答上面三个问题（各点一下）",
+holdHint:"💡 按住 +/− 可快速连续调节",
 aiChat:"问 AI 教练",aiChatPh:"例：肩膀有点不舒服，今天怎么调整？",send:"发送",
 dataTitle:"数据管理",exportData:"导出数据 (JSON)",importData:"导入数据",resetAll:"清空全部数据",
 resetConfirm:"⚠️ 将删除档案、计划与全部历史记录。确定？",
@@ -468,6 +470,8 @@ tgtAddLoad:"🎯 Bodyweight range topped — add +2.5kg × {r} (belt/plate)",
 tgtTimeLine:"🎯 Target: {r} sec",
 bwHint:"Bodyweight move: leave weight empty for pure BW; enter only the added load when weighted",
 bestRepsTag:"Best: {n} reps",
+rdNeedAll:"Answer the three questions above (one tap each)",
+holdHint:"💡 Hold +/− to change values quickly",
 aiChat:"Ask the AI coach",aiChatPh:"e.g. My shoulder feels off — how should I adjust today?",send:"Send",
 dataTitle:"Data",exportData:"Export data (JSON)",importData:"Import data",resetAll:"Erase all data",
 resetConfirm:"⚠️ This deletes profile, plan and all history. Sure?",
@@ -994,6 +998,22 @@ function plateBreakdown(total,barKg,plates){
     return {bad:true,lower:Math.round(lower*100)/100,upper:Math.round((lower+2*minP)*100)/100};
   }
   return {plates:out,per:Math.round(per*100)/100};
+}
+/* graphical barbell: sleeve + per-side plates (height ∝ plate size) */
+function plateSvg(plates){
+  const W=300,H=116,cy=H/2;
+  const hOf=p=>20+(Math.min(p,25)/25)*72;
+  let x=78;
+  let s=`<line x1="12" y1="${cy}" x2="${W-12}" y2="${cy}" stroke="${CD}" stroke-width="7" stroke-linecap="round"/>`;
+  s+=`<rect x="60" y="${cy-15}" width="9" height="30" rx="2.5" fill="${CD}"/>`;
+  plates.forEach(p=>{
+    const h=hOf(p);
+    s+=`<rect x="${x}" y="${cy-h/2}" width="17" height="${h}" rx="5" fill="#4ade80" stroke="#15803d" stroke-width="1.2"/>`;
+    s+=`<text x="${x+8.5}" y="${cy+3.5}" text-anchor="middle" font-size="${p>=10?10:8}" font-weight="800" fill="#08240f">${p}</text>`;
+    x+=21;
+  });
+  if(!plates.length)s+=`<text x="${W/2}" y="${cy-14}" text-anchor="middle" font-size="12" fill="${CD}">—</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-height:120px;display:block">${s}</svg>`;
 }
 /* theme: auto follows system; anim stick-figure colors follow theme */
 function applyTheme(){
@@ -1702,16 +1722,15 @@ function openReadiness(dayIdx){
     QS.forEach((q,qi)=>{
       h+=`<label class="fl">${T(q[0])}</label><div class="seg" data-q="${qi}">${q[1].map((o,oi)=>`<div data-o="${oi}" class="${a[qi]===oi?"on":""}" style="padding:12px 4px">${T(o)}</div>`).join("")}</div>`;
     });
+    /* stable layout: explanation slot + primary button always rendered (disabled until 3 answers) */
     const done=a.every(x=>x!==null);
-    if(done){
-      const score=a[0]+a[1]+a[2];
-      const sore=a[1]===2;
-      const expl=sore?T("rdExplSore"):(score>=4?T("rdExpl46"):(score>=2?T("rdExpl23"):T("rdExpl0")));
-      h+=`<div class="${score>=2||sore?"warnbox":"notice"} mt12">${expl}</div>`;
-      if(sore)h+=`<button class="btn mt12" id="rdSwitch">${T("rdSwitch")}</button>`;
-      h+=`<button class="btn ${sore?"sec":""} mt8" id="rdGo">${T("rdApply")}</button>`;
-      if(score>=4)h+=`<button class="btn sec mt8" id="rdRest">${T("rdRest")}</button>`;
-    }
+    const score=done?(a[0]+a[1]+a[2]):0;
+    const sore=done&&a[1]===2;
+    const expl=done?(sore?T("rdExplSore"):(score>=4?T("rdExpl46"):(score>=2?T("rdExpl23"):T("rdExpl0")))):T("rdNeedAll");
+    h+=`<div class="${done&&(score>=2||sore)?"warnbox":"notice"} mt12" style="min-height:42px">${expl}</div>`;
+    if(sore)h+=`<button class="btn mt12" id="rdSwitch">${T("rdSwitch")}</button>`;
+    h+=`<button class="btn ${sore?"sec":""} mt8" id="rdGo" ${done?"":"disabled"}>${T("rdApply")}</button>`;
+    if(done&&score>=4)h+=`<button class="btn sec mt8" id="rdRest">${T("rdRest")}</button>`;
     openSheet(h);
     document.querySelectorAll("[data-q]").forEach(seg=>seg.onclick=e=>{
       const d=e.target.closest("[data-o]");if(!d)return;
@@ -1734,13 +1753,21 @@ function renderWorkout(){
   applyLangTabs();
   const b=$("#workoutBody");
   if(!W){
-    let h=`<div class="hd"><h1>${T("todayTitle")}</h1></div>`;
-    if(S.plan){h+=`<div class="card"><b>${T("pickDay")}</b>`;
-      S.plan.days.forEach((d,di)=>{h+=`<div class="listitem" data-d="${di}"><span>${T("day").replace("{n}",di+1)} · ${TD(d.key)}</span><span class="arrow">›</span></div>`});
-      h+=`</div>`}
+    /* focused CTA page (no duplicated plan list — that lives in the Plan tab) */
+    let h=`<div class="hd"><h1>${T("tabWork")}</h1></div>`;
+    if(S.plan&&S.plan.days.length){
+      const ri=recDayIdx();const d=S.plan.days[ri];
+      const isSwim=!!d.swimSegs;
+      const nm=isSwim?("🏊 "+TD("swim")):(d.label?esc(d.label):TD(d.key));
+      h+=`<div class="card" style="border:1px solid ${isSwim?"#60a5fa":"var(--acc2)"}">
+      <div class="dim">${T("todayHdr")}</div>
+      <b style="font-size:20px">${fmt(T("todayRec"),{name:`${T("day").replace("{n}",ri+1)} · ${nm}`})}</b>
+      <div class="sub mt8">${isSwim?`${d.swimSegs.reduce((a,s)=>a+s.d,0)}m · ~${estMinutes(d)} ${T("durMin")}`:fmt(T("todayMeta"),{n:d.exercises.length,min:estMinutes(d)})}</div>
+      <button class="btn mt12" id="wkStart" ${isSwim?'style="background:#60a5fa;color:#08131f"':''}>${T("startNow")}</button></div>`;
+    }
     h+=`<div class="card center"><p class="sub">${T("emptyWorkSub")}</p><button class="btn sec mt12" id="btnFree">${T("quickStart")}</button></div>`;
     b.innerHTML=h;
-    b.querySelectorAll("[data-d]").forEach(x=>x.onclick=()=>startWorkout(+x.dataset.d));
+    const ws=$("#wkStart");if(ws)ws.onclick=()=>startWorkout(recDayIdx());
     $("#btnFree").onclick=startFree;
     return;
   }
@@ -1770,11 +1797,13 @@ function renderWorkout(){
   if(st9==="S1"||st9==="S2")h+=`<p class="dim mb8">${T("rdUnlock")}</p>`;
   if(W.cf&&W.cf<1)h+=`<div class="notice mb8">${fmt(T("comebackNote"),{p:Math.round(W.cf*100)})}</div>`;
   if(W.readiness){const sc=W.readiness.score;h+=`<div class="${sc>=2?"warnbox":"notice"} mb8">${sc>=4?T("rdExpl46"):(sc>=2?T("rdExpl23"):T("rdExpl0"))}</div>`}
+  if(S.logs.length<3)h+=`<p class="dim mb8" style="font-size:11px">${T("holdHint")}</p>`;
   W.entries.forEach((en,ei)=>{
     const isBar=EXMAP[en.exId]&&EXMAP[en.exId].eq.some(q=>["barbell","smith","ez"].includes(q));
     h+=`<div class="card"><div class="row mb8">
       <div class="grow" style="cursor:pointer" data-det="${en.exId}"><b>${exName(en.exId)}</b>
       <div class="exmeta">${en.reps?`${T("reps")}: ${en.reps} · `:""}${T("rest")} ${en.rest||90}s</div></div>
+      <button class="swapmini" data-scan="${ei}" title="${T("scanSwap")}">📷</button>
       ${isBar?`<button class="swapmini" data-plate="${ei}" title="${T("plateCalc")}">🏋️</button>`:""}
       <button class="btn sm sec" data-swap="${ei}">${T("swap")}</button></div>`;
     const bwx=isBW(en.exId), tmx=isTime(en.exId);
@@ -1839,10 +1868,11 @@ function renderWorkout(){
   b.querySelectorAll("[data-add]").forEach(btn=>btn.onclick=()=>{const en=W.entries[+btn.dataset.add];const last=en.sets[en.sets.length-1];en.sets.push({w:last?last.w:"",r:last?last.r:"",done:false});renderWorkout()});
   b.querySelectorAll("[data-swap]").forEach(btn=>btn.onclick=()=>openSwap(+btn.dataset.swap));
   b.querySelectorAll("[data-plate]").forEach(btn=>btn.onclick=()=>openPlateCalc(+btn.dataset.plate));
+  b.querySelectorAll("[data-scan]").forEach(btn=>btn.onclick=()=>openSwap(+btn.dataset.scan,true));
   $("#btnAddEx").onclick=()=>openAddExercise();
   $("#btnFinish").onclick=finishWorkout;
 }
-function openSwap(ei){
+function openSwap(ei,autoScan){
   const en=W.entries[ei];
   const subs=substitutesFor(en.exId);
   if(!subs.length){toast(T("noEq"));return}
@@ -1888,6 +1918,11 @@ function openSwap(ei){
       renderList(filtered);
     }catch(err){btn.textContent=T("scanSwap");toast(T("scanNone"))}
   };
+  /* quick-scan entry from the exercise card camera icon */
+  if(autoScan){
+    if(!S.settings.apiKey)toast(T("scanSwapNoKey"));
+    else $("#swFile").click();
+  }
 }
 /* ===== P0-3 plate calculator ===== */
 function openPlateCalc(ei){
@@ -1905,7 +1940,7 @@ function openPlateCalc(ei){
     if(bd.bad){
       inner=`<p class="sub">${T("plateNo")}</p><div class="row mt8"><button class="btn sm sec grow" id="pcL">${bd.lower} kg</button><button class="btn sm sec grow" id="pcU">${bd.upper} kg</button></div>`;
     }else{
-      inner=`<div class="sub">${T("plateSide")}</div><div class="mt8">${bd.plates.length?bd.plates.map(p=>`<span class="tag acc" style="font-size:16px;padding:7px 12px;margin:3px 4px 3px 0">${p}</span>`).join("<b> + </b>"):"—"}</div>`;
+      inner=`<div class="sub">${T("plateSide")}${bd.plates.length?`：${bd.plates.join(" + ")}`:""}</div>${plateSvg(bd.plates)}`;
     }
     openSheet(`<h3>${T("plateCalc")} · ${exName(en.exId)}</h3>
     <div class="row" style="justify-content:center;gap:16px;margin-top:6px">
@@ -2185,7 +2220,7 @@ function renderMe(){
     <button class="btn sm warn" id="btnReset">${T("resetAll")}</button></div>
     <input type="file" id="impFile" accept=".json" style="display:none"></div>
   <div class="card"><b>${T("disclaimerT")}</b><p class="dim mt8">${T("disclaimer")}</p></div>
-  <p class="dim center">GymSense MVP v1.9.1 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
+  <p class="dim center">GymSense MVP v1.9.2 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
   $("#setTheme").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;
     S.settings.theme=d.dataset.v;save();applyTheme();
     document.querySelectorAll("#setTheme div").forEach(x=>x.classList.toggle("on",x===d));toast(T("saveOk"))};

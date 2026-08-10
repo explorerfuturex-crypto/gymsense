@@ -322,6 +322,12 @@ fg2:"② 打勾后自动开始组间休息倒计时",
 fg3:"③ 器械被占？点「⇄ 换动作」或拍一下旁边的器械",
 fgGo:"开始训练",
 unlockTeaser:"🎉 首训完成！练满 4 次后解锁状态微调与逐组进阶目标。",
+bwLabel:"自重",bwPlus:"自重+{w}kg",secUnit:"秒",
+tgtBwLine:"🎯 本组目标：自重 × {r}",
+tgtAddLoad:"🎯 自重已全部达到上限：建议负重 +2.5kg × {r}（腰带/抱片）",
+tgtTimeLine:"🎯 本组目标：{r} 秒",
+bwHint:"自重动作：重量留空即为纯自重，负重时只填附加重量",
+bestRepsTag:"最佳 {n} 次",
 aiChat:"问 AI 教练",aiChatPh:"例：肩膀有点不舒服，今天怎么调整？",send:"发送",
 dataTitle:"数据管理",exportData:"导出数据 (JSON)",importData:"导入数据",resetAll:"清空全部数据",
 resetConfirm:"⚠️ 将删除档案、计划与全部历史记录。确定？",
@@ -456,6 +462,12 @@ fg2:"② Ticking a set auto-starts the rest timer",
 fg3:"③ Machine taken? Tap \"⇄ Swap\" or snap the one next to you",
 fgGo:"Start workout",
 unlockTeaser:"🎉 First workout done! 4 workouts unlock readiness tuning & per-set targets.",
+bwLabel:"BW",bwPlus:"BW+{w}kg",secUnit:"sec",
+tgtBwLine:"🎯 Target: bodyweight × {r}",
+tgtAddLoad:"🎯 Bodyweight range topped — add +2.5kg × {r} (belt/plate)",
+tgtTimeLine:"🎯 Target: {r} sec",
+bwHint:"Bodyweight move: leave weight empty for pure BW; enter only the added load when weighted",
+bestRepsTag:"Best: {n} reps",
 aiChat:"Ask the AI coach",aiChatPh:"e.g. My shoulder feels off — how should I adjust today?",send:"Send",
 dataTitle:"Data",exportData:"Export data (JSON)",importData:"Import data",resetAll:"Erase all data",
 resetConfirm:"⚠️ This deletes profile, plan and all history. Sure?",
@@ -543,14 +555,14 @@ const EXDB=[
 {id:"smith_bench",zh:"史密斯卧推",en:"Smith Bench Press",eq:["smith","bench"],m:["chest"],m2:["triceps","shoulders"],c:1,
  cz:"调整凳位使杆落在胸中部正上方，全程沿轨道推。",ce:"Position bench so the bar meets mid-chest; press along the rails.",
  wz:"记住挂钩旋转方向，力竭时及时旋转挂杆。",we:"Know the hook rotation; rack immediately when near failure."},
-{id:"pushup",zh:"俯卧撑",en:"Push-up",eq:["bw"],m:["chest"],m2:["triceps","abs"],c:1,
+{id:"pushup",bw:1,zh:"俯卧撑",en:"Push-up",eq:["bw"],m:["chest"],m2:["triceps","abs"],c:1,
  cz:"身体一条直线，手位比肩略宽，胸部接近地面。",ce:"Straight body line, hands slightly wider than shoulders, chest near floor.",
  wz:"塌腰或抬臀都会失去核心张力。",we:"No sagging hips or piking."},
-{id:"dip_chest",zh:"双杠臂屈伸",en:"Dips",eq:["dip"],m:["chest"],m2:["triceps","shoulders"],c:1,
+{id:"dip_chest",bw:1,zh:"双杠臂屈伸",en:"Dips",eq:["dip"],m:["chest"],m2:["triceps","shoulders"],c:1,
  cz:"身体前倾练胸，下放至上臂与地面平行。",ce:"Lean forward for chest, lower until upper arms are parallel.",
  wz:"肩部有伤者慎做；不要下放过深。",we:"Caution with shoulder issues; don't go too deep."},
 // ---- BACK ----
-{id:"pullup_ex",zh:"引体向上",en:"Pull-up",eq:["pullup"],m:["back"],m2:["biceps"],c:1,
+{id:"pullup_ex",bw:1,zh:"引体向上",en:"Pull-up",eq:["pullup"],m:["back"],m2:["biceps"],c:1,
  cz:"肩胛先下沉再拉，胸口找杆，顶端下巴过杆。",ce:"Depress scapula first, pull chest to bar, chin over at top.",
  wz:"避免全程摆荡借力；做不了可用弹力带辅助或换高位下拉。",we:"No kipping; use bands or lat pulldown if you can't complete reps."},
 {id:"lat_pd",zh:"高位下拉",en:"Lat Pulldown",eq:["m_lat"],m:["back"],m2:["biceps"],c:1,
@@ -574,7 +586,7 @@ const EXDB=[
 {id:"rdl",zh:"罗马尼亚硬拉",en:"Romanian Deadlift",eq:["barbell"],m:["hams","glutes"],m2:["back"],c:1,
  cz:"膝微屈固定，髋向后推，杆沿大腿下滑至腘绳肌强拉伸即返回。",ce:"Soft knees, push hips back, bar slides down thighs to a hamstring stretch.",
  wz:"下放深度以背不圆为准，不必触地。",we:"Depth is limited by your flat back — no need to touch the floor."},
-{id:"hyperext",zh:"山羊挺身",en:"Back Extension",eq:["hyper"],m:["glutes","hams"],m2:["back"],c:0,
+{id:"hyperext",bw:1,zh:"山羊挺身",en:"Back Extension",eq:["hyper"],m:["glutes","hams"],m2:["back"],c:0,
  cz:"髋部支点对齐垫沿，下放后用臀腘发力抬起至身体一条线。",ce:"Hips on pad edge, raise to a straight line using glutes/hams.",
  wz:"顶端不要过度反弓腰。",we:"Don't hyperextend at the top."},
 // ---- SHOULDERS ----
@@ -628,7 +640,7 @@ const EXDB=[
 {id:"close_bench",zh:"窄距卧推",en:"Close-grip Bench Press",eq:["barbell","bench"],m:["triceps"],m2:["chest"],c:1,
  cz:"握距与肩同宽，肘贴身下放至下胸，垂直推起。",ce:"Shoulder-width grip, elbows tucked, bar to lower chest.",
  wz:"握距不要过窄，手腕保持中立。",we:"Not too narrow — keep wrists stacked."},
-{id:"dip_tri",zh:"双杠臂屈伸（三头）",en:"Dips (triceps)",eq:["dip"],m:["triceps"],m2:["chest"],c:1,
+{id:"dip_tri",bw:1,zh:"双杠臂屈伸（三头）",en:"Dips (triceps)",eq:["dip"],m:["triceps"],m2:["chest"],c:1,
  cz:"身体保持竖直，肘向后弯曲下放，撑起锁定。",ce:"Stay upright, elbows track back, press to lockout.",
  wz:"下放至大小臂90°即可。",we:"90° depth is enough."},
 // ---- QUADS / LEGS ----
@@ -680,13 +692,13 @@ const EXDB=[
  cz:"单手持铃扶墙，单腿全幅提踵。",ce:"DB in one hand, other hand on wall, full range single-leg.",
  wz:"左右次数保持一致。",we:"Match reps on both sides."},
 // ---- ABS ----
-{id:"crunch",zh:"卷腹",en:"Crunch",eq:["bw"],m:["abs"],m2:[],c:0,
+{id:"crunch",bw:1,zh:"卷腹",en:"Crunch",eq:["bw"],m:["abs"],m2:[],c:0,
  cz:"下背贴地，用腹肌把肩胛卷离地面，呼气收缩。",ce:"Low back on floor, curl shoulder blades up, exhale hard.",
  wz:"不要用手拉头。",we:"Don't yank your neck."},
-{id:"plank",zh:"平板支撑",en:"Plank",eq:["bw"],m:["abs"],m2:[],c:0,
+{id:"plank",bw:1,tm:1,zh:"平板支撑",en:"Plank",eq:["bw"],m:["abs"],m2:[],c:0,
  cz:"肘撑，身体一条直线，主动收紧腹臀，以秒计时。",ce:"Straight line, actively brace abs & glutes; measured in seconds.",
  wz:"塌腰即结束这一组。",we:"Sagging hips = set over."},
-{id:"hanging_leg",zh:"悬垂举腿",en:"Hanging Leg Raise",eq:["pullup"],m:["abs"],m2:[],c:0,
+{id:"hanging_leg",bw:1,zh:"悬垂举腿",en:"Hanging Leg Raise",eq:["pullup"],m:["abs"],m2:[],c:0,
  cz:"悬垂收紧，用下腹卷起双腿至水平以上，控制下放。",ce:"Dead hang, curl legs above horizontal with lower abs, control down.",
  wz:"避免摆荡；做不了直腿先做屈膝。",we:"No swinging; bend knees to regress."},
 {id:"cable_crunch",zh:"绳索跪姿卷腹",en:"Cable Crunch",eq:["cable"],m:["abs"],m2:[],c:0,
@@ -910,22 +922,37 @@ function nthLastSetsFor(exId,nth){ /* nth=0 latest, 1 previous... */
   return null;
 }
 const LOWER_COMPOUND=["squat","smith_squat","hack_squat","leg_press_ex","deadlift","rdl","db_rdl","hip_thrust"];
+function isBW(exId){const e=EXMAP[exId];return !!(e&&e.bw)}
+function isTime(exId){const e=EXMAP[exId];return !!(e&&e.tm)}
 function progressionTarget(exId,repsStr,freeze){
   const m=String(repsStr||"").match(/(\d+)\s*-\s*(\d+)/);
   const lo=m?+m[1]:(+repsStr||8), hi=m?+m[2]:(+repsStr||12);
+  const bw=isBW(exId), tm=isTime(exId);
   const sessions=exSessions(exId);
-  if(sessions<2)return {baseline:true,lo,hi};
+  if(sessions<2)return {baseline:true,lo,hi,bwMode:bw,tm};
   const last=nthLastSetsFor(exId,0);
-  if(!last||!last.length)return {baseline:true,lo,hi};
+  if(!last||!last.length)return {baseline:true,lo,hi,bwMode:bw,tm};
   const w=Math.max(...last.map(s=>+s.w||0));
-  if(w<=0)return {baseline:true,lo,hi};
+  if(w<=0&&!bw)return {baseline:true,lo,hi};
   const bestReps=Math.max(...last.map(s=>+s.r||0));
-  if(freeze)return {w,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi,frozen:true};
-  if(sessions===2)return {w,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi};
+  /* time-based (e.g. plank): progress by +10s, cap 120s */
+  if(tm){
+    const base=Math.max(lo,bestReps);
+    if(freeze||sessions===2)return {w:0,reps:base,lo,hi,tm:true,bwMode:true,frozen:freeze};
+    return {w:0,reps:Math.min(120,base+10),lo,hi,tm:true,bwMode:true};
+  }
+  if(freeze)return {w,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi,frozen:true,bwMode:bw&&w<=0};
+  if(sessions===2)return {w,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi,bwMode:bw&&w<=0};
   const allHi=last.every(s=>(+s.r||0)>=hi);
   const anyBelowLo=last.some(s=>(+s.r||0)<lo);
+  /* pure bodyweight: reps first; when the whole range is topped, suggest adding load */
+  if(bw&&w<=0){
+    if(allHi)return {w:2.5,reps:lo,lo,hi,addLoad:true};
+    if(anyBelowLo)return {w:0,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi,hold:true,bwMode:true};
+    return {w:0,reps:Math.min(hi,bestReps+1),lo,hi,bwMode:true};
+  }
   if(allHi){
-    const inc=LOWER_COMPOUND.includes(exId)?5:2.5;
+    const inc=(bw||!LOWER_COMPOUND.includes(exId))?2.5:5;
     return {w:Math.round((w+inc)*10)/10,reps:lo,lo,hi,inc:true};
   }
   if(anyBelowLo){
@@ -934,6 +961,13 @@ function progressionTarget(exId,repsStr,freeze){
     return {w,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi,hold:true,deload:!!prevBelow};
   }
   return {w,reps:Math.min(hi,bestReps+1),lo,hi};
+}
+/* set display: "60kg×10" / "自重×12" / "自重+10kg×8" / "45秒" */
+function fmtSet(s,exId){
+  const w=+s.w||0,r=+s.r||0;
+  if(isTime(exId))return r+" "+T("secUnit");
+  if(isBW(exId))return (w>0?fmt(T("bwPlus"),{w}):T("bwLabel"))+"×"+r;
+  return w+"kg×"+r;
 }
 /* ===== P0-2 readiness adjustments ===== */
 function applyReadiness(entries,score,factorW){
@@ -1651,6 +1685,7 @@ function beginStrength(dayIdx,readiness){
       const ls=last&&last[Math.min(i,last.length-1)];
       let w=(tgt&&!tgt.baseline)?tgt.w:(ls?ls.w:"");
       if(w!==""&&cf<1)w=Math.round((+w*cf)*2)/2;
+      if(isBW(e.exId)&&(w===""||+w===0))w=""; /* empty = pure bodyweight */
       sets.push({w,r:"",done:false});
     }
     return {exId:e.exId,reps:e.reps,rest:e.rest,sets,target:tgt};
@@ -1742,19 +1777,26 @@ function renderWorkout(){
       <div class="exmeta">${en.reps?`${T("reps")}: ${en.reps} · `:""}${T("rest")} ${en.rest||90}s</div></div>
       ${isBar?`<button class="swapmini" data-plate="${ei}" title="${T("plateCalc")}">🏋️</button>`:""}
       <button class="btn sm sec" data-swap="${ei}">${T("swap")}</button></div>`;
+    const bwx=isBW(en.exId), tmx=isTime(en.exId);
     const tgt=en.target;
     if(tgt){
       if(tgt.baseline)h+=`<p class="dim mb8">🧭 ${T("baselineTip")}</p>`;
       else{
-        const rTxt=tgt.reps<tgt.hi?`${tgt.reps}-${tgt.hi}`:String(tgt.reps);
-        h+=`<div class="notice mb8" style="padding:7px 10px">${fmt(T("tgtLine"),{w:tgt.w,r:rTxt})}${tgt.frozen?` <span class="dim">${T("tgtFrozen")}</span>`:""}${tgt.deload?`<br><span class="dim">${T("tgtDeload")}</span>`:""}</div>`;
+        const rTxt=(!tmx&&tgt.reps<tgt.hi)?`${tgt.reps}-${tgt.hi}`:String(tgt.reps);
+        let line;
+        if(tgt.tm)line=fmt(T("tgtTimeLine"),{r:tgt.reps});
+        else if(tgt.addLoad)line=fmt(T("tgtAddLoad"),{r:rTxt});
+        else if(tgt.bwMode)line=fmt(T("tgtBwLine"),{r:rTxt});
+        else line=fmt(T("tgtLine"),{w:tgt.w,r:rTxt});
+        h+=`<div class="notice mb8" style="padding:7px 10px">${line}${tgt.frozen?` <span class="dim">${T("tgtFrozen")}</span>`:""}${tgt.deload?`<br><span class="dim">${T("tgtDeload")}</span>`:""}</div>`;
       }
     }
-    h+=`<div class="sethead2"><span>#</span><span>${T("kg")}</span><span>${T("reps")}</span><span>✓</span></div>`;
+    if(bwx)h+=`<p class="dim mb8" style="font-size:11px">${T("bwHint")}</p>`;
+    h+=`<div class="sethead2"><span>#</span><span>${bwx?T("bwLabel")+" +kg":T("kg")}</span><span>${tmx?T("secUnit"):T("reps")}</span><span>✓</span></div>`;
     en.sets.forEach((s,si)=>{
       h+=`<div class="setrow2"><div class="exnum">${si+1}</div>
-      <div class="stepcell"><button class="stepbtn" data-f="w" data-d="-1" data-i="${ei}-${si}">−</button><input type="number" inputmode="decimal" value="${s.w}" data-w="${ei}-${si}" placeholder="kg"><button class="stepbtn" data-f="w" data-d="1" data-i="${ei}-${si}">+</button></div>
-      <div class="stepcell"><button class="stepbtn" data-f="r" data-d="-1" data-i="${ei}-${si}">−</button><input type="number" inputmode="numeric" value="${s.r}" data-r="${ei}-${si}" placeholder="${T("reps")}"><button class="stepbtn" data-f="r" data-d="1" data-i="${ei}-${si}">+</button></div>
+      <div class="stepcell"><button class="stepbtn" data-f="w" data-d="-1" data-i="${ei}-${si}">−</button><input type="number" inputmode="decimal" value="${s.w}" data-w="${ei}-${si}" placeholder="${bwx?T("bwLabel"):"kg"}"><button class="stepbtn" data-f="w" data-d="1" data-i="${ei}-${si}">+</button></div>
+      <div class="stepcell"><button class="stepbtn" data-f="r" data-d="-1" data-i="${ei}-${si}">−</button><input type="number" inputmode="numeric" value="${s.r}" data-r="${ei}-${si}" placeholder="${tmx?T("secUnit"):T("reps")}"><button class="stepbtn" data-f="r" data-d="1" data-i="${ei}-${si}">+</button></div>
       <button class="done ${s.done?"on":""}" data-done="${ei}-${si}">✓</button></div>`;
     });
     h+=`<button class="btn sm sec mt8" data-add="${ei}">${T("addSet")}</button></div>`;
@@ -2013,7 +2055,12 @@ function renderProgress(){
   if(!progExSel||!exIds.includes(progExSel))progExSel=exIds[0];
   const best=bestFor(progExSel);
   /* per-session best est1RM series for selected exercise */
-  const series=[];S.logs.forEach(l=>{let m=0;l.entries.forEach(e=>{if(e.exId===progExSel)e.sets.forEach(s=>{const v=est1RM(s.w,s.r);if(v>m)m=v})});if(m>0)series.push({d:l.date.slice(5,10),v:Math.round(m)})});
+  /* weighted: per-session best e1RM; pure bodyweight: per-session best reps/seconds */
+  const series=[];let bwMaxR=0;
+  S.logs.forEach(l=>{let m=0;l.entries.forEach(e=>{if(e.exId===progExSel)e.sets.forEach(s=>{
+    const v=(+s.w>0)?est1RM(+s.w,+s.r):(+s.r||0);
+    if(v>m)m=v;if((+s.r||0)>bwMaxR)bwMaxR=+s.r;
+  })});if(m>0)series.push({d:l.date.slice(5,10),v:Math.round(m)})});
   /* weekly volume */
   const wk={};S.logs.forEach(l=>{const k=weekKey(l.date);wk[k]=(wk[k]||0)+totalVolume(l)});
   const wkArr=Object.entries(wk).slice(-8);const wkMax=Math.max(...wkArr.map(x=>x[1]),1);
@@ -2025,7 +2072,9 @@ function renderProgress(){
   </div>
   <div class="card"><b>${T("exChart")}</b>
     <select id="progEx" class="mt8">${exIds.map(id=>`<option value="${id}" ${id===progExSel?"selected":""}>${exName(id)}</option>`).join("")}</select>
-    <div class="row mt8"><span class="tag acc">${T("maxw")} ${best.maxw}kg</span><span class="tag blue">${T("est1rm")} ${Math.round(best.e1rm)}kg</span></div>
+    <div class="row mt8">${(isBW(progExSel)&&best.maxw===0)
+      ?`<span class="tag acc">${fmt(T("bestRepsTag"),{n:bwMaxR})}${isTime(progExSel)?" "+T("secUnit"):""}</span>`
+      :`<span class="tag acc">${T("maxw")} ${best.maxw}kg</span><span class="tag blue">${T("est1rm")} ${Math.round(best.e1rm)}kg</span>`}</div>
     ${lineChart(series)}
   </div>
   <div class="card"><b>${T("weekVol")}</b><div class="mt8">
@@ -2044,7 +2093,7 @@ function renderProgress(){
     const l=S.logs[+x.dataset.log];if(!l)return;
     const body=l.swimDist!==undefined
       ?`<div class="card"><b>🏊 ${T("swimSession")}</b><div class="sub mt8">${T("swimDistL")}: ${l.swimDist}m · ${T("swimTimeL")}: ${l.durMin}</div></div>`
-      :l.entries.map(e=>`<div class="card"><b>${exName(e.exId)}</b><div class="sub mt8">${e.sets.map(s=>`${s.w}kg×${s.r}`).join("　")}</div></div>`).join("");
+      :l.entries.map(e=>`<div class="card"><b>${exName(e.exId)}</b><div class="sub mt8">${e.sets.map(s=>fmtSet(s,e.exId)).join("　")}</div></div>`).join("");
     openSheet(`<h3>${l.date.slice(0,10)} · ${TD(l.dayKey)}</h3>`+body+`<button class="btn sec mt8" id="reShare">${T("share")}</button>`);
     $("#reShare").onclick=()=>{closeSheet();openShareCard(l,totalVolume(l))};
   });
@@ -2079,9 +2128,9 @@ function openShareCard(log,vol){
   let y=620;ctx.font="28px -apple-system,sans-serif";
   if(isSwim){ctx.fillStyle="#60a5fa";ctx.font="bold 34px -apple-system,sans-serif";ctx.fillText("🏊 "+T("swimSession"),60,y);y+=52}
   log.entries.slice(0,6).forEach(e=>{
-    const bs=e.sets.reduce((a,s)=>(+s.w>+a.w?s:a),e.sets[0]);
+    const bs=e.sets.reduce((a,s)=>(+s.w>+a.w?s:(+s.w===+a.w&&+s.r>+a.r?s:a)),e.sets[0]);
     ctx.fillStyle="#eef1f5";ctx.fillText(exName(e.exId),60,y);
-    ctx.fillStyle="#4ade80";ctx.textAlign="right";ctx.fillText(bs.w+"kg × "+bs.r,690,y);ctx.textAlign="left";
+    ctx.fillStyle="#4ade80";ctx.textAlign="right";ctx.fillText(fmtSet(bs,e.exId),690,y);ctx.textAlign="left";
     y+=52;});
   if(log.prs&&log.prs.length){ctx.fillStyle="#fbbf24";ctx.font="bold 30px -apple-system,sans-serif";ctx.fillText("🏆 "+T("newPR")+": "+log.prs.map(p=>exName(p.exId)+" "+p.w+"kg").join("  "),60,y+30)}
   ctx.fillStyle="#6b7482";ctx.font="22px -apple-system,sans-serif";ctx.fillText(LANG==="zh"?"器械感知 · AI力量教练":"The AI coach that knows your gym",60,950);
@@ -2136,7 +2185,7 @@ function renderMe(){
     <button class="btn sm warn" id="btnReset">${T("resetAll")}</button></div>
     <input type="file" id="impFile" accept=".json" style="display:none"></div>
   <div class="card"><b>${T("disclaimerT")}</b><p class="dim mt8">${T("disclaimer")}</p></div>
-  <p class="dim center">GymSense MVP v1.9 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
+  <p class="dim center">GymSense MVP v1.9.1 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
   $("#setTheme").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;
     S.settings.theme=d.dataset.v;save();applyTheme();
     document.querySelectorAll("#setTheme div").forEach(x=>x.classList.toggle("on",x===d));toast(T("saveOk"))};
@@ -2200,7 +2249,7 @@ const AI_SYS=()=>LANG==="zh"
 function userContext(){
   const p=S.profile||{};const gym=S.gyms[S.activeGym];
   const recent=S.logs.slice(-8).map(l=>({date:l.date.slice(0,10),day:l.dayKey,
-    entries:l.entries.map(e=>({ex:EXMAP[e.exId]?EXMAP[e.exId].en:e.exId,sets:e.sets.map(s=>s.w+"kgx"+s.r)}))}));
+    entries:l.entries.map(e=>({ex:EXMAP[e.exId]?EXMAP[e.exId].en:e.exId,sets:e.sets.map(s=>(EXMAP[e.exId]&&EXMAP[e.exId].bw?((+s.w>0?"BW+"+s.w+"kg":"BW")):s.w+"kg")+"x"+s.r)}))}));
   return JSON.stringify({profile:{sex:p.sex,age:p.age,height:p.height,weight:p.weight,exp:p.exp,goal:p.goal,freq:p.freq,flaggedInjuries:(p.injuries||[]).map(a=>({lb:"lower back",sh:"shoulder",kn:"knee",el:"elbow",wr:"wrist"}[a]||a)),swimSessionsPerWeek:p.swim||0},
     gym:gym?{name:gym.name,equipment:gym.eq}:null,
     plan:S.plan?S.plan.days.map(d=>({day:d.key,exercises:d.exercises.map(e=>({ex:EXMAP[e.exId]?EXMAP[e.exId].en:e.exId,sets:e.sets,reps:e.reps}))})):null,

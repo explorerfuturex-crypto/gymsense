@@ -1793,6 +1793,19 @@ function instrBlock(rec,exId){
   const canTr=LANG==="zh"&&S.settings.apiKey;
   return `<details class="card" style="margin-bottom:10px"><summary style="cursor:pointer;font-weight:700">${T("steps")}</summary><ol style="padding-left:18px;margin-top:8px">${li(rec.instructions)}</ol>${canTr?`<button class="btn sm sec" id="btnTrIns" data-tr="${exId}">${T("translateBtn")}</button>`:""}</details>`;
 }
+/* v1.9.4.1: translate updates ONLY the instruction block in place — never re-render the media/images
+   (re-reading blobs from IndexedDB right after a write can leave photos blank for ~1min on iOS) */
+function hookInstr(exId){
+  const trBtn=document.getElementById("btnTrIns");
+  if(!trBtn)return;
+  trBtn.onclick=async()=>{
+    trBtn.innerHTML=`<span class="spin"></span> ${T("translating")}`;
+    const okTr=await mediaTranslateOne(exId);
+    if(!okTr){trBtn.textContent="✕ "+T("scanFail");return}
+    const wrap=document.getElementById("instrWrap");
+    if(wrap){const rec=await mediaGet(exId);wrap.innerHTML=instrBlock(rec,exId);hookInstr(exId)}
+  };
+}
 /* photo demo block inside detail sheet */
 let photoFlipIv=null;
 async function loadEdbMedia(exId){
@@ -1814,9 +1827,8 @@ async function loadEdbMedia(exId){
   }
   slot.innerHTML=animHtml+`<div class="animwrap"><img id="edbImg" src="${urls[0]}" style="width:100%;display:block;background:#fff">
   <div class="animcap">${T("photoDemo")}</div></div>
-  ${instrBlock(rec,exId)}`;
-  const trBtn=document.getElementById("btnTrIns");
-  if(trBtn)trBtn.onclick=async()=>{trBtn.innerHTML=`<span class="spin"></span> ${T("translating")}`;(await mediaTranslateOne(exId))?loadEdbMedia(exId):(trBtn.textContent="✕ "+T("scanFail"))};
+  <div id="instrWrap">${instrBlock(rec,exId)}</div>`;
+  hookInstr(exId);
   clearInterval(photoFlipIv);
   let fi=0;
   photoFlipIv=setInterval(()=>{

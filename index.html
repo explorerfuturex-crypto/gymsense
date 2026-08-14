@@ -330,6 +330,29 @@ bwHint:"自重动作：重量留空即为纯自重，负重时只填附加重量
 bestRepsTag:"最佳 {n} 次",
 rdNeedAll:"回答上面三个问题（各点一下）",
 holdHint:"💡 按住 +/− 可快速连续调节",
+asstHint:"负数=辅助重量（辅助器/弹力带），0/空=自重，正数=附加负重",
+asstFmt:"辅助{w}kg",
+tgtAsstLine:"🎯 本组目标：辅助 {a}kg × {r}",
+tgtAsstDown:"🎯 全部达标：辅助减至 {a}kg × {r}",
+resortBtn:"⇅ 按科学顺序重排",resortDone:"已按科学顺序重排（复合→大肌群→小肌群→核心收尾）",
+postTitle:"练后打卡（10 秒）",postFeel:"这次练完感觉",
+postEasy:"轻松",postRight:"正合适",postHard:"太累",
+postAche:"有不适的部位吗？（可多选）",postSave:"保存",postSkip:"跳过",
+tempCauNote:"🩹 上次训练后「{a}」不适——涉及该部位的动作今天冻结加重，量力而行。",
+lastHardNote:"上次练完「太累」——今天全部目标冻结加重，先恢复。",
+lastEasyNote:"上次感觉轻松——状态好的话，复合动作可以加一组。",
+scanPick:"识别到以下候选（按可能性排序），点击选择：",
+translateBtn:"🈶 翻译步骤为中文",translating:"翻译中…",instrZhLabel:"📖 动作步骤",instrEnLabel:"英文原文",
+wkAudit:"📊 本次复盘依据的数据（由 App 统计，AI 不产生数字）",
+wkNoData:"最近 7 天没有训练记录，先练一次再来复盘吧。",
+wkSessions:"训练次数",wkVolume:"总容量",wkVsPrev:"环比上周",wkMuscleSets:"各肌群完成组数",wkTrends:"动作趋势（近3次最佳）",wkPRs:"新纪录",wkReadiness:"训练前状态自评",wkPost:"练后打卡",wkSwimL:"游泳",
+trUp:"↑ 进步",trFlat:"→ 持平",trDown:"↓ 下滑",
+fcBtn:"🎥 动作自查（Beta）",fcTitle:"动作自查 Beta",
+fcTip:"拍一段 ≤15 秒的侧面训练视频（或从相册选择）。App 只在你手机上抽取几帧发送到你自己的 API，视频不上传、不保存。",
+fcDisc:"⚠️ Beta：基于少量静态帧的粗略建议，可能出错；不是实时纠错，不构成医疗建议，如有疼痛请咨询专业人士。",
+fcAnalyzing:"分析中…",fcFrames:"已抽取 {n} 帧",
+fcOk:"✅ 做得不错",fcIssues:"🔧 可以改进",fcUnclear:"画面不清、无法判断",fcFail:"分析失败",
+fcNeedVision:"当前 AI 服务商不支持图片输入，无法使用动作自查",
 aiChat:"问 AI 教练",aiChatPh:"例：肩膀有点不舒服，今天怎么调整？",send:"发送",
 dataTitle:"数据管理",exportData:"导出数据 (JSON)",importData:"导入数据",resetAll:"清空全部数据",
 resetConfirm:"⚠️ 将删除档案、计划与全部历史记录。确定？",
@@ -472,6 +495,29 @@ bwHint:"Bodyweight move: leave weight empty for pure BW; enter only the added lo
 bestRepsTag:"Best: {n} reps",
 rdNeedAll:"Answer the three questions above (one tap each)",
 holdHint:"💡 Hold +/− to change values quickly",
+asstHint:"Negative = assistance (machine/band), 0/empty = bodyweight, positive = added load",
+asstFmt:"Assist {w}kg",
+tgtAsstLine:"🎯 Target: assist {a}kg × {r}",
+tgtAsstDown:"🎯 Range topped: reduce assist to {a}kg × {r}",
+resortBtn:"⇅ Reorder scientifically",resortDone:"Reordered (compounds → large → small → core last)",
+postTitle:"Post-workout check (10 sec)",postFeel:"How did it feel?",
+postEasy:"Easy",postRight:"Just right",postHard:"Too hard",
+postAche:"Any discomfort? (multi-select)",postSave:"Save",postSkip:"Skip",
+tempCauNote:"🩹 \"{a}\" felt off after last session — moves loading that area are frozen today. Listen to your body.",
+lastHardNote:"Last session felt \"too hard\" — all targets frozen today; recover first.",
+lastEasyNote:"Last session felt easy — feel free to add a set on compounds if you're fresh.",
+scanPick:"Candidates recognized (by likelihood) — tap to choose:",
+translateBtn:"🈶 Translate steps to Chinese",translating:"Translating…",instrZhLabel:"📖 Instructions",instrEnLabel:"Original (EN)",
+wkAudit:"📊 Data behind this review (computed by the app — the AI does not produce numbers)",
+wkNoData:"No workouts in the last 7 days — train once, then come back for a review.",
+wkSessions:"Sessions",wkVolume:"Total volume",wkVsPrev:"vs last week",wkMuscleSets:"Completed sets per muscle",wkTrends:"Exercise trends (best of last 3)",wkPRs:"New PRs",wkReadiness:"Pre-workout readiness",wkPost:"Post-workout checks",wkSwimL:"Swim",
+trUp:"↑ up",trFlat:"→ flat",trDown:"↓ down",
+fcBtn:"🎥 Form self-check (Beta)",fcTitle:"Form self-check Beta",
+fcTip:"Record a ≤15s side-view video of one set (or pick from your library). A few frames are extracted on your phone and sent only to your own API — the video is never uploaded or stored.",
+fcDisc:"⚠️ Beta: rough advice based on a few still frames — it can be wrong. Not real-time correction, not medical advice; see a professional if anything hurts.",
+fcAnalyzing:"Analyzing…",fcFrames:"{n} frames extracted",
+fcOk:"✅ Looking good",fcIssues:"🔧 Could improve",fcUnclear:"Unclear from the footage",fcFail:"Analysis failed",
+fcNeedVision:"Current AI provider has no image input — form check unavailable",
 aiChat:"Ask the AI coach",aiChatPh:"e.g. My shoulder feels off — how should I adjust today?",send:"Send",
 dataTitle:"Data",exportData:"Export data (JSON)",importData:"Import data",resetAll:"Erase all data",
 resetConfirm:"⚠️ This deletes profile, plan and all history. Sure?",
@@ -528,6 +574,31 @@ const EQUIP=[
 ];
 const EQMAP=Object.fromEntries(EQUIP.map(e=>[e.id,e]));
 function eqName(id){const e=EQMAP[id];return e?(LANG==="zh"?e.zh:e.en):id}
+/* v1.9.3: discriminative visual descriptors -> higher photo-recognition accuracy */
+const EQUIP_DESC={
+barbell:"long straight 20kg bar resting on a power rack / squat stands / flat bench-press station",
+dumbbell:"rack of paired short-handled free weights in ascending sizes",
+bench:"standalone padded bench with adjustable incline back, no weight stack",
+cable:"tall frame with adjustable pulleys, cable handles and a selectorized weight stack (incl. crossover towers)",
+smith:"barbell fixed on vertical guide rails with rotating lock hooks",
+m_chest:"seated machine, two handles pressed FORWARD at chest height, weight stack behind seat",
+m_pec:"seated machine with two swinging arm pads/handles that squeeze together in front of the chest",
+m_lat:"seated station with OVERHEAD pulley, wide bar hanging above, thigh hold-down pads, weight stack",
+m_row:"seated machine pulling handles HORIZONTALLY toward the torso, usually with a chest pad",
+m_shoulder:"seated machine with handles pressed OVERHEAD, tall back pad",
+leg_press:"45-degree sled: user reclines and pushes a LARGE angled foot platform upward",
+hack:"angled sled with SHOULDER pads; user stands/squats on an inclined platform",
+leg_ext:"seated machine, padded roller in FRONT of the shins, legs kick up-forward",
+leg_curl:"machine with padded roller BEHIND the ankles, legs curl backward (seated or lying)",
+abductor:"seated machine with two knee pads that swing outward/inward",
+calf:"machine loaded via shoulder pads or plate, small step under balls of feet, heels raise",
+pullup:"simple high horizontal bar (often on a rig), no seat, no weight stack",
+dip:"two parallel handles at waist-to-chest height, no weight stack",
+ez:"short zigzag/wavy curl bar",
+kb:"round cast-iron weights with thick top handles",
+hyper:"angled bench fixing the ankles, hip pad, torso hangs free (45° back extension / roman chair)",
+bw:"open mat / stretching area without machines",
+pool:"swimming pool lanes"};
 
 /* ex fields: id, zh, en, eq:[all required], m:[primary muscles], m2:[secondary], c:compound?, cz/ce cues, wz/we cautions */
 const EXDB=[
@@ -562,11 +633,11 @@ const EXDB=[
 {id:"pushup",bw:1,zh:"俯卧撑",en:"Push-up",eq:["bw"],m:["chest"],m2:["triceps","abs"],c:1,
  cz:"身体一条直线，手位比肩略宽，胸部接近地面。",ce:"Straight body line, hands slightly wider than shoulders, chest near floor.",
  wz:"塌腰或抬臀都会失去核心张力。",we:"No sagging hips or piking."},
-{id:"dip_chest",bw:1,zh:"双杠臂屈伸",en:"Dips",eq:["dip"],m:["chest"],m2:["triceps","shoulders"],c:1,
+{id:"dip_chest",bw:1,asst:1,zh:"双杠臂屈伸",en:"Dips",eq:["dip"],m:["chest"],m2:["triceps","shoulders"],c:1,
  cz:"身体前倾练胸，下放至上臂与地面平行。",ce:"Lean forward for chest, lower until upper arms are parallel.",
  wz:"肩部有伤者慎做；不要下放过深。",we:"Caution with shoulder issues; don't go too deep."},
 // ---- BACK ----
-{id:"pullup_ex",bw:1,zh:"引体向上",en:"Pull-up",eq:["pullup"],m:["back"],m2:["biceps"],c:1,
+{id:"pullup_ex",bw:1,asst:1,zh:"引体向上",en:"Pull-up",eq:["pullup"],m:["back"],m2:["biceps"],c:1,
  cz:"肩胛先下沉再拉，胸口找杆，顶端下巴过杆。",ce:"Depress scapula first, pull chest to bar, chin over at top.",
  wz:"避免全程摆荡借力；做不了可用弹力带辅助或换高位下拉。",we:"No kipping; use bands or lat pulldown if you can't complete reps."},
 {id:"lat_pd",zh:"高位下拉",en:"Lat Pulldown",eq:["m_lat"],m:["back"],m2:["biceps"],c:1,
@@ -644,7 +715,7 @@ const EXDB=[
 {id:"close_bench",zh:"窄距卧推",en:"Close-grip Bench Press",eq:["barbell","bench"],m:["triceps"],m2:["chest"],c:1,
  cz:"握距与肩同宽，肘贴身下放至下胸，垂直推起。",ce:"Shoulder-width grip, elbows tucked, bar to lower chest.",
  wz:"握距不要过窄，手腕保持中立。",we:"Not too narrow — keep wrists stacked."},
-{id:"dip_tri",bw:1,zh:"双杠臂屈伸（三头）",en:"Dips (triceps)",eq:["dip"],m:["triceps"],m2:["chest"],c:1,
+{id:"dip_tri",bw:1,asst:1,zh:"双杠臂屈伸（三头）",en:"Dips (triceps)",eq:["dip"],m:["triceps"],m2:["chest"],c:1,
  cz:"身体保持竖直，肘向后弯曲下放，撑起锁定。",ce:"Stay upright, elbows track back, press to lockout.",
  wz:"下放至大小臂90°即可。",we:"90° depth is enough."},
 // ---- QUADS / LEGS ----
@@ -708,6 +779,24 @@ const EXDB=[
 {id:"cable_crunch",zh:"绳索跪姿卷腹",en:"Cable Crunch",eq:["cable"],m:["abs"],m2:[],c:0,
  cz:"跪姿握绳于头两侧，用腹肌把胸卷向骨盆。",ce:"Kneel, rope beside head, crunch ribs to pelvis.",
  wz:"是脊柱卷曲不是髋屈。",we:"Flex the spine, not the hips."},
+{id:"bw_squat",bw:1,zh:"自重深蹲",en:"Bodyweight Squat",eq:["bw"],m:["quads","glutes"],m2:["abs"],c:1,
+ cz:"双脚与肩同宽，髋膝同时弯曲下蹲至大腿平行，膝盖与脚尖同向，起身时呼气。",ce:"Feet shoulder-width, sit to parallel, knees track toes, exhale up.",
+ wz:"学习深蹲模式的基础动作；下蹲时脚跟不要离地。",we:"Foundation of the squat pattern; keep heels down."},
+{id:"bw_lunge",bw:1,zh:"自重箭步蹲",en:"Bodyweight Lunge",eq:["bw"],m:["quads","glutes"],m2:["hams"],c:1,
+ cz:"跨步下蹲至后膝接近地面，前膝与脚尖同向，蹬地起身回位，两腿交替。",ce:"Step to back-knee-near-floor, front knee over toes, drive back up; alternate legs.",
+ wz:"保持躯干直立，步幅过小会增加膝盖压力。",we:"Torso tall; too short a stride loads the knee."},
+{id:"glute_bridge",bw:1,zh:"臀桥",en:"Glute Bridge",eq:["bw"],m:["glutes"],m2:["hams"],c:0,
+ cz:"仰卧屈膝脚踩地，臀部发力将髋顶起至躯干与大腿成一线，顶端夹紧臀部1秒。",ce:"Lie with knees bent, drive hips up to a straight line, squeeze glutes 1s at top.",
+ wz:"顶端不要过度弓腰；用臀发力而不是腰。",we:"Don't hyperextend the low back at the top — glutes do the work."},
+{id:"situp",bw:1,zh:"仰卧起坐",en:"Sit-Up",eq:["bw"],m:["abs"],m2:[],c:0,
+ cz:"仰卧屈膝，用腹肌卷起躯干至约3/4高度，控制下放，呼气收缩。",ce:"Knees bent, curl the torso up ~3/4 of the way with your abs, control down.",
+ wz:"不要用手拉头、不要靠惯性甩起；腰部不适改做卷腹。",we:"Don't yank the neck or use momentum; switch to crunches if the low back complains."},
+{id:"mountain_climber",bw:1,zh:"登山跑",en:"Mountain Climbers",eq:["bw"],m:["abs"],m2:["quads"],c:0,
+ cz:"俯撑位保持身体一条直线，双腿交替快速提膝至胸前，核心全程收紧。",ce:"High plank, drive knees to chest alternately at pace, core braced throughout.",
+ wz:"臀部不要拱起或下塌；手腕不适可改用哑铃支撑。",we:"No piking or sagging hips; use dumbbell handles if wrists complain."},
+{id:"superman",bw:1,zh:"俯卧两头起",en:"Superman",eq:["bw"],m:["back","glutes"],m2:["hams"],c:0,
+ cz:"俯卧，四肢伸展，同时抬起手臂与双腿离地2-3秒，缓慢放下。",ce:"Lie prone, lift arms and legs together, hold 2-3s, lower slowly.",
+ wz:"抬起幅度适中即可，不追求高度；下背不适立即停止。",we:"Moderate lift height is enough; stop if the low back hurts."},
 ];
 const EXMAP=Object.fromEntries(EXDB.map(e=>[e.id,e]));
 function exName(id){const e=EXMAP[id];return e?(LANG==="zh"?e.zh:e.en):id}
@@ -730,6 +819,7 @@ const RISK={
  leg_press_ex:{kn:1,lb:1}, leg_ext_ex:{kn:2}, leg_curl_ex:{}, kb_swing:{lb:2},
  hip_thrust:{lb:1}, abduction:{}, calf_raise:{}, smith_calf:{}, db_calf:{},
  crunch:{lb:1}, plank:{}, hanging_leg:{sh:1}, cable_crunch:{lb:1},
+ bw_squat:{kn:1}, bw_lunge:{kn:1}, glute_bridge:{}, situp:{lb:1}, mountain_climber:{wr:1}, superman:{lb:1},
 };
 function userInjuries(){return (S.profile&&S.profile.injuries)||[]}
 
@@ -757,6 +847,7 @@ const EDB_MAP={
  kb_swing:"One-Arm_Kettlebell_Swings", hip_thrust:"Barbell_Hip_Thrust", abduction:"Thigh_Abductor",
  calf_raise:"Standing_Calf_Raises", smith_calf:"Smith_Machine_Calf_Raise", db_calf:"Standing_Dumbbell_Calf_Raise",
  crunch:"Crunches", plank:"Plank", hanging_leg:"Hanging_Leg_Raise", cable_crunch:"Cable_Crunch",
+ bw_squat:"Bodyweight_Squat", bw_lunge:"Bodyweight_Walking_Lunge", glute_bridge:"Butt_Lift_Bridge", situp:"3_4_Sit-Up", mountain_climber:"Mountain_Climbers", superman:"Superman",
 };
 /* IndexedDB blob cache (in-memory fallback) */
 let _idb=null;const _memMedia=new Map();
@@ -832,7 +923,22 @@ async function mediaFetchOne(exId){
     if(anim)rec.anim=anim;
   }
   await mediaSet(exId,rec);
+  /* v1.9.3: instructions in the app language — auto-translate via user's own API; failure = silent EN fallback */
+  if(LANG==="zh")await mediaTranslateOne(exId).catch(()=>{});
   return true;
+}
+async function mediaTranslateOne(exId){
+  if(!S.settings.apiKey)return false;
+  const rec=await mediaGet(exId);
+  if(!rec||!rec.instructions||!rec.instructions.length||rec.instrZh)return false;
+  try{
+    const txt=await callAI([{role:"user",content:"Translate these gym exercise instructions into natural, concise simplified Chinese for a fitness app (keep numbers/units, no extra commentary). Return ONLY a JSON array of strings, one per step, same order and count:\n"+JSON.stringify(rec.instructions)}],1200);
+    const m=String(txt).match(/\[[\s\S]*\]/);if(!m)return false;
+    const arr=JSON.parse(m[0]);
+    if(!Array.isArray(arr)||!arr.length||!arr.every(s=>typeof s==="string"))return false;
+    rec.instrZh=arr;await mediaSet(exId,rec);
+    return true;
+  }catch(e){return false}
 }
 function planExIds(){
   if(!S.plan)return[];
@@ -842,7 +948,7 @@ async function mediaMissingIds(ids){
   const out=[];
   for(const id of ids){
     const rec=await mediaGet(id);
-    if(!rec||animNeedsUpdate(rec))out.push(id);
+    if(!rec||animNeedsUpdate(rec)||(LANG==="zh"&&S.settings.apiKey&&rec.instructions&&rec.instructions.length&&!rec.instrZh))out.push(id);
   }
   return out;
 }
@@ -928,6 +1034,16 @@ function nthLastSetsFor(exId,nth){ /* nth=0 latest, 1 previous... */
 const LOWER_COMPOUND=["squat","smith_squat","hack_squat","leg_press_ex","deadlift","rdl","db_rdl","hip_thrust"];
 function isBW(exId){const e=EXMAP[exId];return !!(e&&e.bw)}
 function isTime(exId){const e=EXMAP[exId];return !!(e&&e.tm)}
+function isAsst(exId){const e=EXMAP[exId];return !!(e&&e.asst)}
+/* ===== scientific exercise ordering: compounds -> large muscles -> small -> core last ===== */
+const MUS_PRI={chest:1,back:1,quads:1,hams:1,glutes:2,shoulders:3,biceps:4,triceps:4,calves:5,abs:6};
+function exOrderScore(exId){
+  const ex=EXMAP[exId];if(!ex)return 9999;
+  const prim=ex.m[0];
+  if(prim==="abs")return 1000+(ex.c?0:1); /* core always last (fatigued core = injury risk on later lifts) */
+  return (ex.c?0:100)+(MUS_PRI[prim]??5)*10;
+}
+function sortDayExercises(exs){return exs.slice().sort((a,b)=>exOrderScore(a.exId)-exOrderScore(b.exId))}
 function progressionTarget(exId,repsStr,freeze){
   const m=String(repsStr||"").match(/(\d+)\s*-\s*(\d+)/);
   const lo=m?+m[1]:(+repsStr||8), hi=m?+m[2]:(+repsStr||12);
@@ -945,10 +1061,17 @@ function progressionTarget(exId,repsStr,freeze){
     if(freeze||sessions===2)return {w:0,reps:base,lo,hi,tm:true,bwMode:true,frozen:freeze};
     return {w:0,reps:Math.min(120,base+10),lo,hi,tm:true,bwMode:true};
   }
-  if(freeze)return {w,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi,frozen:true,bwMode:bw&&w<=0};
-  if(sessions===2)return {w,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi,bwMode:bw&&w<=0};
+  const asstMode=isAsst(exId)&&w<0;
+  if(freeze)return {w,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi,frozen:true,bwMode:bw&&w===0,asstMode};
+  if(sessions===2)return {w,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi,bwMode:bw&&w===0,asstMode};
   const allHi=last.every(s=>(+s.r||0)>=hi);
   const anyBelowLo=last.some(s=>(+s.r||0)<lo);
+  /* assisted (negative weight = assistance): progress reps, then reduce assistance toward 0 */
+  if(asstMode){
+    if(allHi)return {w:Math.min(0,Math.round((w+2.5)*10)/10),reps:lo,lo,hi,asstMode:true,asstDown:true};
+    if(anyBelowLo)return {w,reps:Math.max(lo,Math.min(hi,bestReps)),lo,hi,hold:true,asstMode:true};
+    return {w,reps:Math.min(hi,bestReps+1),lo,hi,asstMode:true};
+  }
   /* pure bodyweight: reps first; when the whole range is topped, suggest adding load */
   if(bw&&w<=0){
     if(allHi)return {w:2.5,reps:lo,lo,hi,addLoad:true};
@@ -970,6 +1093,7 @@ function progressionTarget(exId,repsStr,freeze){
 function fmtSet(s,exId){
   const w=+s.w||0,r=+s.r||0;
   if(isTime(exId))return r+" "+T("secUnit");
+  if(w<0)return fmt(T("asstFmt"),{w:Math.abs(w)})+"×"+r;
   if(isBW(exId))return (w>0?fmt(T("bwPlus"),{w}):T("bwLabel"))+"×"+r;
   return w+"kg×"+r;
 }
@@ -1099,7 +1223,7 @@ function generatePlan(){
         exs.push(entry);
       }
     });
-    return {key:d.key,exercises:exs};
+    return {key:d.key,exercises:sortDayExercises(exs)};
   });
   /* interleave swim days: first after 2 strength days, second at the end */
   if(swim>=1){const sd={key:"swim",exercises:[],swimSegs:swimSegments(p.goal,p.exp)};days.splice(Math.min(2,days.length),0,sd)}
@@ -1129,7 +1253,7 @@ function progressionHint(exId,repsStr){
 }
 function est1RM(w,r){return r>0?w*(1+r/30):w}
 /* stats */
-function totalVolume(log){let v=0;log.entries.forEach(e=>e.sets.forEach(s=>{if(s.done)v+=(+s.w||0)*(+s.r||0)}));return v}
+function totalVolume(log){let v=0;log.entries.forEach(e=>e.sets.forEach(s=>{if(s.done)v+=Math.max(0,+s.w||0)*(+s.r||0)}));return v}
 function weekKey(d){const dt=new Date(d);const day=(dt.getDay()+6)%7;dt.setDate(dt.getDate()-day);return dt.toISOString().slice(0,10)}
 function thisWeekCount(){const wk=weekKey(new Date());return S.logs.filter(l=>weekKey(l.date)===wk).length}
 function bestFor(exId){let best=0,bestE=0;S.logs.forEach(l=>l.entries.forEach(e=>{if(e.exId===exId)e.sets.forEach(s=>{if(s.done){if(+s.w>best)best=+s.w;const e1=est1RM(+s.w,+s.r);if(e1>bestE)bestE=e1}})}));return{maxw:best,e1rm:bestE}}
@@ -1298,6 +1422,12 @@ cablecrunch:{view:"side",pm:"hd",eq:"none",st:()=>ground()+cc([95,20],5,CG,4)+rc
 plank:{view:"side",pm:"hip",eq:"none",st:()=>ground(),
  frames:[{hd:[80,140],sh:[97,148],hip:[152,157],kn:[192,165],an:[230,176],noFoot:1,el:[97,180],wr:[72,181]},
          {hd:[80,137],sh:[97,145],hip:[152,153],kn:[192,163],an:[230,176],noFoot:1,el:[97,180],wr:[72,181]}]},
+bridge:{view:"side",pm:"hip",eq:"none",st:()=>ground(),
+ frames:[{hd:[86,176],sh:[100,178],hip:[148,176],kn:[180,150],an:[186,183],el:[112,182],wr:[126,183]},
+         {hd:[86,172],sh:[100,176],hip:[150,142],kn:[181,148],an:[186,183],el:[112,182],wr:[126,183]}]},
+superman:{view:"side",pm:"hd",eq:"none",st:()=>ground(),
+ frames:[{hd:[78,180],sh:[100,182],hip:[148,183],kn:[172,182],an:[194,181],el:[86,181],wr:[68,180]},
+         {hd:[72,160],sh:[98,172],hip:[148,181],kn:[172,174],an:[196,164],el:[80,166],wr:[62,158]}]},
 hangleg:{view:"side",pm:"an",eq:"none",st:()=>ln([105,38],[195,38],5,CG),
  dyn:()=>cc([150,38],4,CA),
  frames:[{hd:[147,71],sh:[150,88],hip:[150,131],kn:[152,156],an:[151,181],noFoot:1,el:[150,62],wr:[150,39]},
@@ -1324,6 +1454,7 @@ const EXANIM={
  db_rdl2:{p:"hinge"}, hip_thrust:{p:"hipthrust"}, abduction:{p:"abduction"},
  calf_raise:{p:"calf",eq:"none"}, smith_calf:{p:"calf",extra:RAILSQ}, db_calf:{p:"calf",eq:"none"},
  crunch:{p:"crunch"}, plank:{p:"plank"}, hanging_leg:{p:"hangleg"}, cable_crunch:{p:"cablecrunch"},
+ bw_squat:{p:"squat",eq:"none"}, bw_lunge:{p:"lunge",eq:"none"}, glute_bridge:{p:"bridge"}, situp:{p:"crunch"}, mountain_climber:{p:"plank"}, superman:{p:"superman"},
 };
 function renderAnim(exId,t){
  const cfg=EXANIM[exId];if(!cfg)return null;
@@ -1573,7 +1704,8 @@ function renderPlan(){
     });
     h+=`</div></div>`;
   });
-  h+=`<button class="btn sec mt8" id="btnRegen">${T("regen")}</button>
+  h+=`<button class="btn sec mt8" id="btnResort">${T("resortBtn")}</button>
+  <button class="btn sec mt8" id="btnRegen">${T("regen")}</button>
   <p class="dim mt12">${T("planFooter")}</p>`;
   b.innerHTML=h;
   b.querySelectorAll(".dayhead").forEach(x=>x.onclick=e=>{
@@ -1586,6 +1718,10 @@ function renderPlan(){
   b.querySelectorAll("[data-ex]").forEach(x=>x.onclick=()=>openExDetail(x.dataset.ex));
   b.querySelectorAll("[data-pswap]").forEach(x=>x.onclick=ev=>{ev.stopPropagation();const[di,ei]=x.dataset.pswap.split("-").map(Number);openPlanSwap(di,ei)});
   $("#btnRegen").onclick=()=>{if(confirm(T("regenConfirm"))){S.plan=generatePlan();save();renderPlan();toast(T("saveOk"))}};
+  $("#btnResort").onclick=()=>{
+    S.plan.days.forEach(d=>{if(!d.swimSegs)d.exercises=sortDayExercises(d.exercises)});
+    save();renderPlan();toast(T("resortDone"));
+  };
   $("#btnAiExplain").onclick=aiExplainPlan;
   /* media download button: show how many are uncached */
   (async()=>{
@@ -1622,6 +1758,7 @@ function openPlanSwap(di,ei){
   $("#sheetBody").querySelectorAll("[data-pick]").forEach(x=>x.onclick=()=>{
     const nid=x.dataset.pick;const nx=EXMAP[nid];const gp=GOALPARAM[(S.profile&&S.profile.goal)||"muscle"];
     S.plan.days[di].exercises[ei]={exId:nid,sets:nx.c?gp.cSets:gp.iSets,reps:nx.c?gp.cReps:gp.iReps,rest:nx.c?gp.rest:gp.restIso};
+    S.plan.days[di].exercises=sortDayExercises(S.plan.days[di].exercises);
     save();closeSheet();renderPlan();toast(T("saveOk"));
   });
 }
@@ -1639,9 +1776,22 @@ function openExDetail(exId,fromWorkout){
   ${(()=>{const ar=riskAreas(exId,userInjuries());return ar.length?`<div class="warnbox" style="margin-bottom:10px">🩹 ${fmt(T("injDetailWarn"),{a:ar.map(x=>T("inj_"+x)).join("、")})}</div>`:""})()}
   <div class="warnbox"><b>⚠️ ${T("cautions")}</b><br>${LANG==="zh"?ex.wz:ex.we}</div>
   <p class="dim mt12">${eqName(ex.eq[0])}${ex.eq.length>1?" + "+ex.eq.slice(1).map(eqName).join(" + "):""}</p>
+  ${S.settings.apiKey&&aiProvider()!=="deepseek"?`<button class="btn ghost mt12" id="btnFormCheck">${T("fcBtn")}</button>`:""}
   <button class="btn sec mt12" onclick="closeSheet()">${T("done")}</button>`);
+  const fcb=document.getElementById("btnFormCheck");
+  if(fcb)fcb.onclick=()=>openFormCheck(exId);
   if(hasAnim)startAnim(exId);
   loadEdbMedia(exId);
+}
+/* v1.9.3: instruction block in app language (zh cached translation + collapsible EN original) */
+function instrBlock(rec,exId){
+  if(!rec.instructions||!rec.instructions.length)return "";
+  const li=arr=>arr.map(s=>`<li class="sub" style="margin-bottom:6px">${esc(s)}</li>`).join("");
+  if(LANG==="zh"&&rec.instrZh&&rec.instrZh.length){
+    return `<details class="card" style="margin-bottom:10px" open><summary style="cursor:pointer;font-weight:700">${T("instrZhLabel")}</summary><ol style="padding-left:18px;margin-top:8px">${li(rec.instrZh)}</ol><details style="margin-top:6px"><summary class="dim" style="cursor:pointer;font-size:12px">${T("instrEnLabel")}</summary><ol style="padding-left:18px;margin-top:8px">${li(rec.instructions)}</ol></details></details>`;
+  }
+  const canTr=LANG==="zh"&&S.settings.apiKey;
+  return `<details class="card" style="margin-bottom:10px"><summary style="cursor:pointer;font-weight:700">${T("steps")}</summary><ol style="padding-left:18px;margin-top:8px">${li(rec.instructions)}</ol>${canTr?`<button class="btn sm sec" id="btnTrIns" data-tr="${exId}">${T("translateBtn")}</button>`:""}</details>`;
 }
 /* photo demo block inside detail sheet */
 let photoFlipIv=null;
@@ -1664,7 +1814,9 @@ async function loadEdbMedia(exId){
   }
   slot.innerHTML=animHtml+`<div class="animwrap"><img id="edbImg" src="${urls[0]}" style="width:100%;display:block;background:#fff">
   <div class="animcap">${T("photoDemo")}</div></div>
-  ${rec.instructions&&rec.instructions.length?`<details class="card" style="margin-bottom:10px"><summary style="cursor:pointer;font-weight:700">${T("steps")}</summary><ol style="padding-left:18px;margin-top:8px">${rec.instructions.map(s=>`<li class="sub" style="margin-bottom:6px">${esc(s)}</li>`).join("")}</ol></details>`:""}`;
+  ${instrBlock(rec,exId)}`;
+  const trBtn=document.getElementById("btnTrIns");
+  if(trBtn)trBtn.onclick=async()=>{trBtn.innerHTML=`<span class="spin"></span> ${T("translating")}`;(await mediaTranslateOne(exId))?loadEdbMedia(exId):(trBtn.textContent="✕ "+T("scanFail"))};
   clearInterval(photoFlipIv);
   let fi=0;
   photoFlipIv=setInterval(()=>{
@@ -1693,12 +1845,26 @@ function startWorkout(dayIdx){
   if(userState()==="S3"&&(S.flags.rdSkips||0)<3){openReadiness(dayIdx);return}
   beginStrength(dayIdx,null);
 }
+/* v1.9.3: most recent strength session's post-workout check (only if within 7 days) */
+function lastPost(){
+  for(let i=S.logs.length-1;i>=0;i--){
+    const l=S.logs[i];
+    if(l.dayKey==="swim")continue;
+    if((Date.now()-new Date(l.date).getTime())>7*86400000)return null;
+    return l.post||null;
+  }
+  return null;
+}
 function beginStrength(dayIdx,readiness){
   const d=S.plan.days[dayIdx];
   const cf=comebackFactor();
-  const freeze=(readiness&&readiness.score>=2)||cf<1;
+  const lp=lastPost();
+  const lpAches=(lp&&lp.aches)||[];
+  const lpHard=!!(lp&&lp.feel===2);
+  const freeze=(readiness&&readiness.score>=2)||cf<1||lpHard;
   W={dayIdx,dayKey:d.key,label:d.label||"",start:Date.now(),cf,freeze,readiness:readiness||null,entries:d.exercises.map(e=>{
-    const tgt=progressionTarget(e.exId,e.reps,freeze);
+    const tempCau=lpAches.length>0&&riskAreas(e.exId,lpAches).length>0;
+    const tgt=progressionTarget(e.exId,e.reps,freeze||tempCau);
     const last=lastSetsFor(e.exId);
     const sets=[];
     for(let i=0;i<e.sets;i++){
@@ -1708,14 +1874,23 @@ function beginStrength(dayIdx,readiness){
       if(isBW(e.exId)&&(w===""||+w===0))w=""; /* empty = pure bodyweight */
       sets.push({w,r:"",done:false});
     }
-    return {exId:e.exId,reps:e.reps,rest:e.rest,sets,target:tgt};
+    return {exId:e.exId,reps:e.reps,rest:e.rest,sets,target:tgt,tempCau};
   })};
+  /* soreness/feel from last session -> visible notes this session */
+  const notes=[];
+  if(lpAches.length)notes.push(fmt(T("tempCauNote"),{a:lpAches.map(x=>T("inj_"+x)).join("、")}));
+  if(lpHard)notes.push(T("lastHardNote"));
+  else if(lp&&lp.feel===0)notes.push(T("lastEasyNote"));
+  W.postNotes=notes;
   if(readiness)applyReadiness(W.entries,readiness.score,0.9);
   switchView("workout");
 }
 /* P0-2 readiness sheet: 3 taps, big buttons */
 function openReadiness(dayIdx){
   const a=[null,null,null];
+  /* v1.9.3: prefill "slightly sore" if last post-check reported aches */
+  const lp0=lastPost();
+  if(lp0&&lp0.aches&&lp0.aches.length)a[1]=1;
   const QS=[["rd_sleep",["rd_g","rd_m","rd_b"]],["rd_sore",["rd_none","rd_slight","rd_heavy"]],["rd_feel",["rd_g","rd_m","rd_b"]]];
   function render(){
     let h=`<div class="row"><h3 class="grow">${T("rdTitle")}</h3><button class="btn sm sec" id="rdSkip">${T("rdSkip")}</button></div>`;
@@ -1797,11 +1972,12 @@ function renderWorkout(){
   if(st9==="S1"||st9==="S2")h+=`<p class="dim mb8">${T("rdUnlock")}</p>`;
   if(W.cf&&W.cf<1)h+=`<div class="notice mb8">${fmt(T("comebackNote"),{p:Math.round(W.cf*100)})}</div>`;
   if(W.readiness){const sc=W.readiness.score;h+=`<div class="${sc>=2?"warnbox":"notice"} mb8">${sc>=4?T("rdExpl46"):(sc>=2?T("rdExpl23"):T("rdExpl0"))}</div>`}
+  if(W.postNotes&&W.postNotes.length)W.postNotes.forEach(n=>{h+=`<div class="warnbox mb8">${n}</div>`});
   if(S.logs.length<3)h+=`<p class="dim mb8" style="font-size:11px">${T("holdHint")}</p>`;
   W.entries.forEach((en,ei)=>{
     const isBar=EXMAP[en.exId]&&EXMAP[en.exId].eq.some(q=>["barbell","smith","ez"].includes(q));
     h+=`<div class="card"><div class="row mb8">
-      <div class="grow" style="cursor:pointer" data-det="${en.exId}"><b>${exName(en.exId)}</b>
+      <div class="grow" style="cursor:pointer" data-det="${en.exId}"><b>${exName(en.exId)}${en.tempCau?" 🩹":""}</b>
       <div class="exmeta">${en.reps?`${T("reps")}: ${en.reps} · `:""}${T("rest")} ${en.rest||90}s</div></div>
       <button class="swapmini" data-scan="${ei}" title="${T("scanSwap")}">📷</button>
       ${isBar?`<button class="swapmini" data-plate="${ei}" title="${T("plateCalc")}">🏋️</button>`:""}
@@ -1815,12 +1991,15 @@ function renderWorkout(){
         let line;
         if(tgt.tm)line=fmt(T("tgtTimeLine"),{r:tgt.reps});
         else if(tgt.addLoad)line=fmt(T("tgtAddLoad"),{r:rTxt});
+        else if(tgt.asstDown)line=fmt(T("tgtAsstDown"),{a:Math.abs(tgt.w),r:rTxt});
+        else if(tgt.asstMode)line=fmt(T("tgtAsstLine"),{a:Math.abs(tgt.w),r:rTxt});
         else if(tgt.bwMode)line=fmt(T("tgtBwLine"),{r:rTxt});
         else line=fmt(T("tgtLine"),{w:tgt.w,r:rTxt});
         h+=`<div class="notice mb8" style="padding:7px 10px">${line}${tgt.frozen?` <span class="dim">${T("tgtFrozen")}</span>`:""}${tgt.deload?`<br><span class="dim">${T("tgtDeload")}</span>`:""}</div>`;
       }
     }
-    if(bwx)h+=`<p class="dim mb8" style="font-size:11px">${T("bwHint")}</p>`;
+    if(isAsst(en.exId))h+=`<p class="dim mb8" style="font-size:11px">${T("asstHint")}</p>`;
+    else if(bwx)h+=`<p class="dim mb8" style="font-size:11px">${T("bwHint")}</p>`;
     h+=`<div class="sethead2"><span>#</span><span>${bwx?T("bwLabel")+" +kg":T("kg")}</span><span>${tmx?T("secUnit"):T("reps")}</span><span>✓</span></div>`;
     en.sets.forEach((s,si)=>{
       h+=`<div class="setrow2"><div class="exnum">${si+1}</div>
@@ -1848,7 +2027,8 @@ function renderWorkout(){
     const step=()=>{
       const inc=fld==="w"?2.5:1;
       let v=seed()+dir*inc;
-      if(v<0)v=0;
+      const minV=(fld==="w"&&isAsst(W.entries[ei].exId))?-50:0;
+      if(v<minV)v=minV;
       v=Math.round(v*10)/10;
       inp.value=v;W.entries[ei].sets[si][fld]=v;
       if(navigator.vibrate)navigator.vibrate(8);
@@ -1903,8 +2083,7 @@ function openSwap(ei,autoScan){
   $("#swFile").onchange=async e=>{
     const f=e.target.files[0];if(!f)return;
     const btn=$("#swScan");btn.innerHTML=`<span class="spin"></span> ${T("scanning")}`;
-    try{
-      const ids=await aiScanEquipment([f]);
+    const proceed=ids=>{
       /* self-reinforcing gym profile: offer to add newly seen equipment */
       const gym=S.gyms[S.activeGym];
       ids.forEach(id=>{
@@ -1912,10 +2091,18 @@ function openSwap(ei,autoScan){
       });
       const pool=substitutesFor(en.exId);
       const filtered=pool.filter(s=>s.eq.some(q=>ids.includes(q)));
-      btn.textContent=T("scanSwap");
       if(!filtered.length){toast(T("scanNone"));renderList(pool);return}
       $("#swNote").innerHTML=`<p class="sub mb8">✅ ${ids.map(eqName).join("、")} — ${T("scanFrom")}</p>`;
       renderList(filtered);
+    };
+    try{
+      const cands=await aiScanEquipment([f]);
+      btn.textContent=T("scanSwap");
+      if(cands.length>1){
+        /* v1.9.3: multiple candidates -> user confirms which machine is in front of them */
+        $("#swNote").innerHTML=`<p class="sub mb8">${T("scanPick")}</p><div class="chips mb8" id="swCands">${cands.map(c=>`<div class="chip" data-cand="${c.id}">${eqName(c.id)} ${Math.round(c.conf*100)}%</div>`).join("")}</div>`;
+        $("#swCands").querySelectorAll("[data-cand]").forEach(x=>x.onclick=()=>proceed([x.dataset.cand]));
+      }else proceed([cands[0].id]);
     }catch(err){btn.textContent=T("scanSwap");toast(T("scanNone"))}
   };
   /* quick-scan entry from the exercise card camera icon */
@@ -1995,9 +2182,25 @@ function finishWorkout(){
   S.logs.push(log);save();stopRest();
   const vol=totalVolume(log);
   W=null;
-  openShareCard(log,vol);
+  openPostCheck(log,vol);
   if(S.logs.length===1)setTimeout(()=>toast(T("unlockTeaser")),600);
   renderWorkout();
+}
+/* v1.9.3: 10-second post-workout check — feeds next session's targets */
+function openPostCheck(log,vol){
+  let feel=null;const aches=new Set();
+  const upd=()=>{const b=$("#pwSave");if(b)b.disabled=(feel===null&&!aches.size)};
+  openSheet(`<h3>${T("postTitle")}</h3>
+  <label class="fl">${T("postFeel")}</label>
+  <div class="seg" id="pwFeel">${[T("postEasy"),T("postRight"),T("postHard")].map((t,i)=>`<div data-v="${i}" style="padding:12px 4px">${t}</div>`).join("")}</div>
+  <label class="fl">${T("postAche")}</label>
+  <div class="chips" id="pwAche">${INJ_AREAS.map(a=>`<div class="chip" data-v="${a}">${T("inj_"+a)}</div>`).join("")}</div>
+  <div class="row mt12"><button class="btn sec grow" id="pwSkip">${T("postSkip")}</button><button class="btn grow" id="pwSave" disabled>${T("postSave")}</button></div>`);
+  $("#pwFeel").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;feel=+d.dataset.v;document.querySelectorAll("#pwFeel [data-v]").forEach(x=>x.classList.toggle("on",x===d));upd()};
+  $("#pwAche").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;const a=d.dataset.v;aches.has(a)?aches.delete(a):aches.add(a);d.classList.toggle("on");upd()};
+  const fin=()=>{closeSheet();openShareCard(log,vol)};
+  $("#pwSkip").onclick=fin;
+  $("#pwSave").onclick=()=>{log.post={feel,aches:[...aches]};save();fin()};
 }
 
 /* rest timer */
@@ -2073,8 +2276,14 @@ function openScanSheet(onDone){
     if(!files.length)return;
     $("#scanStatus").innerHTML=`<span class="spin"></span> ${T("scanning")}`;
     try{
-      const ids=await aiScanEquipment(files);
-      closeSheet();toast(fmt(T("scanDone"),{n:ids.length}));onDone(ids);
+      const cands=await aiScanEquipment(files);
+      if(cands.length===1){closeSheet();toast(fmt(T("scanDone"),{n:1}));onDone([cands[0].id]);return}
+      /* v1.9.3: candidate chips, high-confidence ones preselected, user confirms */
+      const sel=new Set(cands.filter(c=>c.conf>=0.7).map(c=>c.id));
+      if(!sel.size&&cands.length)sel.add(cands[0].id);
+      $("#scanStatus").innerHTML=`<p class="sub mb8">${T("scanPick")}</p><div class="chips" id="scChips">${cands.map(c=>`<div class="chip ${sel.has(c.id)?"on":""}" data-c="${c.id}">${eqName(c.id)} ${Math.round(c.conf*100)}%</div>`).join("")}</div><button class="btn mt12" id="scConfirm">${T("done")}</button>`;
+      $("#scChips").querySelectorAll("[data-c]").forEach(x=>x.onclick=()=>{const id=x.dataset.c;if(sel.has(id)){sel.delete(id);x.classList.remove("on")}else{sel.add(id);x.classList.add("on")}});
+      $("#scConfirm").onclick=()=>{const ids=[...sel];if(!ids.length){toast(T("scanNone"));return}closeSheet();toast(fmt(T("scanDone"),{n:ids.length}));onDone(ids)};
     }catch(err){$("#scanStatus").innerHTML=`<span style="color:var(--red)">${T("scanFail")}</span><div class="dim mt8">${esc(err.message||err)}</div>`}
   };
 }
@@ -2220,7 +2429,7 @@ function renderMe(){
     <button class="btn sm warn" id="btnReset">${T("resetAll")}</button></div>
     <input type="file" id="impFile" accept=".json" style="display:none"></div>
   <div class="card"><b>${T("disclaimerT")}</b><p class="dim mt8">${T("disclaimer")}</p></div>
-  <p class="dim center">GymSense MVP v1.9.2 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
+  <p class="dim center">GymSense MVP v1.9.4 · ${LANG==="zh"?"验证原型，非上架产品":"Validation prototype"}</p>`;
   $("#setTheme").onclick=e=>{const d=e.target.closest("[data-v]");if(!d)return;
     S.settings.theme=d.dataset.v;save();applyTheme();
     document.querySelectorAll("#setTheme div").forEach(x=>x.classList.toggle("on",x===d));toast(T("saveOk"))};
@@ -2284,6 +2493,7 @@ const AI_SYS=()=>LANG==="zh"
 function userContext(){
   const p=S.profile||{};const gym=S.gyms[S.activeGym];
   const recent=S.logs.slice(-8).map(l=>({date:l.date.slice(0,10),day:l.dayKey,
+    post:l.post?{feel:["easy","right","too hard"][l.post.feel]??null,aches:(l.post.aches||[]).map(a=>({lb:"lower back",sh:"shoulder",kn:"knee",el:"elbow",wr:"wrist"}[a]||a))}:undefined,
     entries:l.entries.map(e=>({ex:EXMAP[e.exId]?EXMAP[e.exId].en:e.exId,sets:e.sets.map(s=>(EXMAP[e.exId]&&EXMAP[e.exId].bw?((+s.w>0?"BW+"+s.w+"kg":"BW")):s.w+"kg")+"x"+s.r)}))}));
   return JSON.stringify({profile:{sex:p.sex,age:p.age,height:p.height,weight:p.weight,exp:p.exp,goal:p.goal,freq:p.freq,flaggedInjuries:(p.injuries||[]).map(a=>({lb:"lower back",sh:"shoulder",kn:"knee",el:"elbow",wr:"wrist"}[a]||a)),swimSessionsPerWeek:p.swim||0},
     gym:gym?{name:gym.name,equipment:gym.eq}:null,
@@ -2334,14 +2544,11 @@ function fileToB64(file,maxW){return new Promise((ok,bad)=>{
   img.onload=()=>{const sc=Math.min(1,(maxW||1024)/img.width);
     const c=document.createElement("canvas");c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);
     c.getContext("2d").drawImage(img,0,0,c.width,c.height);
-    URL.revokeObjectURL(url);ok(c.toDataURL("image/jpeg",.8).split(",")[1])};
+    URL.revokeObjectURL(url);ok(c.toDataURL("image/jpeg",.85).split(",")[1])};
   img.onerror=bad;img.src=url;})}
-async function aiScanEquipment(files){
+/* v1.9.4: shared vision call (images + prompt -> text) for scan & form-check */
+async function callAIVision(imgs,prompt,maxTokens){
   const key=S.settings.apiKey;if(!key)throw new Error(T("aiScanNeedKey"));
-  const imgs=[];for(const f of files)imgs.push(await fileToB64(f,1024));
-  const catList=EQUIP.map(e=>`${e.id}: ${e.en} / ${e.zh}`).join("\n");
-  const prompt="Identify every piece of gym equipment visible in these photos. Map each to the closest category id from this list:\n"+catList+"\nReturn ONLY a JSON array of matching category ids, e.g. [\"barbell\",\"m_lat\"]. No other text.";
-  let txt="";
   try{
     if(aiProvider()==="anthropic"){
       const content=imgs.map(b=>({type:"image",source:{type:"base64",media_type:"image/jpeg",data:b}}));
@@ -2349,32 +2556,126 @@ async function aiScanEquipment(files){
       const res=await fetch(aiBase()+"/v1/messages",{
         method:"POST",
         headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-        body:JSON.stringify({model:S.settings.model||"claude-sonnet-4-5",max_tokens:400,messages:[{role:"user",content}]})
+        body:JSON.stringify({model:S.settings.model||"claude-sonnet-4-5",max_tokens:maxTokens||400,messages:[{role:"user",content}]})
       });
       if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,200))}
       const data=await res.json();
-      txt=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
-    }else{
-      /* OpenAI-compatible vision format; providers without vision will return an error shown to the user */
-      const mdl=S.settings.model||(aiProvider()==="deepseek"?PROV_DEF.deepseek.model:"");
-      if(!mdl)throw new Error(T("modelMissing"));
-      const content=imgs.map(b=>({type:"image_url",image_url:{url:"data:image/jpeg;base64,"+b}}));
-      content.push({type:"text",text:prompt});
-      const res=await fetch(aiBase()+"/chat/completions",{
-        method:"POST",
-        headers:{"content-type":"application/json","authorization":"Bearer "+S.settings.apiKey},
-        body:JSON.stringify({model:mdl,max_tokens:400,messages:[{role:"user",content}]})
-      });
-      if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,200))}
-      const data=await res.json();
-      const ch=(data.choices||[])[0];
-      txt=(ch&&ch.message&&ch.message.content)||"";
+      return (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
     }
+    /* OpenAI-compatible vision format; providers without vision will return an error shown to the user */
+    const mdl=S.settings.model||(aiProvider()==="deepseek"?PROV_DEF.deepseek.model:"");
+    if(!mdl)throw new Error(T("modelMissing"));
+    const content=imgs.map(b=>({type:"image_url",image_url:{url:"data:image/jpeg;base64,"+b}}));
+    content.push({type:"text",text:prompt});
+    const res=await fetch(aiBase()+"/chat/completions",{
+      method:"POST",
+      headers:{"content-type":"application/json","authorization":"Bearer "+S.settings.apiKey},
+      body:JSON.stringify({model:mdl,max_tokens:maxTokens||400,messages:[{role:"user",content}]})
+    });
+    if(!res.ok){const t=await res.text();throw new Error(res.status+" "+t.slice(0,200))}
+    const data=await res.json();
+    const ch=(data.choices||[])[0];
+    return (ch&&ch.message&&ch.message.content)||"";
   }catch(e){throw wrapNetErr(e)}
-  const m=txt.match(/\[[\s\S]*?\]/);if(!m)throw new Error("parse");
-  const ids=JSON.parse(m[0]).filter(id=>EQMAP[id]);
-  if(!ids.length)throw new Error("none");
-  return ids;
+}
+/* ===== v1.9.4: async video form self-check (Beta) ===== */
+/* frames are extracted ON DEVICE; only ~6 stills go to the user's own API; nothing is uploaded or stored */
+function extractVideoFrames(file,n,maxW){return new Promise((ok,bad)=>{
+  const v=document.createElement("video");
+  v.muted=true;v.playsInline=true;v.preload="auto";
+  const url=URL.createObjectURL(file);
+  const frames=[];let times=[];
+  const c=document.createElement("canvas");
+  const finish=()=>{URL.revokeObjectURL(url);ok(frames)};
+  const seekNext=()=>{if(!times.length){finish();return}v.currentTime=times.shift()};
+  v.onloadedmetadata=()=>{
+    if(!v.videoWidth){bad(new Error("video"));return}
+    const dur=Math.min(isFinite(v.duration)?v.duration:10,20);
+    for(let i=0;i<(n||6);i++)times.push(Math.max(0.05,dur*(i+0.5)/(n||6)));
+    seekNext();
+  };
+  v.onseeked=()=>{
+    try{
+      const sc=Math.min(1,(maxW||768)/v.videoWidth);
+      c.width=Math.round(v.videoWidth*sc);c.height=Math.round(v.videoHeight*sc);
+      c.getContext("2d").drawImage(v,0,0,c.width,c.height);
+      frames.push(c.toDataURL("image/jpeg",.8).split(",")[1]);
+    }catch(e){}
+    seekNext();
+  };
+  v.onerror=()=>{URL.revokeObjectURL(url);bad(new Error("video"))};
+  v.src=url;
+})}
+function parseFormCheck(txt){
+  const m=String(txt).match(/\{[\s\S]*\}/);if(!m)throw new Error("parse");
+  const r=JSON.parse(m[0]);
+  const arr=x=>Array.isArray(x)?x.filter(Boolean):[];
+  return {ok:arr(r.ok).map(String),
+    issues:arr(r.issues).map(i=>typeof i==="string"?{point:i,fix:""}:{point:String(i.point||""),fix:String(i.fix||i.suggestion||"")}).filter(i=>i.point),
+    unclear:arr(r.unclear).map(String)};
+}
+async function aiFormCheck(exId,frames){
+  const ex=EXMAP[exId];if(!ex)throw new Error("ex");
+  const prompt=`The user recorded themselves performing "${ex.en}" (${ex.zh}) and these ${frames.length} frames were sampled evenly from one set, in chronological order.
+Coaching cues for this exercise: ${ex.ce}
+Common mistakes / cautions: ${ex.we}
+Assess ONLY what is clearly visible in the frames. Respond in ${LANG==="zh"?"Simplified Chinese":"English"}. Output ONLY one JSON object on the last line:
+{"ok":["specific things done well"],"issues":[{"point":"observed problem","fix":"one concrete correction"}],"unclear":["what cannot be judged from these frames"]}
+Hard rules: never diagnose injuries or pain; if form looks risky, advise lowering the weight and consulting a coach (put it in issues); if the frames do not show this exercise or are too unclear, say so in "unclear" and keep the other arrays empty; max 3 items per array; do not invent details you cannot see.`;
+  return parseFormCheck(await callAIVision(frames,prompt,900));
+}
+function openFormCheck(exId){
+  if(!S.settings.apiKey){toast(T("aiScanNeedKey"));return}
+  if(aiProvider()==="deepseek"){toast(T("fcNeedVision"));return}
+  openSheet(`<h3>${T("fcTitle")} · ${exName(exId)}</h3>
+  <p class="sub mb8">${T("fcTip")}</p>
+  <div class="warnbox mb8" style="font-size:12px">${T("fcDisc")}</div>
+  <input type="file" id="fcFile" accept="video/*" capture="environment">
+  <div id="fcOut" class="mt12"></div>
+  <button class="btn sec mt12" onclick="closeSheet()">${T("done")}</button>`);
+  $("#fcFile").onchange=async e=>{
+    const f=e.target.files[0];if(!f)return;
+    const out=$("#fcOut");
+    out.innerHTML=`<span class="spin"></span> ${T("fcAnalyzing")}`;
+    try{
+      const frames=await extractVideoFrames(f,6,768);
+      if(!frames.length)throw new Error("video");
+      out.innerHTML=`<span class="spin"></span> ${T("fcAnalyzing")} · ${fmt(T("fcFrames"),{n:frames.length})}`;
+      const r=await aiFormCheck(exId,frames);
+      out.innerHTML=renderFormCheck(r);
+    }catch(err){out.innerHTML=`<span style="color:var(--red)">${T("fcFail")}: ${esc(err.message||err)}</span>`}
+  };
+}
+function renderFormCheck(r){
+  let h="";
+  if(r.ok.length)h+=`<div class="card"><b>${T("fcOk")}</b><ul style="padding-left:18px;margin-top:6px">${r.ok.map(x=>`<li class="sub" style="margin-bottom:4px">${esc(x)}</li>`).join("")}</ul></div>`;
+  if(r.issues.length)h+=`<div class="card"><b>${T("fcIssues")}</b>${r.issues.map(i=>`<div class="mt8"><b class="sub">• ${esc(i.point)}</b>${i.fix?`<div class="dim" style="margin-left:12px">${esc(i.fix)}</div>`:""}</div>`).join("")}</div>`;
+  if(r.unclear.length)h+=`<div class="card"><b class="dim">${T("fcUnclear")}</b><ul style="padding-left:18px;margin-top:6px">${r.unclear.map(x=>`<li class="dim" style="margin-bottom:4px">${esc(x)}</li>`).join("")}</ul></div>`;
+  if(!h)h=`<p class="sub">${T("fcUnclear")}</p>`;
+  return h+`<p class="dim mt8" style="font-size:11px">${T("fcDisc")}</p>`;
+}
+async function aiScanEquipment(files){
+  const key=S.settings.apiKey;if(!key)throw new Error(T("aiScanNeedKey"));
+  const imgs=[];for(const f of files)imgs.push(await fileToB64(f,1568));
+  const catList=EQUIP.map(e=>`${e.id}: ${e.en}${EQUIP_DESC[e.id]?" — "+EQUIP_DESC[e.id]:""}`).join("\n");
+  const prompt="You are identifying commercial gym equipment in photos. Category list (id: name — visual features):\n"+catList
+    +"\nCommon confusions to check: m_lat pulley is OVERHEAD (pull down) vs m_row pulls HORIZONTALLY; leg_ext roller sits in FRONT of the shins vs leg_curl roller BEHIND the ankles; smith bar rides on rails vs barbell in a rack is free; hack has shoulder pads vs leg_press has an overhead foot platform."
+    +"\nFirst think briefly (1-2 sentences) about the distinguishing features you can actually see. Then on the LAST line output ONLY a JSON array of the identified categories, each as {\"id\":\"m_lat\",\"confidence\":0.9} with confidence 0-1, sorted most likely first. For an ambiguous machine include up to 3 alternative candidates. Use only ids from the list.";
+  const txt=await callAIVision(imgs,prompt,400);
+  /* accept both legacy ["hack"] and new [{"id","confidence"}] formats; take the LAST JSON array (after reasoning) */
+  const ms=txt.match(/\[[\s\S]*?\]/g);if(!ms)throw new Error("parse");
+  let arr=null;
+  for(let i=ms.length-1;i>=0&&!arr;i--){try{const p=JSON.parse(ms[i]);if(Array.isArray(p))arr=p}catch(e){}}
+  if(!arr)throw new Error("parse");
+  const cands=[];
+  arr.forEach(it=>{
+    const id=typeof it==="string"?it:(it&&it.id);
+    const conf=typeof it==="string"?0.9:Math.max(0,Math.min(1,+(it&&(it.confidence??it.conf))||0.5));
+    if(EQMAP[id]&&!cands.some(c=>c.id===id))cands.push({id,conf});
+  });
+  if(!cands.length)throw new Error("none");
+  cands.sort((a,b)=>b.conf-a.conf);
+  return cands;
 }
 function aiSheetShell(title){
   openSheet(`<h3>${title}</h3><div id="aiOut"><span class="spin"></span> ${T("aiThinking")}</div><button class="btn sec mt12" onclick="closeSheet()">${T("done")}</button>`);
@@ -2388,13 +2689,67 @@ async function aiExplainPlan(){
     $("#aiOut").innerHTML=`<div class="msg a">${esc(out)}</div>`;
   }catch(e){$("#aiOut").innerHTML=`<span style="color:var(--red)">${T("aiErr")}${esc(e.message)}</span>`}
 }
+/* ===== v1.9.4: weekly review = app-computed statistics + LLM interpretation (audit trail visible) ===== */
+function weeklyStats(){
+  const now=Date.now(),wk=7*86400000;
+  const inWin=(l,a,b)=>{const t=new Date(l.date).getTime();return t>now-a&&t<=now-b};
+  const this7=S.logs.filter(l=>inWin(l,wk,0));
+  const prev7=S.logs.filter(l=>inWin(l,2*wk,wk));
+  const s7=this7.filter(l=>l.dayKey!=="swim"),p7=prev7.filter(l=>l.dayKey!=="swim");
+  const vol=ls=>Math.round(ls.reduce((a,l)=>a+totalVolume(l),0));
+  const v7=vol(s7),vp=vol(p7);
+  const muscleSets={};
+  s7.forEach(l=>l.entries.forEach(e=>{const ex=EXMAP[e.exId];if(!ex)return;const n=e.sets.filter(s=>s.done).length;ex.m.forEach(m=>{muscleSets[m]=(muscleSets[m]||0)+n})}));
+  /* per-exercise trend: best of each of the last 3 sessions (e1RM for weighted, reps/secs for pure bodyweight) */
+  const exTrend=[];
+  [...new Set(s7.flatMap(l=>l.entries.map(e=>e.exId)))].forEach(id=>{
+    const hist=[];
+    for(let i=S.logs.length-1;i>=0&&hist.length<3;i--){
+      const en=S.logs[i].entries.find(e=>e.exId===id);
+      if(en&&en.sets.length)hist.unshift(Math.round(Math.max(...en.sets.map(s=>(+s.w>0?est1RM(+s.w,+s.r):(+s.r||0))))));
+    }
+    if(hist.length>=2){
+      const d=hist[hist.length-1]-hist[0];
+      exTrend.push({exId:id,ex:exName(id),series:hist,trend:d>0.5?"up":(d<-0.5?"down":"flat")});
+    }
+  });
+  const swim7=this7.filter(l=>l.dayKey==="swim");
+  return {
+    week:{sessions:s7.length,planned:S.plan?S.plan.days.filter(d=>!d.swimSegs).length:null,volumeKg:v7,swimSessions:swim7.length,swimMeters:swim7.reduce((a,l)=>a+(l.swimDist||0),0)},
+    prevWeek:{sessions:p7.length,volumeKg:vp},
+    volumeChangePct:vp>0?Math.round((v7-vp)/vp*100):null,
+    setsPerMuscle:muscleSets,
+    exerciseTrends:exTrend,
+    newPRs:s7.flatMap(l=>(l.prs||[]).map(p=>({ex:exName(p.exId),w:p.w}))),
+    readinessScores:s7.filter(l=>l.readiness).map(l=>l.readiness.score),
+    postChecks:s7.filter(l=>l.post).map(l=>({feel:l.post.feel,aches:l.post.aches||[]})),
+  };
+}
+function wkAuditHtml(st){
+  const tr={up:T("trUp"),flat:T("trFlat"),down:T("trDown")};
+  const feelTxt=[T("postEasy"),T("postRight"),T("postHard")];
+  let rows=`<div class="row mt8"><span class="dim grow">${T("wkSessions")}</span><b class="sub">${st.week.sessions}${st.week.planned?` / ${st.week.planned}`:""}</b></div>
+  <div class="row mt8"><span class="dim grow">${T("wkVolume")}</span><b class="sub">${st.week.volumeKg} kg${st.volumeChangePct!==null?` <span class="dim">(${T("wkVsPrev")} ${st.volumeChangePct>=0?"+":""}${st.volumeChangePct}%)</span>`:""}</b></div>`;
+  const ms=Object.entries(st.setsPerMuscle);
+  if(ms.length)rows+=`<div class="mt8"><span class="dim">${T("wkMuscleSets")}</span><div class="mt8">${ms.map(([m,n])=>`<span class="tag">${T("mus_"+m)} ${n}</span>`).join("")}</div></div>`;
+  if(st.exerciseTrends.length)rows+=`<div class="mt8"><span class="dim">${T("wkTrends")}</span>${st.exerciseTrends.map(t=>`<div class="row mt8"><span class="sub grow">${esc(t.ex)}</span><span class="sub">${t.series.join(" → ")} <b>${tr[t.trend]}</b></span></div>`).join("")}</div>`;
+  if(st.newPRs.length)rows+=`<div class="mt8"><span class="dim">${T("wkPRs")}</span><div class="mt8">${st.newPRs.map(p=>`<span class="tag acc">🏆 ${esc(p.ex)} ${p.w}kg</span>`).join("")}</div></div>`;
+  if(st.readinessScores.length)rows+=`<div class="row mt8"><span class="dim grow">${T("wkReadiness")}</span><span class="sub">${st.readinessScores.join(", ")}</span></div>`;
+  if(st.postChecks.length)rows+=`<div class="mt8"><span class="dim">${T("wkPost")}</span><div class="mt8">${st.postChecks.map(p=>`<span class="tag ${p.feel===2||p.aches.length?"":"acc"}">${p.feel!==null&&p.feel!==undefined?feelTxt[p.feel]:""}${p.aches.length?" 🩹"+p.aches.map(a=>T("inj_"+a)).join("/"):""}</span>`).join("")}</div></div>`;
+  if(st.week.swimSessions)rows+=`<div class="row mt8"><span class="dim grow">${T("wkSwimL")}</span><span class="sub">${st.week.swimSessions} × · ${st.week.swimMeters}m</span></div>`;
+  return `<details class="card mt8" id="wkAudit"><summary style="cursor:pointer;font-weight:700;font-size:13px">${T("wkAudit")}</summary>${rows}</details>`;
+}
 async function aiWeeklyReview(){
   if(!S.settings.apiKey){toast(T("aiScanNeedKey"));return}
   aiSheetShell(T("aiWeekly").replace("🤖 ",""));
+  const st=weeklyStats();
+  if(!st.week.sessions&&!st.week.swimSessions){$("#aiOut").innerHTML=`<p class="sub">${T("wkNoData")}</p>`;return}
   try{
-    const q=LANG==="zh"?"请基于最近的训练记录做一次复盘：1) 训练频率与计划的差距；2) 哪些动作在进步、哪些停滞；3) 下周的1-2条方向性建议（不要给具体重量数字）。":"Review my recent workouts: 1) adherence vs plan; 2) which lifts progressed vs stalled; 3) 1-2 directional suggestions for next week (no specific weight prescriptions).";
-    const out=await callAI([{role:"user",content:"USER DATA:\n"+userContext()+"\n\nQUESTION: "+q}]);
-    $("#aiOut").innerHTML=`<div class="msg a">${esc(out)}</div>`;
+    const q=LANG==="zh"
+      ?"请基于 WEEKLY_STATS 做一次周复盘：1) 训练频率与计划的差距；2) 哪些动作在进步、哪些停滞（引用 exerciseTrends）；3) 结合 postChecks/readinessScores 评估恢复情况；4) 下周的1-2条方向性建议（不要给具体重量数字）。所有数字只能来自 WEEKLY_STATS，禁止自行计算或编造数字；WEEKLY_STATS 里没有的数据就明说没有。"
+      :"Weekly review based on WEEKLY_STATS: 1) adherence vs plan; 2) which lifts progressed vs stalled (cite exerciseTrends); 3) recovery read from postChecks/readinessScores; 4) 1-2 directional suggestions for next week (no specific weight prescriptions). Every number MUST come from WEEKLY_STATS — never compute or invent figures; if something isn't in WEEKLY_STATS, say so.";
+    const out=await callAI([{role:"user",content:"USER DATA:\n"+userContext()+"\n\nWEEKLY_STATS (pre-computed by the app's rules engine — the ONLY valid source of numbers):\n"+JSON.stringify(st)+"\n\nQUESTION: "+q}]);
+    $("#aiOut").innerHTML=`<div class="msg a">${esc(out)}</div>`+wkAuditHtml(st);
   }catch(e){$("#aiOut").innerHTML=`<span style="color:var(--red)">${T("aiErr")}${esc(e.message)}</span>`}
 }
 let chatHist=[];
@@ -2451,7 +2806,7 @@ async function aiApplyPlanFlow(){
         return en;
       }).filter(Boolean);
       if(!exs.length)return null;
-      return {key:KEYS.includes(d.key)?d.key:"fullA",label:String(d.name||"").slice(0,14),exercises:exs};
+      return {key:KEYS.includes(d.key)?d.key:"fullA",label:String(d.name||"").slice(0,14),exercises:sortDayExercises(exs)};
     }).filter(Boolean);
     if(!days.length)throw new Error(T("applyFail"));
     /* preview */
